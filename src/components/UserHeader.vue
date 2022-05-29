@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 flex justify-between">
+  <div class="p-3 flex justify-between">
     <img
       src="../assets/images/cardist-logo.png"
       width="50"
@@ -8,9 +8,9 @@
     />
     <div class="w-full mx-8 my-auto">
       <div class="relative">
-        <input type="search" name="search" class="w-full min-w-300px py-3 text-sm text-white bg-gray-300 rounded-md pl-3 focus:outline-none focus:bg-gray-200 focus:text-gray-900" placeholder="Search..." maxlength=50  autocomplete="off">
+        <input type="search" name="search" class="w-full min-w-300px py-3 text-sm text-white bg-slate-300 rounded-md pl-3 focus:outline-none focus:bg-slate-200 focus:text-slate-900" placeholder="Search..." maxlength=50  autocomplete="off">
         <span class="absolute inset-y-0 right-0 flex items-stretch">
-          <button class="p-1 mr-2 focus:outline-none focus:shadow-outline text-secondary hover:text-gray-700">
+          <button class="p-1 mr-2 focus:outline-none focus:shadow-outline text-secondary hover:text-slate-700">
             <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           </button>
         </span>
