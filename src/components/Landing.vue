@@ -1,29 +1,41 @@
 <template>
   <div class="grid grid-rows-12 grid-flow-col">
-    <div class="col-span-3">
-      <div class="m-3 p-3 bg-slate-300 rounded">
-        <h1 class="pb-2 text-2xl text-left">Filters</h1>
-        <h6 class="text-left">General</h6>
-        <button class="block w-1/2 bg-primary hover:bg-secondary text-slate-800 font-bold py-2 px-4 my-2 mx-auto rounded">New Items</button>
-        <button class="block w-1/2 bg-primary hover:bg-secondary text-slate-800 font-bold py-2 px-4 my-2 mx-auto rounded">Popular</button>
-      </div>
+    <div class="col-span-2">
+      <Filters />
     </div>
-    <div class="col-span-9">
+    <div class="col-span-10">
       <Banner />
       <div class="p-3 m-3">
-        <h1 class="font-bold text-5xl text-left">Home (#8bc7b2, #6ca893)</h1>
+        <div class="flex items-center justify-end border-b pb-2">
+          <label for="sort" class="text-sm font-medium text-slate-900 dark:text-slate-400">Sort:&nbsp;&nbsp;</label>
+          <select id="sort" class="p-1 bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded focus:ring-slate-500 focus:border-slate-500">
+            <option Selected value="date">Date Added</option>
+            <option value="priceDesc">Price: Low to High</option>
+            <option value="priceAsc">Price: High to Low</option>
+          </select>
+        </div>
+        <div class="flex flex-wrap p-3">
+          <Thumbnail name="Red Bicycle Playing Cards" />
+          <Thumbnail name="Theory11 Sentinels Playing Cards" />
+          <Thumbnail name="Virtuoso SS15 Playing Cards" />
+          <Thumbnail name="Blue Bicycle Dragonbacks Playing Cards" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Filters from '@/components/Filters.vue'
 import Banner from '@/components/Banner.vue'
+import Thumbnail from '@/components/Thumbnail.vue'
 
 export default {
-  name: 'UserHeader',
+  name: 'Landing',
   components: {
-    Banner
+    Filters,
+    Banner,
+    Thumbnail
   }, 
   props: {
     
@@ -31,18 +43,5 @@ export default {
 }
 </script>
 <style scoped>
-  /* clears the 'X' from Internet Explorer */
-  input[type=search]::-ms-clear {  display: none; width : 0; height: 0; }
-  input[type=search]::-ms-reveal {  display: none; width : 0; height: 0; }
-
-  /* clears the 'X' from Chrome */
-  input[type="search"]::-webkit-search-decoration,
-  input[type="search"]::-webkit-search-cancel-button,
-  input[type="search"]::-webkit-search-results-button,
-  input[type="search"]::-webkit-search-results-decoration { display: none; }
-
-  input[type="search"] {
-    font-size:18px;
-}
 
 </style>
