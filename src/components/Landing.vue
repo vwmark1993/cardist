@@ -15,10 +15,10 @@
           </select>
         </div>
         <div class="flex flex-wrap p-3">
-          <Thumbnail name="Red Bicycle Playing Cards" />
-          <Thumbnail name="Theory11 Sentinels Playing Cards" />
-          <Thumbnail name="Virtuoso SS15 Playing Cards" />
-          <Thumbnail name="Blue Bicycle Dragonbacks Playing Cards" />
+          <Thumbnail name="Red Bicycle Playing Cards" price=7.49 image="https://m.media-amazon.com/images/I/519GHhMVNrL.jpg" />
+          <Thumbnail name="Theory11 Sentinels Playing Cards" price=12.99 image="https://i.ytimg.com/vi/fcP8rqxvx0E/maxresdefault.jpg" />
+          <Thumbnail name="Virtuoso SS15 Playing Cards" price=22.05 image="https://media.karousell.com/media/photos/products/2021/7/2/virtuoso_ss15_playing_cards_1625228402_cfec7268_progressive.jpg" />
+          <Thumbnail name="Blue Bicycle Dragon Back Playing Cards" price=9.03 image="https://i5.walmartimages.com/asr/72840ef4-2a97-4490-8dd6-2a107ea318df_1.07271be9048c4f363618fd47ca3ebae1.jpeg" />
         </div>
       </div>
     </div>
