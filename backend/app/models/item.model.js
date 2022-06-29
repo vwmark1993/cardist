@@ -29,6 +29,8 @@ module.exports = (sequelize, Sequelize) => {
     number_sold: {
       type: Sequelize.INTEGER
     }
+  }, {
+    timestamps: false
   });
   return Item;
 };
