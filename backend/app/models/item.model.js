@@ -23,11 +23,14 @@ module.exports = (sequelize, Sequelize) => {
     price: {
       type: Sequelize.FLOAT
     },
-    creation_date: {
-      type: Sequelize.DATE
-    },
     number_sold: {
       type: Sequelize.INTEGER
+    },
+    created_on: {
+      type: Sequelize.DATE
+    },
+    updated_on: {
+      type: Sequelize.DATE
     }
   }, {
     timestamps: false
