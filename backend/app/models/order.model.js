@@ -1,32 +1,32 @@
 module.exports = (sequelize, Sequelize) => {
-  const Item = sequelize.define("item", {
+  const Item = sequelize.define("order", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
       allowNull: false,
       primaryKey: true
     },
+    buyer_id: {
+      type: Sequelize.UUID,
+      allowNull: false
+    },
     seller_id: {
       type: Sequelize.UUID,
       allowNull: false
     },
-    images: {
-      type: Sequelize.ARRAY(Sequelize.STRING)
-    },
-    name: {
-      type: Sequelize.STRING,
+    item_id: {
+      type: Sequelize.UUID,
       allowNull: false
     },
-    description: {
-      type: Sequelize.STRING
+    quantity: {
+      type: Sequelize.INT,
+      allowNull: false,
+      defaultValue: 0
     },
     price: {
       type: Sequelize.FLOAT,
-      allowNull: false
-    },
-    number_sold: {
-      type: Sequelize.INTEGER,
-      defaultValue: 0
+      allowNull: false,
+      defaultValue: 0.00
     },
     created_on: {
       type: Sequelize.DATE
@@ -37,5 +37,5 @@ module.exports = (sequelize, Sequelize) => {
   }, {
     timestamps: false
   });
-  return Item;
+  return Order;
 };

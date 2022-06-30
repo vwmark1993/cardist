@@ -1,32 +1,29 @@
 module.exports = (sequelize, Sequelize) => {
-  const Item = sequelize.define("item", {
+  const Item = sequelize.define("comment", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
       allowNull: false,
       primaryKey: true
     },
-    seller_id: {
+    user_id: {
       type: Sequelize.UUID,
       allowNull: false
     },
-    images: {
-      type: Sequelize.ARRAY(Sequelize.STRING)
-    },
-    name: {
-      type: Sequelize.STRING,
+    item_id: {
+      type: Sequelize.UUID,
       allowNull: false
     },
-    description: {
+    message: {
       type: Sequelize.STRING
     },
-    price: {
-      type: Sequelize.FLOAT,
-      allowNull: false
+    flagged_reason: {
+      type: Sequelize.STRING
     },
-    number_sold: {
-      type: Sequelize.INTEGER,
-      defaultValue: 0
+    flagged: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+      allowNull: false
     },
     created_on: {
       type: Sequelize.DATE
@@ -37,5 +34,5 @@ module.exports = (sequelize, Sequelize) => {
   }, {
     timestamps: false
   });
-  return Item;
+  return Comment;
 };
