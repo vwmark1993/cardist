@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Item = sequelize.define("cart", {
+  const Cart = sequelize.define("cart", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,

@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Item = sequelize.define("cart_item", {
+  const Cart_Item = sequelize.define("cart_item", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
@@ -15,7 +15,7 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false
     },
     quantity: {
-      type: Sequelize.INT,
+      type: Sequelize.INTEGER,
       allowNull: false,
       defaultValue: 0
     },

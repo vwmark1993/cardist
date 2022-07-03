@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Item = sequelize.define("order", {
+  const Order = sequelize.define("order", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false
     },
     quantity: {
-      type: Sequelize.INT,
+      type: Sequelize.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
