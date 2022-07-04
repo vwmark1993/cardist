@@ -3,8 +3,6 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
 // app.use(...);
-const db = require("./app/models");
-db.sequelize.sync()
 
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log("Drop and re-sync db.");
@@ -18,10 +16,17 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+
+const db = require("./app/models");
+db.sequelize.sync()
+
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to the cardist backend application." });
+  res.json({ message: "Welcome to the Cardist backend application." });
 });
+
+require("./app/routes/item.routes")(app);
+
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

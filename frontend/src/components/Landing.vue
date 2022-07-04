@@ -15,10 +15,7 @@
           </select>
         </div>
         <div class="flex flex-wrap p-3">
-          <Thumbnail id=0001 name="Red Bicycle Playing Cards" price=7.49 image="https://m.media-amazon.com/images/I/519GHhMVNrL.jpg" />
-          <Thumbnail id=0002 name="Theory11 Sentinels Playing Cards" price=12.99 image="https://i.ytimg.com/vi/fcP8rqxvx0E/maxresdefault.jpg" />
-          <Thumbnail id=0003 name="Virtuoso SS15 Playing Cards" price=22.05 image="https://media.karousell.com/media/photos/products/2021/7/2/virtuoso_ss15_playing_cards_1625228402_cfec7268_progressive.jpg" />
-          <Thumbnail id=0004 name="Blue Bicycle Dragon Back Playing Cards" price=9.03 image="https://i5.walmartimages.com/asr/72840ef4-2a97-4490-8dd6-2a107ea318df_1.07271be9048c4f363618fd47ca3ebae1.jpeg" />
+          <Thumbnail v-for="item in items" :key="item.id" :id="item.id" :name="item.name" :price="item.price" :image="item.images[0]" />
         </div>
       </div>
     </div>
@@ -30,6 +27,8 @@ import Filters from '@/components/Filters.vue'
 import Banner from '@/components/Banner.vue'
 import Thumbnail from '@/components/Thumbnail.vue'
 
+import ItemDataService from '@/services/ItemDataService.js'
+
 export default {
   name: 'Landing',
   components: {
@@ -39,6 +38,25 @@ export default {
   }, 
   props: {
     
+  },
+  data() {
+    return {
+      items: []
+    }
+  },
+  methods: {
+    searchItems() {
+      ItemDataService.getAll()
+      .then(response => {
+        this.items = response.data;
+        console.log(response.data)
+      }).catch(e => {
+        console.log(e)
+      })
+    }
+  },
+  mounted() {
+    this.searchItems();
   }
 }
 </script>

@@ -35,6 +35,5 @@ export default {
 <style scoped>
   .thumbnail {
     max-width: 12rem;
-    max-height: 13rem;
   }
 </style>
