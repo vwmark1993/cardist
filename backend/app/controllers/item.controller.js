@@ -22,7 +22,22 @@ exports.findAll = (req, res) => {
   };
 // Find a single Tutorial with an id
 exports.findOne = (req, res) => {
-  
+  const id = req.params.id;
+  Item.findByPk(id)
+    .then(data => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          message: `Cannot find Item with id=${id}.`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error retrieving Item with id=" + id
+      });
+    });
 };
 // Update a Tutorial by the id in the request
 exports.update = (req, res) => {
