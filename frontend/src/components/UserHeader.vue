@@ -1,10 +1,11 @@
 <template>
   <div class="p-3 flex justify-between">
     <img
+      @click="homepage"
       src="../assets/images/cardist-logo.png"
       width="50"
       height="50"
-      class="inline"
+      class="inline object-contain cursor-pointer"
     />
     <div class="w-full mx-8 my-auto">
       <div class="relative">
@@ -37,6 +38,11 @@ export default {
   name: 'UserHeader',
   props: {
     
+  },
+  methods: {
+    homepage() {
+      this.$router.push({ name: 'home' })
+    }
   }
 }
 </script>

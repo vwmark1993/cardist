@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-rows-12 grid-flow-col">
+  <div class="grid grid-flow-col">
     <div class="col-span-2">
       <Filters />
     </div>

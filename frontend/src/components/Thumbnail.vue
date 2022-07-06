@@ -1,5 +1,5 @@
 <template>
-    <div @click="getItem" class="thumbnail m-3">
+    <div @click="getItem" class="thumbnail m-3 cursor-pointer">
       <div class="flex flex-col border rounded hover:border-secondary">
         <img :src="image" class="h-48 object-contain" />
         <div class="p-2">
