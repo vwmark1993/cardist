@@ -2,13 +2,13 @@
   <div>
     <UserHeader />
     <div class="grid grid-cols-12 grid-flow-col">
-      <div class="col-span-4 grid grid-cols-4 m-3">
-        <div class="col-span-1">
-
+      <div class="md:col-span-4 grid grid-cols-4 m-3">
+        <div class="col-span-1 flex flex-col mx-2">
+          <img @click="setImageIndex(index)" v-for="(image, index) in itemDetails.images" :key="image.id" :src="image" class="border rounded mb-2 cursor-pointer opacity-50 hover:opacity-100 transition delay-75 ease-in-out" />
         </div>
         <div class="col-span-3">
-          <img v-if="itemDetails.images.length > 0" :src="itemDetails.images[0]" class="item-details-image" />
-          <span v-else class="material-symbols-outlined">image</span>
+          <img v-if="itemDetails.images.length > 0" :src="itemDetails.images[selectedIndex]" class="border rounded m-auto" />
+          <span v-else class="material-symbols-outlined m-auto">image</span>
         </div>
       </div>
       <div class="col-span-8 text-left m-3">
@@ -36,7 +36,8 @@ export default {
             name: null,
             description: null,
             images: []
-          }
+          },
+          selectedIndex: 0
       }
   },
   methods: {
@@ -49,7 +50,13 @@ export default {
       }).catch(e => {
         console.log(e)
       })
+    },
+    setImageIndex(index) {
+      this.selectedIndex = index;
     }
+  },
+  computed: {
+
   },
   mounted() {
     this.getItem();
