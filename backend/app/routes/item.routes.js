@@ -1,13 +1,13 @@
 module.exports = app => {
     const items = require("../controllers/item.controller.js");
     var router = require("express").Router();
-    // Create a new Tutorial
+    // Create a new Item
     router.post("/", items.create);
-    // Retrieve all Tutorials
+    // Retrieve all Items
     router.get("/", items.findAll);
     // Retrieve all published Tutorials
     router.get("/published", items.findAllPublished);
-    // Retrieve a single Tutorial with id
+    // Retrieve a single Item with id
     router.get("/:id", items.findOne);
     // Update a Tutorial with id
     router.put("/:id", items.update);

@@ -1,30 +1,29 @@
 const db = require("../models");
-const Item = db.items;
+const Comment = db.comments;
 const Op = db.Sequelize.Op;
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
   
 };
-// Retrieve all Items from the database.
-exports.findAll = (req, res) => {
-    // need to replace this for search functionality
-    const name = req.query.name;
-    var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
-    Item.findAll({ where: condition })
+// Retrieve all Comments tied to an Item from the database.
+exports.findAllItemComments = (req, res) => {
+    const itemId = req.params.itemId;
+    var condition = itemId ? { item_id: `${itemId}` } : null;
+    Comment.findAll({ where: condition })
       .then(data => {
         res.send(data);
       })
       .catch(err => {
         res.status(500).send({
           message:
-            err.message || "Some error occurred while retrieving items."
+            err.message || "Some error occurred while retrieving comments."
         });
       });
   };
-// Find a single Item with an id
+// Find a single Comment with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
-  Item.findByPk(id)
+  Comment.findByPk(id)
     .then(data => {
       if (data) {
         res.send(data);

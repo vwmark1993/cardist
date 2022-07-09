@@ -25,6 +25,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to the Cardist backend application." });
 });
 
+require("./app/routes/comment.routes")(app);
 require("./app/routes/item.routes")(app);
 
 // set port, listen for requests
