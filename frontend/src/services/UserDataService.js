@@ -1,10 +1,10 @@
 import http from "../http-common";
-class CommentDataService {
+class UserDataService {
   getAll() {
-    return http.get("/comment");
+    return http.get("/user");
   }
-  getItemComments(itemId) {
-    return http.get(`/comment/itemId/${itemId}`);
+  get(id) {
+    return http.get(`/user/${id}`);
   }
   create(data) {
     return http.post("/tutorials", data);
@@ -22,4 +22,4 @@ class CommentDataService {
     return http.get(`/tutorials?title=${title}`);
   }
 }
-export default new CommentDataService();
+export default new UserDataService();

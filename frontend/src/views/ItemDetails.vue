@@ -13,16 +13,28 @@
       </div>
       <div class="col-span-8 text-left m-3">
         <h1 class="text-4xl font-bold border-b pb-3 mb-3">{{itemDetails.name}}</h1>
-        <h6 class="text-sm font-medium text-slate-500">Price</h6>
-        <p class="text-2xl text-slate-800 mb-4">${{itemDetails.price}}</p>
+        <div class="flex justify-between items-center">
+          <div>
+            <h6 class="text-sm font-medium text-slate-500">Price</h6>
+            <p class="text-2xl text-slate-800 mb-6">${{itemDetails.price}}</p>
+          </div>
+          <div>
+            <button class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded">Add to Cart</button>
+            <!-- <div class="text-center text-sm flex items-center">
+              Quantity: {{ 10 }} 
+              <span class="material-symbols-outlined">add</span>
+              <span class="material-symbols-outlined">remove</span>
+            </div> -->
+          </div>
+        </div>
         <h6 class="text-sm font-medium text-slate-500">Description</h6>
-        <p class="text-xl text-slate-800 mb-4">{{itemDetails.description}}</p>
+        <p class="text-xl text-slate-800 mb-10">{{itemDetails.description}}</p>
         <div v-if="comments.length == 0">
           <h6 class="text-sm font-medium text-slate-500">This item has no comments written about it.</h6>
         </div>
         <div v-else>
           <h6 class="text-sm font-medium text-slate-500">Comments</h6>
-          <p v-for="comment in comments" :key="comment.id" class="text-xl text-slate-800 mb-4">{{comment.message}}</p>
+          <ItemDetailsComment v-for="comment in comments" :key="comment.id" :user_id="comment.user_id" :message="comment.message" :date="comment.updated_on" />
         </div>
       </div>
     </div>
@@ -30,14 +42,18 @@
 </template>
 
 <script>
-import UserHeader from '@/components/UserHeader.vue'
 import ItemDataService from '@/services/ItemDataService.js'
 import CommentDataService from '@/services/CommentDataService.js'
+
+import UserHeader from '@/components/UserHeader.vue'
+import ItemDetailsComment from '@/components/ItemDetailsComment.vue'
+
 
 export default {
   name: 'ItemDetails',
   components: {
-    UserHeader
+    UserHeader,
+    ItemDetailsComment
   },
   data() {
       return {
@@ -83,5 +99,7 @@ export default {
 }
 </script>
 <style scoped>
-
+  .cart-button {
+    height: 46px;
+  }
 </style>

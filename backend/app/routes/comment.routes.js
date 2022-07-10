@@ -4,7 +4,7 @@ module.exports = app => {
     // Create a new Comment
     router.post("/", comments.create);
     // Retrieve all Comments
-    router.get("/item/:itemId", comments.findAllItemComments);
+    router.get("/itemId/:itemId", comments.findAllItemComments);
     // Retrieve all published Tutorials
     router.get("/published", comments.findAllPublished);
     // Retrieve a single Comment with id
@@ -15,5 +15,5 @@ module.exports = app => {
     router.delete("/:id", comments.delete);
     // Create a new Tutorial
     router.delete("/", comments.deleteAll);
-    app.use('/api/comments', router);
+    app.use('/api/comment', router);
   };
