@@ -24,7 +24,7 @@
         <span class="material-symbols-outlined text-3xl mr-1">paid</span>
         <span>SELL</span>
       </button>
-      <button class="bg-primary hover:bg-secondary text-slate-800 font-bold py-2 px-4 rounded inline-flex items-center">
+      <button @click="goToCart" class="bg-primary hover:bg-secondary text-slate-800 font-bold py-2 px-4 rounded inline-flex items-center">
         <span class="material-symbols-outlined text-3xl mr-1">shopping_cart</span>
         <span>CART</span>
       </button>
@@ -42,6 +42,9 @@ export default {
   methods: {
     homepage() {
       this.$router.push({ name: 'home' })
+    },
+    goToCart() {
+      this.$router.push({ name: 'shopping-cart' })
     }
   }
 }

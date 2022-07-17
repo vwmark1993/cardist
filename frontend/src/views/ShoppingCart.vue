@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import CartDataService from '@/services/CartDataService.js'
+import CartItemDataService from '@/services/CartItemDataService.js'
 // import ItemDataService from '@/services/ItemDataService.js'
 
 import UserHeader from '@/components/UserHeader.vue'
@@ -39,17 +41,37 @@ export default {
   },
   data() {
       return {
-          
+          userId: '0afa8ff9-61b0-4792-9b75-1edb752875a4',
+          cartId: null,
+          cartItems: []
       }
   },
   methods: {
-    
+    getCart() {
+      CartDataService.getUserCart(this.userId)
+      .then(response => {
+        console.log(response)
+        this.cartId = response.data.id;
+      }).catch(e => {
+        console.log(e)
+      })
+    },
+    getCartItems() {
+      CartItemDataService.getCartItems(this.cartId)
+      .then(response => {
+        console.log(response)
+        this.cartItems = response.data;
+      }).catch(e => {
+        console.log(e)
+      })
+    }
   },
   computed: {
 
   },
-  mounted() {
-    
+  async mounted() {
+    await this.getCart();
+    await this.getCartItems();
   }
 }
 </script>

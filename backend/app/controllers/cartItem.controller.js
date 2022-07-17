@@ -1,30 +1,29 @@
 const db = require("../models");
-const Cart = db.carts;
+const CartItem = db.cart_items;
 const Op = db.Sequelize.Op;
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
   
 };
-// Retrieve Cart tied to a User from the database.
-exports.findUserCart = (req, res) => {
-    console.log("CART CONTROLLER CHECK")
-    const userId = req.params.userId;
-    var condition = userId ? { user_id: `${userId}` } : null;
-    Cart.findAll({ where: condition })
+// Retrieve Cart Items tied to a User from the database.
+exports.findCartItems = (req, res) => {
+    const cartId = req.params.cartId;
+    var condition = cartId ? { cart_id: `${cartId}` } : null;
+    CartItem.findAll({ where: condition })
       .then(data => {
         res.send(data);
       })
       .catch(err => {
         res.status(500).send({
           message:
-            err.message || "Some error occurred while retrieving user cart."
+            err.message || "Some error occurred while retrieving cart items."
         });
       });
   };
 // Find a single Cart Item with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
-  Cart.findByPk(id)
+  CartItem.findByPk(id)
     .then(data => {
       if (data) {
         res.send(data);

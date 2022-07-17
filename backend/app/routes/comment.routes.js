@@ -4,7 +4,7 @@ module.exports = app => {
     // Create a new Comment
     router.post("/", comments.create);
     // Retrieve all Comments
-    router.get("/itemId/:itemId", comments.findAllItemComments);
+    router.get("/find/itemId/:itemId", comments.findAllItemComments);
     // Retrieve all published Tutorials
     router.get("/published", comments.findAllPublished);
     // Retrieve a single Comment with id

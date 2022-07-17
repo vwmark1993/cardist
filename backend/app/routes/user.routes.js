@@ -4,11 +4,11 @@ module.exports = app => {
     // Create a new User
     router.post("/", users.create);
     // Retrieve all Users
-    router.get("/", users.findAll);
+    router.get("/find", users.findAll);
     // Retrieve all published Tutorials
     router.get("/published", users.findAllPublished);
     // Retrieve a single User with id
-    router.get("/:id", users.findOne);
+    router.get("/find/:id", users.findOne);
     // Update a User with id
     router.put("/:id", users.update);
     // Delete a Tutorial with id

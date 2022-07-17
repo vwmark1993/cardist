@@ -4,11 +4,9 @@ module.exports = app => {
     // Create a new Item
     router.post("/", items.create);
     // Retrieve all Items
-    router.get("/", items.findAll);
-    // Retrieve all published Tutorials
-    router.get("/published", items.findAllPublished);
-    // Retrieve a single Item with id
-    router.get("/:id", items.findOne);
+    router.get("/find", items.findAll);
+    // Retrieve a single Item by Item ID
+    router.get("/find/:itemId", items.findOne);
     // Update a Tutorial with id
     router.put("/:id", items.update);
     // Delete a Tutorial with id

@@ -1,10 +1,10 @@
 import http from "../http-common";
 class UserDataService {
   getAll() {
-    return http.get("/user");
+    return http.get("/user/find");
   }
   get(id) {
-    return http.get(`/user/${id}`);
+    return http.get(`/user/find/${id}`);
   }
   create(data) {
     return http.post("/tutorials", data);

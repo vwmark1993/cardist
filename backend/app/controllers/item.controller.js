@@ -23,7 +23,7 @@ exports.findAll = (req, res) => {
   };
 // Find a single Item with an id
 exports.findOne = (req, res) => {
-  const id = req.params.id;
+  const id = req.params.itemId;
   Item.findByPk(id)
     .then(data => {
       if (data) {

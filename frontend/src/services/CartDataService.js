@@ -1,10 +1,10 @@
 import http from "../http-common";
 class CartDataService {
   getAll() {
-    return http.get("/cart");
+    return http.get("/cart/find");
   }
   getUserCart(userId) {
-    return http.get(`/cart/userId/${userId}`);
+    return http.get(`/cart/find/userId/${userId}`);
   }
   create(data) {
     return http.post("/tutorials", data);

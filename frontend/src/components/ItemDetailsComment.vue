@@ -23,7 +23,7 @@ export default {
   props: {
     user_id: String,
     message: String,
-    date: Date
+    date: String
   },
   data() {
       return {
@@ -34,7 +34,6 @@ export default {
     getUser() {
       UserDataService.get(this.user_id)
       .then(response => {
-        console.log(response.data)
         this.username = response.data.username;
       }).catch(e => {
         console.log(e)

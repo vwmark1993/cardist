@@ -1,19 +1,19 @@
 module.exports = app => {
-    const comments = require("../controllers/cart.controller.js");
+    const carts = require("../controllers/cart.controller.js");
     var router = require("express").Router();
-    // Create a new Cart
-    router.post("/", comments.create);
+    // Create a new Cart Item with a User ID
+    router.post("/create/userId", carts.create);
     // Retrieve Cart by User ID
-    router.get("/userId/:userId", comments.findUserCart);
+    router.get("/find/userId/:userId", carts.findUserCart);
     // Retrieve all published Tutorials
-    router.get("/published", comments.findAllPublished);
+    router.get("/published", carts.findAllPublished);
     // Retrieve a single Comment with id
-    router.get("/:id", comments.findOne);
+    router.get("/:id", carts.findOne);
     // Update a Tutorial with id
-    router.put("/:id", comments.update);
+    router.put("/:id", carts.update);
     // Delete a Tutorial with id
-    router.delete("/:id", comments.delete);
+    router.delete("/:id", carts.delete);
     // Create a new Tutorial
-    router.delete("/", comments.deleteAll);
+    router.delete("/", carts.deleteAll);
     app.use('/api/cart', router);
   };

@@ -1,10 +1,10 @@
 import http from "../http-common";
 class CommentDataService {
   getAll() {
-    return http.get("/comment");
+    return http.get("/comment/find");
   }
   getItemComments(itemId) {
-    return http.get(`/comment/itemId/${itemId}`);
+    return http.get(`/comment/find/itemId/${itemId}`);
   }
   create(data) {
     return http.post("/tutorials", data);

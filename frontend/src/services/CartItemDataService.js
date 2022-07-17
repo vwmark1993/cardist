@@ -1,10 +1,10 @@
 import http from "../http-common";
-class ItemDataService {
+class CartItemDataService {
   getAll() {
-    return http.get("/item/find");
+    return http.get("/cartItem/find");
   }
-  get(id) {
-    return http.get(`/item/find/${id}`);
+  getCartItems(cartId) {
+    return http.get(`/cartItem/find/cartId/${cartId}`);
   }
   create(data) {
     return http.post("/tutorials", data);
@@ -22,4 +22,4 @@ class ItemDataService {
     return http.get(`/tutorials?title=${title}`);
   }
 }
-export default new ItemDataService();
+export default new CartItemDataService();
