@@ -7,7 +7,6 @@ exports.create = (req, res) => {
 };
 // Retrieve Cart tied to a User from the database.
 exports.findUserCart = (req, res) => {
-    console.log("CART CONTROLLER CHECK")
     const userId = req.params.userId;
     var condition = userId ? { user_id: `${userId}` } : null;
     Cart.findAll({ where: condition })

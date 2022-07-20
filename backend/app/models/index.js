@@ -11,11 +11,13 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     idle: dbConfig.pool.idle
   }
 });
+
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-db.cart_items = require("./cart_item.model.js")(sequelize, Sequelize);
+
 db.carts = require("./cart.model.js")(sequelize, Sequelize);
+db.cart_items = require("./cart_item.model.js")(sequelize, Sequelize);
 db.categories = require("./category.model.js")(sequelize, Sequelize);
 db.comments = require("./comment.model.js")(sequelize, Sequelize);
 db.item_categories = require("./item_category.model.js")(sequelize, Sequelize);

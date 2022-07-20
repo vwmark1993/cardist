@@ -47,27 +47,15 @@ export default {
       }
   },
   methods: {
-    getCart() {
-      CartDataService.getUserCart(this.userId)
-      .then(response => {
-        console.log(response)
-        this.cartId = response.data.id;
-      }).catch(e => {
-        console.log(e)
-      })
+    async getCart() {
+      let response = await CartDataService.getUserCart(this.userId);
+      this.cart = response.data[0];
+      this.cartId = this.cart.id;  
     },
-    getCartItems() {
-      CartItemDataService.getCartItems(this.cartId)
-      .then(response => {
-        console.log(response)
-        this.cartItems = response.data;
-      }).catch(e => {
-        console.log(e)
-      })
+    async getCartItems() {
+      let response = await CartItemDataService.getCartItems(this.cartId);
+      this.cartItems = response.data;
     }
-  },
-  computed: {
-
   },
   async mounted() {
     await this.getCart();
