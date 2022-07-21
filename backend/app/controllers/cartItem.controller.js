@@ -1,9 +1,44 @@
 const db = require("../models");
 const CartItem = db.cart_items;
 const Op = db.Sequelize.Op;
-// Create and Save a new Tutorial
+
+// Create and Save a new Cart Item
 exports.create = (req, res) => {
-  
+  if (!req.params.itemId || !req.params.cartId || !req.params.price) {
+    res.status(400).send({
+      message: "Content cannot be empty."
+    });
+    return;
+  }
+
+  // Check if the item already exists in the cart
+  CartItem.findAll({ where: { item_id: `${req.params.itemId}` } })
+    .then(data => {
+      if (data.length > 0) {
+        // Item exists
+        res.status(201).send({
+          message: "Item already exists in cart."
+        });
+      } else {
+        // Item doesn't exist
+        const cartItem = {
+          item_id: req.params.itemId,
+          cart_id: req.params.cartId,
+          quantity: 1,
+          price: req.params.price
+        };
+        CartItem.create(cartItem)
+          .then(data => {
+            res.send(data);
+          })
+          .catch(err => {
+            res.status(500).send({
+              message:
+                err.message || "Some error occurred while creating the Cart Item."
+            });
+          });
+      }
+    })
 };
 // Retrieve Cart Items tied to a User from the database.
 exports.findCartItems = (req, res) => {

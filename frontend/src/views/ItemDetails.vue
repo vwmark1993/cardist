@@ -19,7 +19,7 @@
             <p class="text-2xl text-slate-800 mb-6">${{itemDetails.price}}</p>
           </div>
           <div>
-            <button class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded">Add to Cart</button>
+            <button @click="addItemToCart" class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded">Add to Cart</button>
             <!-- <div class="text-center text-sm flex items-center">
               Quantity: {{ 10 }} 
               <span class="material-symbols-outlined">add</span>
@@ -44,6 +44,8 @@
 <script>
 import ItemDataService from '@/services/ItemDataService.js'
 import CommentDataService from '@/services/CommentDataService.js'
+import CartDataService from '@/services/CartDataService.js'
+import CartItemDataService from '@/services/CartItemDataService.js'
 
 import UserHeader from '@/components/UserHeader.vue'
 import ItemDetailsComment from '@/components/ItemDetailsComment.vue'
@@ -57,11 +59,14 @@ export default {
   },
   data() {
       return {
-          id: this.$route.params.itemId,
+          userId: '0afa8ff9-61b0-4792-9b75-1edb752875a4',
+          cartId: '',
+          itemId: this.$route.params.itemId,
           itemDetails: {
             id: null,
             name: null,
             description: null,
+            price: 0,
             images: []
           },
           comments: [],
@@ -69,21 +74,31 @@ export default {
       }
   },
   methods: {
-    getItem() {
-      ItemDataService.get(this.id)
-      .then(response => {
-        this.itemDetails = response.data;
-      }).catch(e => {
-        console.log(e)
-      })
+    async getItem() {
+      let response = await ItemDataService.get(this.itemId)
+      let itemDetails = response.data;
+      this.itemDetails = itemDetails;
     },
-    getComments() {
-      CommentDataService.getItemComments(this.id)
-      .then( response => {
-        this.comments = response.data
-      }).catch(e => {
-        console.log(e)
-      })
+    async getComments() {
+      let response = await CommentDataService.getItemComments(this.itemId)
+      let comments = response.data;
+      this.comments = comments;
+    },
+    async getCart() {
+      let response = await CartDataService.getUserCart(this.userId);
+      let cart = response.data[0];
+      this.cartId = cart.id;  
+    },
+    async addItemToCart() {
+      let response = await CartItemDataService.create(this.itemId, this.cartId, this.itemDetails.price);
+
+      if (response.status == 200) {
+        alert("added to cart")
+      } else if (response.status == 201) {
+        alert("item already exists in cart")
+      } else {
+        alert("error")
+      }
     },
     setImageIndex(index) {
       this.selectedIndex = index;
@@ -93,6 +108,7 @@ export default {
 
   },
   mounted() {
+    this.getCart();
     this.getItem();
     this.getComments();
   }

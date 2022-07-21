@@ -25,10 +25,12 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: 0.00
     },
     created_on: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      defaultValue: Sequelize.NOW
     },
     updated_on: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      defaultValue: Sequelize.NOW
     }
   }, {
     timestamps: false

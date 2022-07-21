@@ -6,8 +6,8 @@ class CartItemDataService {
   getCartItems(cartId) {
     return http.get(`/cartItem/find/cartId/${cartId}`);
   }
-  create(data) {
-    return http.post("/tutorials", data);
+  create(itemId, cartId, price) {
+    return http.post(`/cartItem/create/itemId/${itemId}/cartId/${cartId}/price/${price}`);
   }
   update(id, data) {
     return http.put(`/tutorials/${id}`, data);
