@@ -19,11 +19,6 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false,
       defaultValue: 0
     },
-    price: {
-      type: Sequelize.FLOAT,
-      allowNull: false,
-      defaultValue: 0.00
-    },
     created_on: {
       type: Sequelize.DATE,
       defaultValue: Sequelize.NOW

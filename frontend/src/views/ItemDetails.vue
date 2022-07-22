@@ -90,7 +90,7 @@ export default {
       this.cartId = cart.id;  
     },
     async addItemToCart() {
-      let response = await CartItemDataService.create(this.itemId, this.cartId, this.itemDetails.price);
+      let response = await CartItemDataService.create(this.itemId, this.cartId);
 
       if (response.status == 200) {
         alert("added to cart")

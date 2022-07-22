@@ -6,14 +6,14 @@ class CartItemDataService {
   getCartItems(cartId) {
     return http.get(`/cartItem/find/cartId/${cartId}`);
   }
-  create(itemId, cartId, price) {
-    return http.post(`/cartItem/create/itemId/${itemId}/cartId/${cartId}/price/${price}`);
+  create(itemId, cartId) {
+    return http.post(`/cartItem/create/itemId/${itemId}/cartId/${cartId}`);
   }
   update(id, data) {
     return http.put(`/tutorials/${id}`, data);
   }
   delete(id) {
-    return http.delete(`/tutorials/${id}`);
+    return http.delete(`/cartItem/delete/${id}`);
   }
   deleteAll() {
     return http.delete(`/tutorials`);

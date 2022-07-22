@@ -4,7 +4,7 @@
     <div class="grid grid-cols-12 grid-flow-col justify-between m-3">
       <div class="col-span-9 text-left">
         <h1 class="text-4xl font-bold text-slate-700 mb-6">Shopping Cart</h1>
-        <ShoppingCartItem />
+        <ShoppingCartItem v-for="(cartItem, index) in cartItems" :key="cartItem.id" :index="index" :cartId="cartItem.id" :name="cartItem.name" :thumbnail="cartItem.thumbnail" :quantityProp="cartItem.quantity" :price="cartItem.price" @delete="(index) => deleteCartItem(index)" />
       </div>
       <div class="col-span-3 text-right">
         <button class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold text-lg py-3 px-7 rounded">Checkout</button>
@@ -28,7 +28,7 @@
 <script>
 import CartDataService from '@/services/CartDataService.js'
 import CartItemDataService from '@/services/CartItemDataService.js'
-// import ItemDataService from '@/services/ItemDataService.js'
+import ItemDataService from '@/services/ItemDataService.js'
 
 import UserHeader from '@/components/UserHeader.vue'
 import ShoppingCartItem from '@/components/ShoppingCartItem.vue'
@@ -54,7 +54,25 @@ export default {
     },
     async getCartItems() {
       let response = await CartItemDataService.getCartItems(this.cartId);
-      this.cartItems = response.data;
+
+      response.data.forEach(async cartItem => {
+        let id = cartItem.id
+        let quantity = cartItem.quantity;
+        let itemResponse = await ItemDataService.get(cartItem.item_id);
+        let itemDetails = itemResponse.data;
+
+        this.cartItems.push({
+          id: id,
+          name: itemDetails.name,
+          thumbnail: itemDetails.images[0],
+          quantity: quantity,
+          price: itemDetails.price * quantity
+        })
+      })
+    },
+    deleteCartItem(index) {
+
+      this.cartItems.splice(index, 1);
     }
   },
   async mounted() {

@@ -1,13 +1,15 @@
 <template>
-  <div class="border rounded border-slate-400 p-3 m-3 flex">
-    <img src="https://i.etsystatic.com/10718640/r/il/a0741d/1894691385/il_570xN.1894691385_otg8.jpg" class="shopping-cart-item-image" />
-    <div class="w-full relative">
+  <div class="shopping-cart-item-container border rounded border-slate-400 p-3 m-3 flex">
+    <div class="flex items-center mr-3">
+      <img :src="thumbnail" class="shopping-cart-item-image border rounded m-auto" />
+    </div>
+    <div class="w-full truncate relative">
       <div class="shopping-cart-item-header flex justify-between items-center border-b border-slate-400 mb-3">
-        <h6 class="text-xl pb-2">Playing Cards</h6>
-        <button class="shopping-cart-item-remove-button bg-slate-500 hover:bg-slate-700 text-white px-3 rounded">Remove</button>
+        <h6 class="text-xl pb-2 truncate">{{ name }}</h6>
+        <button @click="removeItem" class="shopping-cart-item-remove-button bg-slate-500 hover:bg-slate-700 text-white px-3 rounded">Remove</button>
       </div>
-      <span class="text-xl mb-2">$35.00</span>
-      <div class="absolute bottom-0 mb-1">
+      <span class="inline-block mb-3 text-xl">${{ price }}</span>
+      <div class="bottom-0 mb-1 absolute">
         <div class="flex flex-row items-center">
           <span class="text-sm">Quantity:&nbsp;&nbsp;</span>
           <button @click="quantity--" data-action="decrement" class="shopping-cart-item-control-button bg-slate-300 text-slate-600 hover:text-slate-700 hover:bg-slate-400 rounded-l cursor-pointer outline-none">
@@ -24,10 +26,17 @@
 </template>
 
 <script>
+import CartItemDataService from '@/services/CartItemDataService.js'
+
 export default {
   name: 'ShoppingCartItem',
   props: {
-    
+    cartId: String,
+    name: String,
+    thumbnail: String,
+    quantityProp: Number,
+    price: Number,
+    index: Number
   },
   data() {
     return {
@@ -42,7 +51,14 @@ export default {
     }
   },  
   methods: {
-    
+    removeItem() {
+      CartItemDataService.delete(this.cartId);
+      this.$emit('delete', this.index)
+      alert("cart item deleted")
+    }
+  },
+  mounted() {
+    this.quantity = this.quantityProp;
   }
 }
 </script>
@@ -71,6 +87,11 @@ export default {
 
   .custom-number-input button:focus {
     outline: none !important;
+  }
+
+  .shopping-cart-item-container {
+    min-width: 500px;
+    min-height: 166px;
   }
 
   .shopping-cart-item-input-field {
