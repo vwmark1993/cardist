@@ -73,9 +73,34 @@ exports.findOne = (req, res) => {
       });
     });
 };
-// Update a Tutorial by the id in the request
+// Update a Carrt Item by the id in the request
 exports.update = (req, res) => {
-  
+  const id = req.params.id;
+  const quantity = req.params.quantity;
+
+  console.log("id: " + id)
+  console.log("quantity: " + quantity)
+  CartItem.update({
+    quantity: quantity
+  }, {
+    where: { id: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: "Cart Item was updated successfully."
+        });
+      } else {
+        res.send({
+          message: `Cannot update Cart Item with id=${id}. Maybe Cart Item was not found or req.body is empty!`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error updating Cart Item with id=" + id
+      });
+    });
 };
 // Delete a Cart Item with the specified id
 exports.delete = (req, res) => {

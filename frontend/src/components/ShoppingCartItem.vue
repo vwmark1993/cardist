@@ -8,15 +8,15 @@
         <h6 class="text-xl pb-2 truncate">{{ name }}</h6>
         <button @click="removeItem" class="shopping-cart-item-remove-button bg-slate-500 hover:bg-slate-700 text-white px-3 rounded">Remove</button>
       </div>
-      <span class="inline-block mb-3 text-xl">${{ price }}</span>
+      <span class="inline-block mb-3 text-xl">{{ price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</span>
       <div class="bottom-0 mb-1 absolute">
         <div class="flex flex-row items-center">
           <span class="text-sm">Quantity:&nbsp;&nbsp;</span>
-          <button @click="quantity--" data-action="decrement" class="shopping-cart-item-control-button bg-slate-300 text-slate-600 hover:text-slate-700 hover:bg-slate-400 rounded-l cursor-pointer outline-none">
+          <button @click="decrement" data-action="decrement" class="shopping-cart-item-control-button bg-slate-300 text-slate-600 hover:text-slate-700 hover:bg-slate-400 rounded-l cursor-pointer outline-none">
             <span class="m-auto text-xl font-thin">−</span>
           </button>
           <input type="number" class="shopping-cart-item-input-field outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none" name="custom-input-number" v-model="quantity" />
-          <button @click="quantity++"  data-action="increment" class="shopping-cart-item-control-button bg-slate-300 text-gray-600 hover:text-slate-700 hover:bg-slate-400 rounded-r cursor-pointer">
+          <button @click="increment"  data-action="increment" class="shopping-cart-item-control-button bg-slate-300 text-gray-600 hover:text-slate-700 hover:bg-slate-400 rounded-r cursor-pointer">
             <span class="m-auto text-xl font-thin">+</span>
           </button>
         </div>
@@ -31,7 +31,7 @@ import CartItemDataService from '@/services/CartItemDataService.js'
 export default {
   name: 'ShoppingCartItem',
   props: {
-    cartId: String,
+    id: String,
     name: String,
     thumbnail: String,
     quantityProp: Number,
@@ -52,9 +52,28 @@ export default {
   },  
   methods: {
     removeItem() {
-      CartItemDataService.delete(this.cartId);
+      CartItemDataService.delete(this.id);
       this.$emit('delete', this.index)
       alert("cart item deleted")
+    },
+    increment() {
+      this.quantity++
+
+      if (this.quantity >= 0) {
+        CartItemDataService.update(this.quantity, this.id);
+        this.$emit('update', this.index, this.quantity)
+        alert("quantity changed")
+      }
+    },
+    decrement() {
+      this.quantity--
+      CartItemDataService.update(this.quantity, this.id);
+
+      if (this.quantity >= 0) {
+        CartItemDataService.update(this.quantity, this.id);
+        this.$emit('update', this.index, this.quantity)
+        alert("quantity changed")
+      }
     }
   },
   mounted() {

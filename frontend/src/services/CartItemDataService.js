@@ -9,8 +9,8 @@ class CartItemDataService {
   create(itemId, cartId) {
     return http.post(`/cartItem/create/itemId/${itemId}/cartId/${cartId}`);
   }
-  update(id, data) {
-    return http.put(`/tutorials/${id}`, data);
+  update(quantity, id) {
+    return http.put(`/cartItem/update/${quantity}/${id}`);
   }
   delete(id) {
     return http.delete(`/cartItem/delete/${id}`);

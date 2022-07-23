@@ -6,7 +6,7 @@ module.exports = app => {
     // Retrieve Cart Items by Cart ID
     router.get("/find/cartId/:cartId", cartItems.findCartItems);
     // Retrieve all published Tutorials
-    router.get("/published", cartItems.findAllPublished);
+    router.put("/update/:quantity/:id", cartItems.update);
     // Retrieve a single Comment with id
     router.get("/:id", cartItems.findOne);
     // Update a Tutorial with id

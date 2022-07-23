@@ -6,8 +6,8 @@
     </div>
     <div>
       <h6 class="text-left my-3">General</h6>
-      <button class="block w-3/4 bg-primary hover:bg-secondary text-slate-800 font-bold py-2 px-4 my-2 mx-auto rounded truncate">New Items</button>
-      <button class="block w-3/4 bg-primary hover:bg-secondary text-slate-800 font-bold py-2 px-4 my-2 mx-auto rounded truncate">Popular</button>
+      <button class="block w-3/4 bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 my-2 mx-auto rounded truncate">New Items</button>
+      <button class="block w-3/4 bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 my-2 mx-auto rounded truncate">Popular</button>
     </div>
     <div>
       <h6 class="text-left my-3">Categories</h6>
