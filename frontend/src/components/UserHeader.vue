@@ -19,7 +19,7 @@
     </div>
     <div class="flex flex-row">
       <span class="material-symbols-outlined text-4xl my-auto mr-3">settings</span>
-      <span class="material-symbols-outlined text-4xl my-auto mr-6">account_circle</span>
+      <span @click="goToProfile" class="material-symbols-outlined text-4xl my-auto mr-6 cursor-pointer">account_circle</span>
       <button class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 mr-3 rounded inline-flex items-center">
         <span class="material-symbols-outlined text-3xl mr-1">paid</span>
         <span>SELL</span>
@@ -42,6 +42,9 @@ export default {
   methods: {
     homepage() {
       this.$router.push({ name: 'home' })
+    },
+    goToProfile() {
+      this.$router.push({ name: 'user-profile' })
     },
     goToCart() {
       this.$router.push({ name: 'shopping-cart' })
