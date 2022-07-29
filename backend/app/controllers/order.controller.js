@@ -8,8 +8,7 @@ exports.create = (req, res) => {
     buyer_id: req.params.buyerId,
     seller_id: req.params.sellerId,
     item_id: req.params.itemId,
-    quantity: req.params.itemId,
-    price: req.params.price
+    quantity: req.params.itemId
   };
   Order.create(order)
     .then(data => {

@@ -40,6 +40,23 @@ exports.findOne = (req, res) => {
       });
     });
 };
+
+// Find Items by Seller ID
+exports.findBySellerId = (req, res) => {
+  const sellerId = req.params.sellerId;
+  var condition = sellerId ? { seller_id: sellerId } : null;
+  Item.findAll({ where: condition })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving items."
+      });
+    });
+};
+
 // Update a Tutorial by the id in the request
 exports.update = (req, res) => {
   

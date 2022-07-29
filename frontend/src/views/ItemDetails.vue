@@ -80,7 +80,7 @@ export default {
       this.itemDetails = itemDetails;
     },
     async getComments() {
-      let response = await CommentDataService.getItemComments(this.itemId)
+      let response = await CommentDataService.getCommentsByItem(this.itemId)
       let comments = response.data;
       this.comments = comments;
     },

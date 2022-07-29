@@ -3,8 +3,10 @@ module.exports = app => {
     var router = require("express").Router();
     // Create a new Comment
     router.post("/", comments.create);
-    // Retrieve all Comments
-    router.get("/find/itemId/:itemId", comments.findAllItemComments);
+    // Retrieve Comments by item ID
+    router.get("/find/itemId/:itemId", comments.findByItemId);
+    // Retrieve Comments by user ID
+    router.get("/find/userId/:userId", comments.findByUserId);
     // Retrieve all published Tutorials
     router.get("/published", comments.findAllPublished);
     // Retrieve a single Comment with id

@@ -6,7 +6,9 @@ module.exports = app => {
     // Retrieve all Items
     router.get("/find", items.findAll);
     // Retrieve a single Item by Item ID
-    router.get("/find/:itemId", items.findOne);
+    router.get("/find/itemId/:itemId", items.findOne);
+    // Retrieve Items by Seller ID
+    router.get("/find/sellerId/:selleriD", items.findBySellerId);
     // Update a Tutorial with id
     router.put("/:id", items.update);
     // Delete a Tutorial with id

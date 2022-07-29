@@ -3,8 +3,11 @@ class CommentDataService {
   getAll() {
     return http.get("/comment/find");
   }
-  getItemComments(itemId) {
+  getCommentsByItem(itemId) {
     return http.get(`/comment/find/itemId/${itemId}`);
+  }
+  getCommentsByUser(userId) {
+    return http.get(`/comment/find/userId/${userId}`);
   }
   create(data) {
     return http.post("/tutorials", data);

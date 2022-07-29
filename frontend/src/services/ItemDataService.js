@@ -4,7 +4,10 @@ class ItemDataService {
     return http.get("/item/find");
   }
   get(id) {
-    return http.get(`/item/find/${id}`);
+    return http.get(`/item/find/itemId/${id}`);
+  }
+  getItemsBySeller(sellerId) {
+    return http.get(`/item/find/sellerId/${sellerId}`);
   }
   create(data) {
     return http.post("/tutorials", data);

@@ -32,28 +32,32 @@
           <div>
             <span class="block text-left text-xl font-bold ml-3">Current Item Listings</span>
           </div>
-          <div class="user-profile-scroll-container">
-            <div class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
+          <div v-if="itemListings.length > 0" class="user-profile-scroll-container">
+            <div v-for="item in itemListings" :key="item.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
               <div class="flex items-center mr-3">
-                <img src="https://cdn.britannica.com/95/124395-004-3B484C8B/hand-cards-trump-spades.jpg" class="user-profile-item-image border rounded m-auto" />
+                <img v-if="item.images.length > 0" :src="item.images[0]" class="user-profile-item-image border rounded m-auto" />
+                <span v-else class="material-symbols-outlined m-auto">image</span>
               </div>
               <div class="w-full relative">
                 <div class="user-profile-item-header flex justify-between items-center border-b border-slate-400 mb-1">
-                  <h6 class="text-lg truncate">Bicycle Playing Cards</h6>
+                  <h6 class="text-lg truncate">{{ item.name }}</h6>
                   <div>
                     <button class="user-profile-item-remove-button bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 mr-1 rounded">Details</button>
                     <button class="user-profile-item-remove-button bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 rounded">Remove</button>
                   </div>
                 </div>
-                <span class="block text-left text-xs mb-1">Posted on: 2022-07-24</span>
-                <span class="block text-left">Total Earnings: $100</span>
+                <span class="block text-left text-xs mb-1">Posted on: {{ item.created_on }}</span>
+                <span class="block text-left">Total Earnings: {{ (item.number_sold * item.price).toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</span>
                 <div class="bottom-0 mb-1 absolute">
                   <div class="flex flex-row items-center">
-                    <span class="text-sm">Unit Sales: 14</span>
+                    <span class="text-sm">Unit Sales: {{ item.number_sold }}</span>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div v-else>
+            <span class="text-left text-lg text-slate-700">No Item Listings</span>
           </div>
         </div>
 
@@ -62,49 +66,32 @@
           <div>
             <span class="block text-left text-xl font-bold ml-3">Order History</span>
           </div>
-          <div class="user-profile-scroll-container">
-            <div class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
+          <div v-if="orders.length > 0" class="user-profile-scroll-container">
+            <div v-for="order in orders" :key="order.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
               <div class="flex items-center mr-3">
-                <img src="https://cdn.britannica.com/95/124395-004-3B484C8B/hand-cards-trump-spades.jpg" class="user-profile-item-image border rounded m-auto" />
+                <img v-if="order.images.length > 0" :src="order.images[0]" class="user-profile-item-image border rounded m-auto" />
+                <span v-else class="material-symbols-outlined m-auto">image</span>
               </div>
               <div class="w-full relative">
                 <div class="user-profile-item-header flex justify-between items-center border-b border-slate-400 mb-1">
-                  <h6 class="text-lg truncate">Bicycle Playing Cards</h6>
+                  <h6 class="text-lg truncate">{{ order.item_name }}</h6>
                   <div>
                     <button class="user-profile-item-remove-button bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 mr-1 rounded">Details</button>
                     <button class="user-profile-item-remove-button bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 rounded">Remove</button>
                   </div>
                 </div>
-                <span class="block text-left text-xs mb-1">Ordered on: 2022-07-24</span>
-                <span class="block text-left">Total Price: $100</span>
+                <span class="block text-left text-xs mb-1">Ordered on: {{ order.created_on }}</span>
+                <span class="block text-left">Total Price: {{ order.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</span>
                 <div class="bottom-0 mb-1 absolute">
                   <div class="flex flex-row items-center">
-                    <span class="text-sm">Quantity: 2</span>
+                    <span class="text-sm">Quantity: {{ order.quantity }}</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
-              <div class="flex items-center mr-3">
-                <img src="https://cdn.britannica.com/95/124395-004-3B484C8B/hand-cards-trump-spades.jpg" class="user-profile-item-image border rounded m-auto" />
-              </div>
-              <div class="w-full relative">
-                <div class="user-profile-item-header flex justify-between items-center border-b border-slate-400 mb-1">
-                  <h6 class="text-lg truncate">Bicycle Playing Cards</h6>
-                  <div>
-                    <button class="user-profile-item-remove-button bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 mr-1 rounded">Details</button>
-                    <button class="user-profile-item-remove-button bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 rounded">Remove</button>
-                  </div>
-                </div>
-                <span class="block text-left text-xs mb-1">Ordered on: 2022-07-24</span>
-                <span class="block text-left">Total Price: $100</span>
-                <div class="bottom-0 mb-1 absolute">
-                  <div class="flex flex-row items-center">
-                    <span class="text-sm">Quantity: 2</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          </div>
+          <div v-else>
+            <span class="text-left text-lg text-slate-700">No Orders</span>
           </div>
         </div>
 
@@ -113,33 +100,23 @@
           <div>
             <span class="block text-left text-xl font-bold ml-3">Comments</span>
           </div>
-          <div class="user-profile-scroll-container">
-            <div class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
+          <div v-if="comments.length > 0" class="user-profile-scroll-container">
+            <div v-for="comment in comments" :key="comment.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
               <div class="w-full">
                 <div class="user-profile-item-header flex justify-between items-center border-b border-slate-400 mb-1">
-                  <h6 class="text-lg truncate">Bicycle Playing Cards</h6>
-                  <div>
-                    <button class="user-profile-item-remove-button bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 mr-1 rounded">Edit</button>
-                    <button class="user-profile-item-remove-button bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 rounded">Remove</button>
-                  </div>
-                </div>
-                <span class="block text-left text-xs mb-1">Posted on: 2022-07-24</span>
-                <span class="block text-left line-clamp-3">Cool I guess</span>
-              </div>
-            </div>
-            <div class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
-              <div class="w-full">
-                <div class="user-profile-item-header flex justify-between items-center border-b border-slate-400 mb-1">
-                  <h6 class="text-lg truncate">Bicycle Playing Cards</h6>
+                  <h6 class="text-lg truncate">{{ comment.item_name }}</h6>
                   <div>
                     <button class="user-profile-item-remove-button bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 mr-1 rounded">Edit</button>
                     <button class="user-profile-item-remove-button bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 rounded">Delete</button>
                   </div>
                 </div>
-                <span class="block text-left text-xs mb-1">Posted on: 2022-07-24</span>
-                <span class="block text-left line-clamp-3">Cool I guess</span>
+                <span class="block text-left text-xs mb-1">Posted on: {{ comment.created_on }}</span>
+                <span class="block text-left line-clamp-3">{{ comment.message }}</span>
               </div>
             </div>
+          </div>
+          <div v-else>
+            <span class="text-left text-lg text-slate-700">No Comments</span>
           </div>
         </div>
       </div>
@@ -149,7 +126,9 @@
 
 <script>
 import UserDataService from '@/services/UserDataService.js'
+import ItemDataService from '@/services/ItemDataService.js'
 import OrderDataService from '@/services/OrderDataService.js'
+import CommentDataService from '@/services/CommentDataService.js'
 
 import UserHeader from '@/components/UserHeader.vue'
 
@@ -170,7 +149,9 @@ export default {
             totalSpending: 0,
             admin: false
           },
-          orders: []
+          itemListings: [],
+          orders: [],
+          comments: []
       }
   },
   methods: {
@@ -181,17 +162,79 @@ export default {
       let response = await UserDataService.get(this.userId);
       this.user = response.data;
     },
+    async getItemListings() {
+      let response = await ItemDataService.getItemsBySeller(this.userId);
+      this.itemListings = response.data;
+    },
     async getOrders() {
       let response = await OrderDataService.getOrdersByBuyer(this.userId);
-      this.orders = response.data;
-    },
+
+      response.data.forEach(async order => {
+        let id = order.id
+        let buyer_id = order.buyer_id;
+        let seller_id = order.seller_id;
+        let item_id = order.item_id;
+        let quantity = order.quantity;
+        let created_on = order.created_on;
+        let updated_on = order.updated_on;
+
+        let itemResponse = await ItemDataService.get(order.item_id);
+        let item_name = itemResponse.data.name;
+        let images = itemResponse.data.images;
+        let item_price = itemResponse.data.price;
+
+        this.orders.push({
+          id: id,
+          buyer_id: buyer_id,
+          seller_id: seller_id,
+          item_id: item_id,
+          item_name: item_name,
+          images: images,
+          quantity: quantity,
+          price: item_price * quantity,
+          created_on: created_on,
+          updated_on: updated_on
+        })
+      })
+    }, 
+    async getComments() {
+      let response = await CommentDataService.getCommentsByUser(this.userId);
+
+      response.data.forEach(async comment => {
+        let id = comment.id
+        let user_id = comment.user_id;
+        let item_id = comment.item_id;
+        let message = comment.message;
+        let flagged_reason = comment.flagged_reason;
+        let flagged = comment.flagged;
+        let created_on = comment.created_on;
+        let updated_on = comment.updated_on;
+
+        let itemResponse = await ItemDataService.get(comment.item_id);
+        let item_name = itemResponse.data.name;
+
+        this.comments.push({
+          id: id,
+          user_id: user_id,
+          item_id: item_id,
+          item_name: item_name,
+          message: message,
+          flagged_reason: flagged_reason,
+          flagged: flagged,
+          created_on: created_on,
+          updated_on: updated_on
+        })
+      })
+    }
   },
   computed: {
 
   },
   async mounted() {
     await this.getUser();
+    await this.getItemListings();
     await this.getOrders();
+    await this.getComments();
   }
 }
 </script>
