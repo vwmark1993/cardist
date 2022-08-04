@@ -6,8 +6,8 @@ class UserDataService {
   get(id) {
     return http.get(`/user/find/${id}`);
   }
-  create(data) {
-    return http.post("/tutorials", data);
+  create(username, password, email, phone) {
+    return http.post(`/user/create/username/${username}/password/${password}/email/${email}/phone/${phone}`);
   }
   update(id, data) {
     return http.put(`/tutorials/${id}`, data);

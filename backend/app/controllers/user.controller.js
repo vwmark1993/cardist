@@ -3,7 +3,22 @@ const User = db.users;
 const Op = db.Sequelize.Op;
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
-  
+  const user = {
+    username: req.params.username,
+    password: req.params.password,
+    email: req.params.email,
+    phone: req.params.phone
+  };
+  User.create(user)
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while creating the User."
+      });
+    });
 };
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {

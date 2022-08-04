@@ -2,7 +2,7 @@ module.exports = app => {
     const carts = require("../controllers/cart.controller.js");
     var router = require("express").Router();
     // Create a new Cart Item with a User ID
-    router.post("/create/userId", carts.create);
+    router.post("/create/userId/:userId", carts.create);
     // Retrieve Cart by User ID
     router.get("/find/userId/:userId", carts.findUserCart);
     // Retrieve all published Tutorials
