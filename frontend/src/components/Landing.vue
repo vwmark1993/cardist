@@ -14,8 +14,13 @@
             <option value="priceAsc">Price: High to Low</option>
           </select>
         </div>
-        <div class="flex flex-wrap p-3">
-          <Thumbnail v-for="item in items" :key="item.id" :id="item.id" :name="item.name" :price="item.price" :image="item.images[0]" />
+        <div>
+          <div v-if="items.length > 0" class="flex flex-wrap p-3">
+            <Thumbnail v-for="item in items" :key="item.id" :id="item.id" :name="item.name" :price="item.price" :image="item.images[0]" />
+          </div>
+          <div v-else class="mt-4">
+            <span class="text-slate-600 text-xl">No Items Found</span>
+          </div>
         </div>
       </div>
     </div>
