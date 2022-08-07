@@ -16,16 +16,19 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false
     },
     email: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: null
     },
     phone: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: null
     },
     picture: {
       type: Sequelize.STRING
     },
     settings: {
-      type: Sequelize.JSON
+      type: Sequelize.JSON,
+      defaultValue: {}
     },
     total_earnings: {
       type: Sequelize.FLOAT,

@@ -30,7 +30,7 @@
       </button>
     </div>
     <div v-else class="flex flex-row">
-      <button @click="goToLogin" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold ml-20 py-2 px-4 rounded inline-flex items-center">
+      <button @click="goToLogin" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold ml-20 py-2 px-8 rounded inline-flex items-center">
         <span class="material-symbols-outlined text-3xl mr-1">login</span>
         <span class="whitespace-nowrap">SIGN IN</span>
       </button>

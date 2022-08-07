@@ -30,6 +30,11 @@ export default {
       password: ''
     }
   },
+  mounted() {
+    if (store.state.user.authenticated) {
+      this.$router.push({ name: 'home' });
+    }
+  },
   methods: {
     async login() {
       try {

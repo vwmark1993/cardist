@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const db = require("../models");
 const User = db.users;
 const Op = db.Sequelize.Op;
@@ -19,7 +20,7 @@ exports.authenticate = (req, res) => {
     return
   }
 
-  var condition = username ? { username: `${username}` } : null;
+  let condition = username ? { username: `${username}` } : null;
   User.findAll({ where: condition })
     .then(usernameCheckRes => {
       if (usernameCheckRes.length == 0) {
@@ -29,7 +30,8 @@ exports.authenticate = (req, res) => {
         return
       }
 
-      var condition = password ? { username: `${username}`, password: `${password}` } : null;
+      let hashedPassword = crypto.createHash('md5').update(password).digest('hex');
+      let condition = hashedPassword ? { username: `${username}`, password: `${hashedPassword}` } : null;
       User.findAll({ where: condition })
       .then(passwordCheckRes => {
         if (passwordCheckRes.length == 0) {
@@ -71,28 +73,46 @@ exports.authenticate = (req, res) => {
 
 // Create and save a new User.
 exports.create = (req, res) => {
-  const user = {
-    username: req.params.username,
-    password: req.params.password,
-    email: req.params.email,
-    phone: req.params.phone
-  };
-  User.create(user)
+
+  // Check if the username already exists.
+  User.findAll({ where: { username: `${req.params.username}` } })
     .then(data => {
-      res.send(data);
+      if (data.length > 0) {
+        // Username exists.
+        res.status(201).send({
+          message: "Username already exists."
+        });
+      } else {
+        // Username doesn't exist.
+        let password = req.params.password;
+        let hashedPassword = crypto.createHash('md5').update(password).digest('hex');
+
+        const user = {
+          username: req.params.username,
+          password: hashedPassword,
+          email: req.params.email,
+          phone: req.params.phone
+        };
+        User.create(user)
+          .then(data => {
+            res.send(data);
+          })
+          .catch(err => {
+            res.status(500).send({
+              message:
+                err.message || "Some error occurred while creating the User."
+            });
+          });
+      }
     })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the User."
-      });
-    });
+
+  
 };
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
     // need to replace this for search functionality
     const userId = req.params.id;
-    var condition = userId ? { id: `${userId}` } : null;
+    let condition = userId ? { id: `${userId}` } : null;
     User.findAll({ where: condition })
       .then(data => {
         res.send(data);

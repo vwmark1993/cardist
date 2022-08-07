@@ -6,17 +6,17 @@
       </div>
       <div class="px-14">
         <span class="block text-sm text-left font-semibold text-primary mb-1">New Username *</span>
-        <input type="text" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" name="username" />
+        <input v-model="username" type="text" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" name="username" />
         <span class="block text-sm text-left font-semibold text-primary mb-1">New Password *</span>
-        <input type="password" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" name="password" />
+        <input v-model="password" type="password" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" name="password" />
         <span class="block text-sm text-left font-semibold text-primary mb-1">Email Address</span>
-        <input type="text" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" name="email" />
+        <input v-model="email" type="email" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" name="email" />
         <span class="block text-sm text-left font-semibold text-primary mb-1">Phone Number</span>
-        <input type="text" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-1" name="phone" />
+        <input v-model="phone" type="phone" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-1" name="phone" />
         <span class="block text-xs text-left font-semibold text-primary mb-3">* Mandatory Fields</span>
       </div>
       <div class="flex justify-between mt-1 pb-10 px-14">
-        <button class="bg-tertiary text-primary hover:bg-secondary font-semibold py-1 px-3 rounded">Create</button>
+        <button @click="createNewUser" class="bg-tertiary text-primary hover:bg-secondary font-semibold py-1 px-3 rounded">Create</button>
         <button @click="goToLogin" class="bg-tertiary text-primary hover:bg-secondary font-semibold py-1 px-3 rounded">Cancel</button>
       </div>
     </div>
@@ -24,14 +24,54 @@
 </template>
 
 <script>
-// import UserDataService from '@/services/UserDataService.js'
+import store from '@/store'
+import UserDataService from '@/services/UserDataService.js'
 
 export default {
   name: 'Register',
   data() {
-
+    return {
+      username: '',
+      password: '',
+      email: '',
+      phone: ''
+    }
+  },
+  mounted() {
+    if (store.state.user.authenticated) {
+      this.$router.push({ name: 'home' });
+    }
   },
   methods: {
+    async createNewUser() {
+      try {
+        if (this.username.length > 0 && this.password.length > 0) {
+          if (this.email == '') {
+            this.email = null;
+          }
+
+          if (this.phone == '') {
+            this.phone = null;
+          }
+
+          let response = await UserDataService.create(this.username, this.password, this.email, this.phone);
+          let userResponse = response.data;
+          console.log(userResponse);
+
+          if (response.status == 200) {
+            console.log('User registered.');
+
+            this.$router.push({ name: 'login' })
+          } else if (response.status == 201) {
+            console.log(response.data.message)
+          }
+        } else {
+          console.log('Please enter valid user credentials.')
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
     goToHomepage() {
       this.$router.push({ name: 'home' })
     },
