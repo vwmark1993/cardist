@@ -50,14 +50,10 @@ export default {
     }
   },
   methods: {
-    searchItems() {
-      ItemDataService.getAll()
-      .then(response => {
-        this.items = response.data;
-        console.log(response.data)
-      }).catch(e => {
-        console.log(e)
-      })
+    async searchItems() {
+      let response = await ItemDataService.getAll()
+      let items = response.data;
+      this.items = items;
     }
   },
   mounted() {

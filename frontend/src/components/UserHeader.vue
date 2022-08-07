@@ -1,7 +1,7 @@
 <template>
   <div class="p-3 flex justify-between">
     <img
-      @click="homepage"
+      @click="goToHomepage"
       src="../assets/images/cardist-logo.png"
       width="50"
       height="50"
@@ -17,7 +17,7 @@
         </span>
       </div>
     </div>
-    <div class="flex flex-row">
+    <div v-if="$store.state.user.authenticated" class="flex flex-row">
       <span class="material-symbols-outlined text-4xl my-auto mr-3">settings</span>
       <span @click="goToProfile" class="material-symbols-outlined text-4xl my-auto mr-6 cursor-pointer">account_circle</span>
       <button class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 mr-3 rounded inline-flex items-center">
@@ -29,22 +29,34 @@
         <span>CART</span>
       </button>
     </div>
-    
+    <div v-else class="flex flex-row">
+      <button @click="goToLogin" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold ml-20 py-2 px-4 rounded inline-flex items-center">
+        <span class="material-symbols-outlined text-3xl mr-1">login</span>
+        <span class="whitespace-nowrap">SIGN IN</span>
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'UserHeader',
   props: {
     
   },
+  mounted() {
+    
+  },
   methods: {
-    homepage() {
+    goToHomepage() {
       this.$router.push({ name: 'home' })
     },
+    goToLogin() {
+      this.$router.push({ name: 'login' }) 
+    },
     goToProfile() {
-      this.$router.push({ name: 'user-profile' })
+      this.$router.push({ name: 'user-profile' }) 
     },
     goToCart() {
       this.$router.push({ name: 'shopping-cart' })

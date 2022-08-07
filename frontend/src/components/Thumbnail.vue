@@ -1,6 +1,6 @@
 <template>
     <div @click="getItem" class="thumbnail m-3 cursor-pointer">
-      <div class="flex flex-col border rounded hover:border-secondary">
+      <div class="flex flex-col border rounded hover:border-primary">
         <img :src="image" class="h-48 object-contain" />
         <div class="p-2">
           <span class="block h-13 line-clamp-2 text-left">{{ name }}</span>

@@ -18,8 +18,8 @@ class UserDataService {
   deleteAll() {
     return http.delete(`/tutorials`);
   }
-  findByTitle(title) {
-    return http.get(`/tutorials?title=${title}`);
+  authenticate(username, password) {
+    return http.post(`/user/authenticate/username/${username}/password/${password}`);
   }
 }
 export default new UserDataService();

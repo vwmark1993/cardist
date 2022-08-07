@@ -9,9 +9,9 @@ module.exports = app => {
     router.get("/find/:id", users.findOne);
     // Update a User with id
     router.put("/:id", users.update);
-    // Delete a Tutorial with id
+    // Delete a User with id
     router.delete("/:id", users.delete);
-    // Create a new Tutorial
-    router.delete("/", users.deleteAll);
+    // Authenticate user login
+    router.post("/authenticate/username/:username/password/:password", users.authenticate);
     app.use('/api/user', router);
   };
