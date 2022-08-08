@@ -3,7 +3,9 @@
 
 // initial state
 // shape: [{ id, quantity }]
-const state = () => ({
+const state = () => (
+  localStorage.getItem('vuex') ? JSON.parse(localStorage.getItem('vuex')).user
+  : {
   authenticated: false,
   user: {
     id: null,
