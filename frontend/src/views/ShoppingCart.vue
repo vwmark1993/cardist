@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import store from '@/store'
+
 import CartDataService from '@/services/CartDataService.js'
 import CartItemDataService from '@/services/CartItemDataService.js'
 import ItemDataService from '@/services/ItemDataService.js'
@@ -54,7 +56,7 @@ export default {
   },
   data() {
       return {
-          userId: '0afa8ff9-61b0-4792-9b75-1edb752875a4',
+          userId: store.state.user.user.id,
           cartId: null,
           cartItems: []
       }
@@ -114,6 +116,10 @@ export default {
     }
   },
   async mounted() {
+    if (!store.state.user.authenticated) {
+      this.$router.push({ name: 'login' });
+    }
+
     await this.getCart();
     await this.getCartItems();
   }

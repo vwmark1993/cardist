@@ -5,10 +5,10 @@
       <div class="col-span-3 m-3 p-3 border border-slate-400 rounded">
         <div class="mb-2">
           <img v-if="user.picture != null" :src="user.picture" class="rounded m-auto" />
-          <span v-else class="material-symbols-outlined m-auto">image</span>
+          <img v-else src="../assets/images/profile-picture-placeholder.png" class="rounded m-auto" />
         </div>
         <div class="flex justify-between items-center">
-          <span class="text-sm">Items Sold: 85</span>
+          <span class="text-sm">Items Sold: {{ itemsSold }}</span>
           <button @click="editProfile" class="bg-slate-500 hover:bg-slate-700 text-white text-sm font-semibold py-1 px-2 rounded">Edit Profile</button>
         </div>
         <div class="rounded bg-slate-100 text-left mt-3 p-2">
@@ -66,8 +66,8 @@
           <div>
             <span class="block text-left text-xl font-bold ml-3">Order History</span>
           </div>
-          <div v-if="orders.length > 0" class="user-profile-scroll-container">
-            <div v-for="order in orders" :key="order.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
+          <div v-if="ordersAsBuyer.length > 0" class="user-profile-scroll-container">
+            <div v-for="order in ordersAsBuyer" :key="order.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
               <div class="flex items-center mr-3">
                 <img v-if="order.images.length > 0" :src="order.images[0]" class="user-profile-item-image border rounded m-auto" />
                 <span v-else class="material-symbols-outlined m-auto">image</span>
@@ -125,6 +125,8 @@
 </template>
 
 <script>
+import store from '@/store'
+
 import UserDataService from '@/services/UserDataService.js'
 import ItemDataService from '@/services/ItemDataService.js'
 import OrderDataService from '@/services/OrderDataService.js'
@@ -139,7 +141,7 @@ export default {
   },
   data() {
       return {
-          userId: '0afa8ff9-61b0-4792-9b75-1edb752875a4',
+          userId: store.state.user.user.id,
           user: {
             username: null,
             email: null,
@@ -150,7 +152,8 @@ export default {
             admin: false
           },
           itemListings: [],
-          orders: [],
+          ordersAsBuyer: [],
+          ordersAsSeller: [],
           comments: []
       }
   },
@@ -161,6 +164,10 @@ export default {
     async getUser() {
       let response = await UserDataService.get(this.userId);
       this.user = response.data;
+    },
+    async getItemsSold() {
+      let response = await OrderDataService.getOrdersBySeller(this.userId);
+      this.ordersAsSeller = response.data;
     },
     async getItemListings() {
       let response = await ItemDataService.getItemsBySeller(this.userId);
@@ -183,7 +190,7 @@ export default {
         let images = itemResponse.data.images;
         let item_price = itemResponse.data.price;
 
-        this.orders.push({
+        this.ordersAsBuyer.push({
           id: id,
           buyer_id: buyer_id,
           seller_id: seller_id,
@@ -231,7 +238,12 @@ export default {
 
   },
   async mounted() {
+    if (!store.state.user.authenticated) {
+      this.$router.push({ name: 'login' });
+    }
+
     await this.getUser();
+    await this.getItemsSold();
     await this.getItemListings();
     await this.getOrders();
     await this.getComments();

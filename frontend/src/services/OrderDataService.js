@@ -3,6 +3,9 @@ class OrderDataService {
   getAll() {
     return http.get("/order/find");
   }
+  getOrdersBySeller(sellerId) {
+    return http.get(`/order/find/sellerId/${sellerId}`);
+  }
   getOrdersByBuyer(buyerId) {
     return http.get(`/order/find/buyerId/${buyerId}`);
   }

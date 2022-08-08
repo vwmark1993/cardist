@@ -2,7 +2,7 @@ const db = require("../models");
 const Order = db.orders;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Cart Item
+// Create and Save a new Order
 exports.create = (req, res) => {
   const order = {
     buyer_id: req.params.buyerId,
@@ -39,7 +39,23 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Retrieve Cart Items tied to a User from the database.
+// Retrieve Orders tied to a Buyer from the database.
+exports.findOrdersBySeller = (req, res) => {
+  const sellerId = req.params.sellerId;
+  var condition = sellerId ? { seller_id: `${sellerId}` } : null;
+  Order.findAll({ where: condition })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving orders."
+      });
+    });
+};
+
+// Retrieve Orders tied to a Buyer from the database.
 exports.findOrdersByBuyer = (req, res) => {
     const buyerId = req.params.buyerId;
     var condition = buyerId ? { buyer_id: `${buyerId}` } : null;
@@ -54,7 +70,7 @@ exports.findOrdersByBuyer = (req, res) => {
         });
       });
   };
-// Find a single Cart Item with an id
+// Find a single Order with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
   Order.findByPk(id)
@@ -73,33 +89,7 @@ exports.findOne = (req, res) => {
       });
     });
 };
-// Update a Carrt Item by the id in the request
-exports.update = (req, res) => {
-  const id = req.params.id;
-  const quantity = req.params.quantity;
 
-  CartItem.update({
-    quantity: quantity
-  }, {
-    where: { id: id }
-  })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "Cart Item was updated successfully."
-        });
-      } else {
-        res.send({
-          message: `Cannot update Cart Item with id=${id}. Maybe Cart Item was not found or req.body is empty!`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error updating Cart Item with id=" + id
-      });
-    });
-};
 // Delete a Cart Item with the specified id
 exports.delete = (req, res) => {
   const id = req.params.id;
@@ -122,12 +112,4 @@ exports.delete = (req, res) => {
         message: "Could not delete Cart Item with id=" + id
       });
     });
-};
-// Delete all Tutorials from the database.
-exports.deleteAll = (req, res) => {
-  
-};
-// Find all published Tutorials
-exports.findAllPublished = (req, res) => {
-  
 };
