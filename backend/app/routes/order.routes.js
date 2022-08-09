@@ -13,4 +13,5 @@ module.exports = app => {
     router.get("/find/:id", orders.findOne);
     // Delete an Order with id
     router.delete("/:id", orders.delete);
+    app.use('/api/order', router);
   };

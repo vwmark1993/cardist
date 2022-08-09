@@ -141,7 +141,7 @@ export default {
   },
   data() {
       return {
-          userId: store.state.user.user.id,
+          userId: store.state.user.currentUser.id,
           user: {
             username: null,
             email: null,
@@ -235,18 +235,30 @@ export default {
     }
   },
   computed: {
+    itemsSold() {
+      if (this.ordersAsSeller.length == 0) {
+        return 0
+      } else {
+        let itemCount = 0;
 
+        this.ordersAsSeller.forEach(order => {
+          itemCount += order.quantity;
+        })
+
+        return itemCount;
+      }
+    }
   },
   async mounted() {
     if (!store.state.user.authenticated) {
       this.$router.push({ name: 'login' });
+    } else {
+      await this.getUser();
+      await this.getItemListings();
+      await this.getOrders();
+      await this.getItemsSold();
+      await this.getComments();
     }
-
-    await this.getUser();
-    await this.getItemsSold();
-    await this.getItemListings();
-    await this.getOrders();
-    await this.getComments();
   }
 }
 </script>

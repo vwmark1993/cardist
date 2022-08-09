@@ -56,7 +56,7 @@ export default {
   },
   data() {
       return {
-          userId: store.state.user.user.id,
+          userId: store.state.user.currentUser.id,
           cartId: null,
           cartItems: []
       }
@@ -118,10 +118,10 @@ export default {
   async mounted() {
     if (!store.state.user.authenticated) {
       this.$router.push({ name: 'login' });
+    } else {
+      await this.getCart();
+      await this.getCartItems();
     }
-
-    await this.getCart();
-    await this.getCartItems();
   }
 }
 </script>

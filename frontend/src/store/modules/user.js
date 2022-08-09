@@ -7,7 +7,7 @@ const state = () => (
   localStorage.getItem('vuex') ? JSON.parse(localStorage.getItem('vuex')).user
   : {
   authenticated: false,
-  user: {
+  currentUser: {
     id: null,
     username: null,
     email: null,
@@ -84,7 +84,7 @@ const mutations = {
     state.authenticated = authenticated
   },
   setUser(state, user) {
-    state.user = user
+    state.currentUser = user
   }
   // pushProductToCart (state, { id }) {
   //   state.items.push({

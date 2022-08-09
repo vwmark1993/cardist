@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import store from '@/store'
+
 import ItemDataService from '@/services/ItemDataService.js'
 import CommentDataService from '@/services/CommentDataService.js'
 import CartDataService from '@/services/CartDataService.js'
@@ -59,7 +61,7 @@ export default {
   },
   data() {
       return {
-          userId: '0afa8ff9-61b0-4792-9b75-1edb752875a4',
+          userId: store.state.user.currentUser.id,
           cartId: '',
           itemId: this.$route.params.itemId,
           itemDetails: {
