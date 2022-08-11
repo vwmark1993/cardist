@@ -112,8 +112,5 @@ export default {
   state,
   getters,
   actions,
-  mutations,
-  modules: {
-    // nested
-  }
+  mutations
 }

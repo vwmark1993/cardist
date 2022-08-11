@@ -37,6 +37,12 @@ export default {
       phone: ''
     }
   },
+  created() {
+    document.addEventListener('keydown', this.registerByPressingEnter);
+  },
+  beforeUnmount() {
+    document.removeEventListener('keydown', this.registerByPressingEnter);
+  },
   mounted() {
     if (store.state.user.authenticated) {
       this.$router.push({ name: 'home' });
@@ -70,6 +76,11 @@ export default {
         }
       } catch (e) {
         console.log(e)
+      }
+    },
+    registerByPressingEnter(e) {
+      if (e.key === 'Enter') {
+        this.createNewUser();
       }
     },
     goToHomepage() {

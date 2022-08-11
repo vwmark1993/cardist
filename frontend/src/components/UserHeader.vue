@@ -34,7 +34,7 @@
         <div v-if="isOpen" @click="isOpen = false" class="fixed z-40 inset-0 h-full w-full bg-black opacity-50"></div>
         <div v-if="isOpen" class="absolute z-50 left-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl">
           <a @click="goToProfile" class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer">Go to Profile</a>
-          <a class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer">Sign Out</a>
+          <a @click="logout" class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer">Sign Out</a>
         </div>
       </div>
       <button class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 mr-3 rounded inline-flex items-center">
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import store from '@/store'
 
 export default {
   name: 'UserHeader',
@@ -78,6 +79,24 @@ export default {
     
   },
   methods: {
+    logout() {
+      store.dispatch('user/authentication', {
+        authenticated: false,
+        user: {
+          id: null,
+          username: null,
+          email: null,
+          phone: null,
+          picture: null,
+          settings: null,
+          totalEarnings: null,
+          totalSpending: null,
+          admin: null
+        }
+      })
+
+      this.$router.push({ name: 'home' })
+    },
     handleEscape(e) {
       if (e.key === 'Esc' || e.key === 'Escape') {
         this.isOpen = false;

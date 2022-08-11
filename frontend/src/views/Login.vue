@@ -30,6 +30,12 @@ export default {
       password: ''
     }
   },
+  created() {
+    document.addEventListener('keydown', this.loginByPressingEnter);
+  },
+  beforeUnmount() {
+    document.removeEventListener('keydown', this.loginByPressingEnter);
+  },
   mounted() {
     if (store.state.user.authenticated) {
       this.$router.push({ name: 'home' });
@@ -55,6 +61,11 @@ export default {
         }
       } catch (e) {
         console.log(e)
+      }
+    },
+    loginByPressingEnter(e) {
+      if (e.key === 'Enter') {
+        this.login();
       }
     },
     goToHomepage() {
