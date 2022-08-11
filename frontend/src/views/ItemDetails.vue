@@ -19,7 +19,7 @@
             <p class="text-2xl text-slate-800 mb-6">${{itemDetails.price}}</p>
           </div>
           <div>
-            <button @click="addItemToCart" class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded">Add to Cart</button>
+            <button @click="addItemToCart" class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded select-none">Add to Cart</button>
             <!-- <div class="text-center text-sm flex items-center">
               Quantity: {{ 10 }} 
               <span class="material-symbols-outlined">add</span>
@@ -35,6 +35,14 @@
         <div v-else>
           <h6 class="text-sm font-medium text-slate-500">Comments</h6>
           <ItemDetailsComment v-for="comment in comments" :key="comment.id" :user_id="comment.user_id" :message="comment.message" :date="comment.updated_on" />
+        </div>
+        <hr class="border-t border-slate-300 mx-6 mt-5" />
+        <div class="bg-slate-300 rounded p-3 mx-3 mb-3 mt-4">
+          <h6 class="font-semibold text-lg mb-1">Add a comment</h6>
+          <textarea v-model="newCommentMessage" placeholder="What do you think about this product?" class="resize-none rounded-md focus:outline-none p-2 w-full"></textarea>
+          <div class="text-right">
+            <button @click="createNewComment" class="text-white bg-slate-500 hover:bg-slate-700 font-semibold mt-1 py-1 px-3 rounded select-none">Add Comment</button>
+          </div>
         </div>
       </div>
     </div>
@@ -72,10 +80,16 @@ export default {
             images: []
           },
           comments: [],
-          selectedIndex: 0
+          selectedIndex: 0,
+          newCommentMessage: ''
       }
   },
   methods: {
+    async createNewComment() {
+      let response = await CommentDataService.create(this.userId, this.itemId, this.newCommentMessage)
+      let newComment = response.data;
+      this.comments.push(newComment);
+    },
     async getItem() {
       let response = await ItemDataService.get(this.itemId)
       let itemDetails = response.data;

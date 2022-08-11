@@ -18,18 +18,15 @@
       </div>
     </div>
     <div v-if="$store.state.user.authenticated" class="flex flex-row">
-      <!-- <span class="material-symbols-outlined text-4xl my-auto mr-3">settings</span>
-      <span @click="goToProfile" class="material-symbols-outlined text-4xl my-auto mr-6 cursor-pointer">account_circle</span> -->
-      <!-- <div @click="goToProfile" class="relative w-12 h-12">
-        <img class="rounded-full border border-gray-100 shadow-sm" src="https://randomuser.me/api/portraits/women/81.jpg" alt="user image" />
-        <div class="absolute top-0 right-0 h-3 w-3 my-1 border-2 border-white rounded-full bg-green-400 z-2"></div>
-      </div> -->
       <div class="relative my-auto mx-3">
         <div @click="isOpen = !isOpen" class="relative z-50 p-2 rounded flex bg-white items-center cursor-pointer">
-          <button class="block h-8 w-8 rounded-full overflow-hidden border-2 border-slate-600">
+          <button v-if="isOpen" class="block h-8 w-8 rounded-full overflow-hidden border-2 border-primary">
             <img class="h-full w-full object-cover" :src="$store.state.user.currentUser.picture" alt="user profile image" />
           </button>
-          <span class="ml-1 text-lg font-semibold text-truncate">{{ $store.state.user.currentUser.username }}</span>
+          <button v-else class="block h-8 w-8 rounded-full overflow-hidden border-2 border-slate-600">
+            <img class="h-full w-full object-cover" :src="$store.state.user.currentUser.picture" alt="user profile image" />
+          </button>
+          <span class="ml-1 text-lg font-semibold select-none text-truncate">{{ $store.state.user.currentUser.username }}</span>
         </div>
         <div v-if="isOpen" @click="isOpen = false" class="fixed z-40 inset-0 h-full w-full bg-black opacity-50"></div>
         <div v-if="isOpen" class="absolute z-50 left-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl">
@@ -37,11 +34,11 @@
           <a @click="logout" class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer">Sign Out</a>
         </div>
       </div>
-      <button class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 mr-3 rounded inline-flex items-center">
+      <button class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 mr-3 rounded inline-flex items-center select-none">
         <span class="material-symbols-outlined text-3xl mr-1">paid</span>
         <span>SELL</span>
       </button>
-      <button @click="goToCart" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 rounded inline-flex items-center">
+      <button @click="goToCart" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 rounded inline-flex items-center select-none">
         <span class="material-symbols-outlined text-3xl mr-1">shopping_cart</span>
         <span>CART</span>
       </button>

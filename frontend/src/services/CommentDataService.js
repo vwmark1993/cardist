@@ -9,8 +9,8 @@ class CommentDataService {
   getCommentsByUser(userId) {
     return http.get(`/comment/find/userId/${userId}`);
   }
-  create(data) {
-    return http.post("/tutorials", data);
+  create(userId, itemId, message) {
+    return http.post(`/comment/create/userId/${userId}/itemId/${itemId}/message/${message}`);
   }
   update(id, data) {
     return http.put(`/tutorials/${id}`, data);

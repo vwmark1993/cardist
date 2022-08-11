@@ -52,5 +52,6 @@ export default {
   .flag-icon:hover {
     font-variation-settings:
     'FILL' 1;
+    color: #FF947C;
   }
 </style>

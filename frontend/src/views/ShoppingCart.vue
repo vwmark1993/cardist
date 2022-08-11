@@ -18,7 +18,7 @@
           />
       </div>
       <div class="col-span-3 text-right">
-        <button class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold text-lg py-3 px-7 rounded">Checkout</button>
+        <button class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold text-lg py-3 px-7 rounded select-none">Checkout</button>
         <div class="border rounded bg-slate-100 border-slate-500 p-3 mt-3 ml-6 flex">
           <div class="w-full px-4">
             <div v-for="cartItem in cartItems" :key="cartItem.id">

@@ -18,7 +18,8 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
     flagged_reason: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: null
     },
     flagged: {
       type: Sequelize.BOOLEAN,

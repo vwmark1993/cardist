@@ -3,7 +3,21 @@ const Comment = db.comments;
 const Op = db.Sequelize.Op;
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
-  
+  const comment = {
+    user_id: req.params.userId,
+    item_id: req.params.itemId,
+    message: req.params.message
+  };
+  Comment.create(comment)
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while creating the Comment."
+      });
+    });
 };
 // Retrieve all Comments tied to an Item from the database.
 exports.findByItemId = (req, res) => {
