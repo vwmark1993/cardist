@@ -28,7 +28,7 @@
           </button>
           <span class="ml-1 text-lg font-semibold select-none text-truncate">{{ $store.state.user.currentUser.username }}</span>
         </div>
-        <div v-if="isOpen" @click="isOpen = false" class="fixed z-40 inset-0 h-full w-full bg-black opacity-50"></div>
+        <div v-if="isOpen" @click="isOpen = false" class="fixed z-40 inset-0 h-full w-full bg-black opacity-30"></div>
         <div v-if="isOpen" class="absolute z-50 left-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl">
           <a @click="goToProfile" class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer">Go to Profile</a>
           <a @click="logout" class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer">Sign Out</a>

@@ -20,28 +20,27 @@
           </div>
           <div>
             <button @click="addItemToCart" class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded select-none">Add to Cart</button>
-            <!-- <div class="text-center text-sm flex items-center">
-              Quantity: {{ 10 }} 
-              <span class="material-symbols-outlined">add</span>
-              <span class="material-symbols-outlined">remove</span>
-            </div> -->
           </div>
         </div>
         <h6 class="text-sm font-medium text-slate-500">Description</h6>
         <p class="text-xl text-slate-800 mb-10">{{itemDetails.description}}</p>
-        <div v-if="comments.length == 0">
-          <h6 class="text-sm font-medium text-slate-500">This item has no comments written about it.</h6>
+        <div class="mb-5">
+          <div v-if="comments.length == 0">
+            <h6 class="text-sm font-medium text-slate-500">This item has no comments written about it.</h6>
+          </div>
+          <div v-else>
+            <h6 class="text-sm font-medium text-slate-500">Comments</h6>
+            <ItemDetailsComment v-for="comment in comments" :key="comment.id" :user_id="comment.user_id" :message="comment.message" :date="comment.updated_on" />
+          </div>
         </div>
-        <div v-else>
-          <h6 class="text-sm font-medium text-slate-500">Comments</h6>
-          <ItemDetailsComment v-for="comment in comments" :key="comment.id" :user_id="comment.user_id" :message="comment.message" :date="comment.updated_on" />
-        </div>
-        <hr class="border-t border-slate-300 mx-6 mt-5" />
-        <div class="bg-slate-300 rounded p-3 mx-3 mb-3 mt-4">
-          <h6 class="font-semibold text-lg mb-1">Add a comment</h6>
-          <textarea v-model="newCommentMessage" placeholder="What do you think about this product?" class="resize-none rounded-md focus:outline-none p-2 w-full"></textarea>
-          <div class="text-right">
-            <button @click="createNewComment" class="text-white bg-slate-500 hover:bg-slate-700 font-semibold mt-1 py-1 px-3 rounded select-none">Add Comment</button>
+        <div v-if="$store.state.user.authenticated">
+          <hr class="border-t border-slate-300 mx-6 mt-5" />
+          <div class="bg-slate-300 rounded p-3 mx-3 mb-3 mt-5">
+            <h6 class="font-semibold text-lg mb-1">Add a comment</h6>
+            <textarea v-model="newCommentMessage" placeholder="What do you think about this product?" class="resize-none rounded-md focus:outline-none p-2 w-full"></textarea>
+            <div class="text-right">
+              <button @click="createNewComment" class="text-white bg-slate-500 hover:bg-slate-700 font-semibold mt-1 py-1 px-3 rounded select-none">Add Comment</button>
+            </div>
           </div>
         </div>
       </div>

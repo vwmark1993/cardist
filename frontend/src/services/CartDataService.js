@@ -18,8 +18,8 @@ class CartDataService {
   deleteAll() {
     return http.delete(`/tutorials`);
   }
-  findByTitle(title) {
-    return http.get(`/tutorials?title=${title}`);
+  checkout(data) {
+    return http.post("/cart/create-checkout-session", data);
   }
 }
 export default new CartDataService();

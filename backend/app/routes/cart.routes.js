@@ -5,15 +5,13 @@ module.exports = app => {
     router.post("/create/userId/:userId", carts.create);
     // Retrieve Cart by User ID
     router.get("/find/userId/:userId", carts.findUserCart);
-    // Retrieve all published Tutorials
-    router.get("/published", carts.findAllPublished);
     // Retrieve a single Comment with id
     router.get("/:id", carts.findOne);
-    // Update a Tutorial with id
+    // Update a Cart with id
     router.put("/:id", carts.update);
-    // Delete a Tutorial with id
+    // Delete a Cart with id
     router.delete("/:id", carts.delete);
-    // Create a new Tutorial
-    router.delete("/", carts.deleteAll);
+    // Stripe routing
+    router.post("/create-checkout-session", carts.createCheckoutSession);
     app.use('/api/cart', router);
   };

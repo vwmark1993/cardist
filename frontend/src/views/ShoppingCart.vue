@@ -18,7 +18,7 @@
           />
       </div>
       <div class="col-span-3 text-right">
-        <button class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold text-lg py-3 px-7 rounded select-none">Checkout</button>
+        <button @click="checkout" class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold text-lg py-3 px-7 rounded select-none">Checkout</button>
         <div class="border rounded bg-slate-100 border-slate-500 p-3 mt-3 ml-6 flex">
           <div class="w-full px-4">
             <div v-for="cartItem in cartItems" :key="cartItem.id">
@@ -113,6 +113,44 @@ export default {
       }
 
       this.cartItems[index] = newCartItem;
+    },
+    checkout() {
+      let data = {
+        items: [
+          { id: 1, quantity: 3 },
+          { id: 2, quantity: 1 },
+        ]
+      }
+
+      CartDataService.checkout(data)
+      .then (res => {
+        if (res.status == 200) {
+          let url = res.data.url
+          // window.location = url
+          window.location.replace(url)
+        }
+
+        // return res.json().then(json => Promise.reject(json))
+      })
+      // .then(({ url }) => {
+      //   console.log("success")
+      //   console.log(url)
+      //   // window.location = url
+      // })
+      .catch(e => {
+        console.log("error")
+        console.error(e.error)
+      })
+
+      // TutorialDataService.create(data)
+      //   .then(response => {
+      //     this.tutorial.id = response.data.id;
+      //     console.log(response.data);
+      //     this.submitted = true;
+      //   })
+      //   .catch(e => {
+      //     console.log(e);
+      //   });
     }
   },
   async mounted() {
