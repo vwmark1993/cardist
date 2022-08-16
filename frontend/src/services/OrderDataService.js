@@ -18,5 +18,8 @@ class OrderDataService {
   delete(id) {
     return http.delete(`/order/delete/${id}`);
   }
+  successfulOrder(sessionId) {
+    return http.get(`/order/success/sessionId/${sessionId}`);
+  }
 }
 export default new OrderDataService();

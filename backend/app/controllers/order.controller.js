@@ -1,6 +1,7 @@
 const db = require("../models");
 const Order = db.orders;
 const Op = db.Sequelize.Op;
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 // Create and Save a new Order
 exports.create = (req, res) => {
@@ -112,4 +113,17 @@ exports.delete = (req, res) => {
         message: "Could not delete Cart Item with id=" + id
       });
     });
+};
+
+exports.successfulOrder = async (req, res) => {
+  const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
+  // const customer = await stripe.customers.retrieve(session.customer);
+
+  let orderDetails = {
+    customerName: session.customer_details.name,
+    currency: session.currency,
+    total: session.amount_total
+  }
+
+  res.send(orderDetails);
 };

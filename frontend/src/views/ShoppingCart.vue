@@ -83,12 +83,14 @@ export default {
 
       response.data.forEach(async cartItem => {
         let id = cartItem.id
+        let itemId = cartItem.item_id
         let quantity = cartItem.quantity;
         let itemResponse = await ItemDataService.get(cartItem.item_id);
         let itemDetails = itemResponse.data;
 
         this.cartItems.push({
           id: id,
+          itemId: itemId,
           name: itemDetails.name,
           thumbnail: itemDetails.images[0],
           quantity: quantity,
@@ -105,6 +107,7 @@ export default {
       
       let newCartItem = {
         id: cartItem.id,
+        itemId: cartItem.itemId,
         name: cartItem.name,
         thumbnail: cartItem.thumbnail,
         quantity: quantity,
@@ -116,41 +119,31 @@ export default {
     },
     checkout() {
       let data = {
-        items: [
-          { id: 1, quantity: 3 },
-          { id: 2, quantity: 1 },
-        ]
+        // items: [
+        //   { id: 1, quantity: 3 },
+        //   { id: 2, quantity: 1 },
+        // ]
+        items: this.cartItems.map(item => {
+          return {
+            id: item.itemId,
+            quantity: item.quantity
+          }
+        })
       }
 
       CartDataService.checkout(data)
       .then (res => {
         if (res.status == 200) {
           let url = res.data.url
-          // window.location = url
-          window.location.replace(url)
+          window.location = url
+          // window.location.replace(url)
         }
 
         // return res.json().then(json => Promise.reject(json))
       })
-      // .then(({ url }) => {
-      //   console.log("success")
-      //   console.log(url)
-      //   // window.location = url
-      // })
       .catch(e => {
-        console.log("error")
         console.error(e.error)
       })
-
-      // TutorialDataService.create(data)
-      //   .then(response => {
-      //     this.tutorial.id = response.data.id;
-      //     console.log(response.data);
-      //     this.submitted = true;
-      //   })
-      //   .catch(e => {
-      //     console.log(e);
-      //   });
     }
   },
   async mounted() {

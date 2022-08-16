@@ -31,6 +31,11 @@ const routes = [
     path: '/profile',
     name: 'user-profile',
     component: () => import('../views/UserProfile.vue')
+  },
+  {
+    path: '/order/success',
+    name: 'order-success',
+    component: () => import('../views/SuccessfulOrder.vue')
   }
 ]
 

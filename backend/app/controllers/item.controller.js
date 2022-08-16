@@ -7,10 +7,7 @@ exports.create = (req, res) => {
 };
 // Retrieve all Items from the database.
 exports.findAll = (req, res) => {
-    // need to replace this for search functionality
-    const name = req.query.name;
-    var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
-    Item.findAll({ where: condition })
+    Item.findAll()
       .then(data => {
         res.send(data);
       })

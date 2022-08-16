@@ -1,7 +1,9 @@
 const db = require("../models");
 const Cart = db.carts;
+const Item = db.items;
 const Op = db.Sequelize.Op;
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
+
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
   
@@ -53,35 +55,40 @@ exports.createCheckoutSession = async (req, res) => {
   // console.log(req.body.items)
 
   try {
-    // res.send({ url: "url goes here" })
-    const storeItems = new Map([
-      [ 1, { priceInCents: 10000, name: "Item 1" } ],
-      [ 2, { priceInCents: 20000, name: "Item 2" } ]
-    ])
+    const items = await Item.findAll();
+    
+    let storeItems = []
+
+    items.forEach(item => {
+      storeItems.push({
+        id: item.id,
+        name: item.name,
+        priceInCents: item.price * 100
+      });
+    })
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
-      line_items: req.body.items.map(item => {
-        const storeItem = storeItems.get(item.id)
+      line_items: req.body.items.map(orderItem => {
+        const storeItem = storeItems.find(storeItem => storeItem.id === orderItem.id)
         return {
           price_data: {
-            currency: 'usd',
+            currency: 'cad',
             product_data: {
               name: storeItem.name
             },
             unit_amount: storeItem.priceInCents
           },
-          quantity: item.quantity
+          quantity: orderItem.quantity
         }
       }),
-      success_url: `${process.env.CLIENT_URL}`,
+      success_url: `${process.env.CLIENT_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url:  `${process.env.CLIENT_URL}/cart`
     })
     
     res.send({ url: session.url })
   } catch (e) {
-    console.log("error")
     console.log(e)
     res.status(500).send({ error: e.message })
   }

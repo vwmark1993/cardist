@@ -14,5 +14,6 @@ module.exports = app => {
     // Delete an Order with id
     router.delete("/:id", orders.delete);
     // Stripe routing
+    router.get("/success/sessionId/:sessionId", orders.successfulOrder);
     app.use('/api/order', router);
   };
