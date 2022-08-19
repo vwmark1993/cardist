@@ -52,6 +52,36 @@ const actions = {
         console.log(e)
       }
     }
+  },
+  async addCartItem({ commit }, itemId) {
+    let cartItemResponse = await CartItemDataService.create(itemId, store.state.cart.cartId);
+    let cartItem = cartItemResponse.data;
+
+    let itemResponse = await ItemDataService.get(itemId)
+    let itemDetails = itemResponse.data;
+    this.itemDetails = itemDetails;
+
+    let newCartItem = {
+      id: cartItem.id,
+      itemId: cartItem.item_id,
+      name: itemDetails.name,
+      thumbnail: itemDetails.images.length > 0 ? itemDetails.images[0] : null,
+      quantity: 1,
+      price: itemDetails.price,
+      basePrice: itemDetails.basePrice
+    }
+
+    if (cartItemResponse.status == 200) {
+      commit('insertCartItem', newCartItem)
+      alert("added to cart")
+    } else if (cartItemResponse.status == 201) {
+      alert("item already exists in cart")
+    } else {
+      alert("error")
+    }
+  },
+  deleteCartItem({ commit }, index) {
+    commit('removeCartItemByIndex', index)
   }
 }
 
@@ -66,7 +96,10 @@ const mutations = {
   emptyCart(state) {
     state.cartItems = []
   },
-  deleteCartItem(state, index) {
+  insertCartItem(state, cartItem) {
+    state.cartItems.push(cartItem);
+  },
+  removeCartItemByIndex(state, index) {
     state.cartItems.splice(index, 1);
   },
   updateCartItem(state, id, quantity) {

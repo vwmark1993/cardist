@@ -42,8 +42,6 @@
 import store from '@/store';
 
 import CartDataService from '@/services/CartDataService.js'
-// import CartItemDataService from '@/services/CartItemDataService.js'
-// import ItemDataService from '@/services/ItemDataService.js'
 
 import UserHeader from '@/components/UserHeader.vue'
 import ShoppingCartItem from '@/components/ShoppingCartItem.vue'
@@ -73,34 +71,8 @@ export default {
     }
   },
   methods: {
-    // async getCart() {
-    //   let response = await CartDataService.getUserCart(this.userId);
-    //   this.cart = response.data[0];
-    //   this.cartId = this.cart.id;  
-    // },
-    // async getCartItems() {
-    //   let response = await CartItemDataService.getCartItems(this.cartId);
-
-    //   response.data.forEach(async cartItem => {
-    //     let id = cartItem.id
-    //     let itemId = cartItem.item_id
-    //     let quantity = cartItem.quantity;
-    //     let itemResponse = await ItemDataService.get(cartItem.item_id);
-    //     let itemDetails = itemResponse.data;
-
-    //     this.cartItems.push({
-    //       id: id,
-    //       itemId: itemId,
-    //       name: itemDetails.name,
-    //       thumbnail: itemDetails.images[0],
-    //       quantity: quantity,
-    //       price: itemDetails.price * quantity,
-    //       basePrice: itemDetails.price
-    //     })
-    //   })
-    // },
     deleteCartItem(index) {
-      this.cartItems.splice(index, 1);
+      store.dispatch('cart/deleteCartItem', index)
     },
     updateCartItem(index, quantity) {
       let cartItem = this.cartItems[index]
@@ -135,7 +107,6 @@ export default {
           // window.location.replace(url)
         }
 
-        // return res.json().then(json => Promise.reject(json))
       })
       .catch(e => {
         console.error(e.error)
@@ -145,9 +116,6 @@ export default {
   async mounted() {
     if (!store.state.user.authenticated) {
       this.$router.push({ name: 'login' });
-    } else {
-      // await this.getCart();
-      // await this.getCartItems();
     }
   }
 }
