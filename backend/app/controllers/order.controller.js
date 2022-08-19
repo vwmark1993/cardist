@@ -116,14 +116,23 @@ exports.delete = (req, res) => {
 };
 
 exports.successfulOrder = async (req, res) => {
-  const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
-  // const customer = await stripe.customers.retrieve(session.customer);
+  try {
+    if (req.params.sessionId === 'undefined' || !req.params.sessionId) {
+      return
+    }
+    const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
+    // const customer = await stripe.customers.retrieve(session.customer);
 
-  let orderDetails = {
-    customerName: session.customer_details.name,
-    currency: session.currency,
-    total: session.amount_total
+    let orderDetails = {
+      customerName: session.customer_details.name,
+      currency: session.currency,
+      total: session.amount_total
+    }
+
+    res.send(orderDetails);
+
+  } catch (e) {
+    console.log(e)
+    res.status(500).send({ error: e.message })
   }
-
-  res.send(orderDetails);
 };

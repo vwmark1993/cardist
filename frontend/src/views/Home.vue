@@ -14,6 +14,9 @@ export default {
   components: {
     UserHeader,
     Landing
+  },
+  mounted() {
+    
   }
 }
 </script>

@@ -11,7 +11,8 @@ const app = express();
 
 var corsOptions = {
   origin: ["http://localhost:8000", "http://localhost:8081", "https://checkout.stripe.com"],
-  preflightContinue: true
+  //preflightContinue: true,
+  //allowedHeaders: ['Content-Type, Authorization']
 };
 app.use(cors(corsOptions));
 

@@ -40,7 +40,8 @@
       </button>
       <button @click="goToCart" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 rounded inline-flex items-center select-none">
         <span class="material-symbols-outlined text-3xl mr-1">shopping_cart</span>
-        <span>CART</span>
+        <span v-if="$store.state.cart.cartItems.length > 0" class="whitespace-nowrap">CART ({{ $store.state.cart.cartItems.length }})</span>
+        <span v-else class="whitespace-nowrap">CART</span>
       </button>
     </div>
     <div v-else class="flex flex-row">
@@ -73,7 +74,7 @@ export default {
     document.removeEventListener('keydown', this.handleEscape);
   },
   mounted() {
-    
+    store.dispatch('cart/getCart');
   },
   methods: {
     logout() {

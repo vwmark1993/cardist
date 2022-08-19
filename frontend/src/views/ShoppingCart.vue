@@ -39,11 +39,11 @@
 </template>
 
 <script>
-import store from '@/store'
+import store from '@/store';
 
 import CartDataService from '@/services/CartDataService.js'
-import CartItemDataService from '@/services/CartItemDataService.js'
-import ItemDataService from '@/services/ItemDataService.js'
+// import CartItemDataService from '@/services/CartItemDataService.js'
+// import ItemDataService from '@/services/ItemDataService.js'
 
 import UserHeader from '@/components/UserHeader.vue'
 import ShoppingCartItem from '@/components/ShoppingCartItem.vue'
@@ -57,8 +57,8 @@ export default {
   data() {
       return {
           userId: store.state.user.currentUser.id,
-          cartId: null,
-          cartItems: []
+          cartId: store.state.cart.cartId,
+          cartItems: store.state.cart.cartItems
       }
   },
   computed: {
@@ -73,32 +73,32 @@ export default {
     }
   },
   methods: {
-    async getCart() {
-      let response = await CartDataService.getUserCart(this.userId);
-      this.cart = response.data[0];
-      this.cartId = this.cart.id;  
-    },
-    async getCartItems() {
-      let response = await CartItemDataService.getCartItems(this.cartId);
+    // async getCart() {
+    //   let response = await CartDataService.getUserCart(this.userId);
+    //   this.cart = response.data[0];
+    //   this.cartId = this.cart.id;  
+    // },
+    // async getCartItems() {
+    //   let response = await CartItemDataService.getCartItems(this.cartId);
 
-      response.data.forEach(async cartItem => {
-        let id = cartItem.id
-        let itemId = cartItem.item_id
-        let quantity = cartItem.quantity;
-        let itemResponse = await ItemDataService.get(cartItem.item_id);
-        let itemDetails = itemResponse.data;
+    //   response.data.forEach(async cartItem => {
+    //     let id = cartItem.id
+    //     let itemId = cartItem.item_id
+    //     let quantity = cartItem.quantity;
+    //     let itemResponse = await ItemDataService.get(cartItem.item_id);
+    //     let itemDetails = itemResponse.data;
 
-        this.cartItems.push({
-          id: id,
-          itemId: itemId,
-          name: itemDetails.name,
-          thumbnail: itemDetails.images[0],
-          quantity: quantity,
-          price: itemDetails.price * quantity,
-          basePrice: itemDetails.price
-        })
-      })
-    },
+    //     this.cartItems.push({
+    //       id: id,
+    //       itemId: itemId,
+    //       name: itemDetails.name,
+    //       thumbnail: itemDetails.images[0],
+    //       quantity: quantity,
+    //       price: itemDetails.price * quantity,
+    //       basePrice: itemDetails.price
+    //     })
+    //   })
+    // },
     deleteCartItem(index) {
       this.cartItems.splice(index, 1);
     },
@@ -119,10 +119,6 @@ export default {
     },
     checkout() {
       let data = {
-        // items: [
-        //   { id: 1, quantity: 3 },
-        //   { id: 2, quantity: 1 },
-        // ]
         items: this.cartItems.map(item => {
           return {
             id: item.itemId,
@@ -150,8 +146,8 @@ export default {
     if (!store.state.user.authenticated) {
       this.$router.push({ name: 'login' });
     } else {
-      await this.getCart();
-      await this.getCartItems();
+      // await this.getCart();
+      // await this.getCartItems();
     }
   }
 }
