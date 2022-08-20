@@ -98,22 +98,8 @@ export default {
       let comments = response.data;
       this.comments = comments;
     },
-    // async getCart() {
-    //   let response = await CartDataService.getUserCart(this.userId);
-    //   let cart = response.data[0];
-    //   this.cartId = cart.id;  
-    // },
     async addItemToCart() {
       store.dispatch('cart/addCartItem', this.itemId)
-      // let response = await CartItemDataService.create(this.itemId, this.cartId);
-
-      // if (response.status == 200) {
-      //   alert("added to cart")
-      // } else if (response.status == 201) {
-      //   alert("item already exists in cart")
-      // } else {
-      //   alert("error")
-      // }
     },
     setImageIndex(index) {
       this.selectedIndex = index;

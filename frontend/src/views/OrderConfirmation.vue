@@ -6,7 +6,8 @@
       <span class="block">Name: <span class="font-bold">{{ customerName }}</span></span>
       <span class="block">Total: <span class="font-bold">$ {{ orderTotal }} {{ currency.toUpperCase() }}</span></span>
       <div>
-        
+        <span class="block font-bold">Items Ordered:</span>
+        <span v-for="item in orderItems" :key="item.id" class="block">{{ item.name }} x {{ item.quantity }}</span>
       </div>
       <div class="flex justify-center mt-5">
         <button @click="goToHomepage" class="bg-slate-500 hover:bg-slate-700 text-white text-lg font-semibold py-1 px-3 rounded">Return to Website</button>
@@ -25,7 +26,8 @@ export default {
     return {
       customerName: '',
       currency: '',
-      orderTotal: ''
+      orderTotal: '',
+      orderItems: store.state.cart.cartItems
     }
   },
   methods: {
@@ -34,31 +36,34 @@ export default {
     }
   },
   async mounted() {
-  try {
-    if (!store.state.user.authenticated) {
-      this.$router.push({ name: 'login' });
-    } else {
-      if (!this.$route.query.session_id || this.$route.query.session_id === undefined) {
-        this.$router.push({ name: 'home' });
+    try {
+      if (!store.state.user.authenticated) {
+        this.$router.push({ name: 'login' });
+      } else {
+        if (!this.$route.query.session_id || this.$route.query.session_id === undefined) {
+          this.$router.push({ name: 'home' });
+        }
+
+        let sessionId = this.$route.query.session_id
+        let response = await OrderDataService.successfulOrder(sessionId);
+
+        if (response.status !== 200) {
+          this.$router.push({ name: 'home' });
+        }
+
+        let successfulOrder = response.data;
+        
+        this.customerName = successfulOrder.customerName;
+        this.currency = successfulOrder.currency;
+        this.orderTotal = successfulOrder.total / 100;
       }
 
-      let sessionId = this.$route.query.session_id
-      let response = await OrderDataService.successfulOrder(sessionId);
-
-      if (response.status !== 200) {
-        this.$router.push({ name: 'home' });
-      }
-
-      let successfulOrder = response.data;
-      
-      this.customerName = successfulOrder.customerName;
-      this.currency = successfulOrder.currency;
-      this.orderTotal = successfulOrder.total / 100;
-    }
-
-  } catch (e) {
+    } catch (e) {
       this.$router.push({ name: 'home' });
     }
+  },
+  beforeRouteLeave () {
+    store.dispatch('cart/emptyCart');
   }
 }
 </script>

@@ -26,7 +26,9 @@
 </template>
 
 <script>
-import CartItemDataService from '@/services/CartItemDataService.js'
+import store from '@/store';
+
+// import CartItemDataService from '@/services/CartItemDataService.js'
 
 export default {
   name: 'ShoppingCartItem',
@@ -52,27 +54,36 @@ export default {
   },  
   methods: {
     removeItem() {
-      CartItemDataService.delete(this.id);
-      this.$emit('delete', this.index)
+      store.dispatch('cart/deleteCartItem', {
+        index: this.index,
+        id: this.id
+      })
       alert("cart item deleted")
     },
     increment() {
       this.quantity++
 
       if (this.quantity >= 0) {
-        CartItemDataService.update(this.quantity, this.id);
-        this.$emit('update', this.index, this.quantity)
-        alert("quantity changed")
+        // CartItemDataService.update(this.quantity, this.id);
+        // this.$emit('update', this.index, this.quantity)
+        store.dispatch('cart/updateCartItem', {
+          index: this.index, 
+          quantity: this.quantity
+        })
+        alert('quantity changed')
       }
     },
     decrement() {
       this.quantity--
-      CartItemDataService.update(this.quantity, this.id);
 
       if (this.quantity >= 0) {
-        CartItemDataService.update(this.quantity, this.id);
-        this.$emit('update', this.index, this.quantity)
-        alert("quantity changed")
+        // CartItemDataService.update(this.quantity, this.id);
+        // this.$emit('update', this.index, this.quantity)
+        store.dispatch('cart/updateCartItem', {
+          index: this.index, 
+          quantity: this.quantity
+        })
+        alert('quantity changed')
       }
     }
   },

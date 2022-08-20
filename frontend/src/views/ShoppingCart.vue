@@ -4,22 +4,25 @@
     <div class="grid grid-cols-12 grid-flow-col justify-between m-3">
       <div class="col-span-9 text-left">
         <h1 class="text-4xl font-bold text-slate-700 mb-6">Shopping Cart</h1>
-        <ShoppingCartItem 
-          v-for="(cartItem, index) in cartItems" 
-          :key="cartItem.id" 
-          :index="index" 
-          :id="cartItem.id" 
-          :name="cartItem.name" 
-          :thumbnail="cartItem.thumbnail" 
-          :quantityProp="cartItem.quantity" 
-          :price="cartItem.price"
-          @delete="(index) => deleteCartItem(index)"
-          @update="(index, quantity) => updateCartItem(index, quantity)"
-          />
+        <div v-if="cartItems.length > 0">
+          <ShoppingCartItem 
+            v-for="(cartItem, index) in cartItems" 
+            :key="cartItem.id" 
+            :index="index" 
+            :id="cartItem.id" 
+            :name="cartItem.name" 
+            :thumbnail="cartItem.thumbnail" 
+            :quantityProp="cartItem.quantity" 
+            :price="cartItem.price"
+            />
+        </div>
+        <div v-else>
+          <span class="font-semi-bold text-lg text-slate-400 italic">Empty Cart</span>
+        </div>
       </div>
       <div class="col-span-3 text-right">
-        <button @click="checkout" class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold text-lg py-3 px-7 rounded select-none">Checkout</button>
-        <div class="border rounded bg-slate-100 border-slate-500 p-3 mt-3 ml-6 flex">
+        <button v-if="cartItems.length > 0" @click="checkout" class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold text-lg py-3 px-7 rounded select-none">Checkout</button>
+        <div v-if="cartItems.length > 0" class="border rounded bg-slate-100 border-slate-500 p-3 mt-3 ml-6 flex">
           <div class="w-full px-4">
             <div v-for="cartItem in cartItems" :key="cartItem.id">
               <div v-if="cartItem.quantity > 0" class="flex justify-between text-sm mb-1">
@@ -71,24 +74,6 @@ export default {
     }
   },
   methods: {
-    deleteCartItem(index) {
-      store.dispatch('cart/deleteCartItem', index)
-    },
-    updateCartItem(index, quantity) {
-      let cartItem = this.cartItems[index]
-      
-      let newCartItem = {
-        id: cartItem.id,
-        itemId: cartItem.itemId,
-        name: cartItem.name,
-        thumbnail: cartItem.thumbnail,
-        quantity: quantity,
-        price: cartItem.quantity != 0 ? cartItem.price / cartItem.quantity * quantity : cartItem.basePrice,
-        basePrice: cartItem.basePrice
-      }
-
-      this.cartItems[index] = newCartItem;
-    },
     checkout() {
       let data = {
         items: this.cartItems.map(item => {

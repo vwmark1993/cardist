@@ -38,7 +38,7 @@ const actions = {
           let itemResponse = await ItemDataService.get(cartItem.item_id);
           let itemDetails = itemResponse.data;
 
-          commit('setCartItem', {
+          commit('insertCartItem', {
             id: id,
             itemId: itemId,
             name: itemDetails.name,
@@ -80,8 +80,37 @@ const actions = {
       alert("error")
     }
   },
-  deleteCartItem({ commit }, index) {
+  async deleteCartItem({ commit }, { index, id }) {
+    await CartItemDataService.delete(id);
+
     commit('removeCartItemByIndex', index)
+  },
+  async updateCartItem({ commit }, { index, quantity }) {
+    let cartItem = store.state.cart.cartItems[index];
+
+    await CartItemDataService.update(quantity, cartItem.id);
+
+    let updatedCartItem = {
+      id: cartItem.id,
+      itemId: cartItem.itemId,
+      name: cartItem.name,
+      thumbnail: cartItem.thumbnail,
+      quantity: quantity,
+      price: cartItem.quantity != 0 ? cartItem.price / cartItem.quantity * quantity : cartItem.basePrice,
+      basePrice: cartItem.basePrice
+    }
+
+    commit('updateCartItemByIndex', {
+      index: index, 
+      cartItem: updatedCartItem
+    })
+  },
+  emptyCart({ commit }) {
+    store.state.cart.cartItems.forEach(async cartItem => {
+      await CartItemDataService.delete(cartItem.id);
+    })
+
+    commit('emptyCart');
   }
 }
 
@@ -89,9 +118,6 @@ const actions = {
 const mutations = {
   setCart(state, cartId) {
     state.cartId = cartId
-  },
-  setCartItem(state, cartItem) {
-    state.cartItems.push(cartItem)
   },
   emptyCart(state) {
     state.cartItems = []
@@ -102,21 +128,8 @@ const mutations = {
   removeCartItemByIndex(state, index) {
     state.cartItems.splice(index, 1);
   },
-  updateCartItem(state, id, quantity) {
-    let index = state.cartItems.findIndex(item => item.id === id);
-    let cartItem = state.cartItems[index];
-      
-    let newCartItem = {
-      id: cartItem.id,
-      itemId: cartItem.itemId,
-      name: cartItem.name,
-      thumbnail: cartItem.thumbnail,
-      quantity: quantity,
-      price: cartItem.quantity != 0 ? cartItem.price / cartItem.quantity * quantity : cartItem.basePrice,
-      basePrice: cartItem.basePrice
-    }
-
-    state.cartItems[index] = newCartItem;
+  updateCartItemByIndex(state, { index, cartItem }) {
+    state.cartItems[index] = cartItem;
   }
 }
 
