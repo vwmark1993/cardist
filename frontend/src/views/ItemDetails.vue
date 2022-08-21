@@ -30,7 +30,75 @@
           </div>
           <div v-else>
             <h6 class="text-sm font-medium text-slate-500">Comments</h6>
-            <ItemDetailsComment v-for="comment in comments" :key="comment.id" :user_id="comment.user_id" :message="comment.message" :date="comment.updated_on" />
+            <ItemDetailsComment v-for="comment in paginatedComments" :key="comment.id" :user_id="comment.user_id" :message="comment.message" :date="comment.updated_on" />
+            <div class="pagination-container">
+              <ul class="pagination">
+                <li 
+                  class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white"
+                >
+                  <button 
+                    type="button" 
+                    @click="onClickFirstPage"
+                    :disabled="isInFirstPage"
+                    :class="{ disabled: isInFirstPage }"
+                    aria-label="Go to first page"
+                  >
+                    First
+                  </button>
+                </li>
+
+                <li
+                  class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white"
+                >
+                  <button 
+                    type="button" 
+                    @click="onClickPreviousPage"
+                    :disabled="isInFirstPage"
+                    :class="{ disabled: isInFirstPage }"
+                    aria-label="Go to previous page"
+                  >
+                    Previous
+                  </button>
+                </li>
+
+                <li v-for="page in pages" :key="page.name" class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white">
+                  <button 
+                    type="button" 
+                    @click="onClickPage(page.name)"
+                    :disabled="page.isDisabled"
+                    :class="{ active: isPageActive(page.name) }"
+                    :aria-label="`Go to page number ${page.name}`"
+                    
+                  >
+                    {{ page.name }}
+                  </button>
+                </li>
+
+                <li class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white">
+                  <button 
+                    type="button" 
+                    @click="onClickNextPage"
+                    :disabled="isInLastPage"
+                    :class="{ disabled: isInLastPage }"
+                    aria-label="Go to next page"
+                  >
+                    Next
+                  </button>
+                </li>
+
+                <li class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white">
+                  <button 
+                    type="button" 
+                    @click="onClickLastPage"
+                    :disabled="isInLastPage"
+                    :class="{ disabled: isInLastPage }"
+                    aria-label="Go to last page"
+                  >
+                    Last
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
         <div v-if="$store.state.user.authenticated">
@@ -53,8 +121,6 @@ import store from '@/store'
 
 import ItemDataService from '@/services/ItemDataService.js'
 import CommentDataService from '@/services/CommentDataService.js'
-// import CartDataService from '@/services/CartDataService.js'
-// import CartItemDataService from '@/services/CartItemDataService.js'
 
 import UserHeader from '@/components/UserHeader.vue'
 import ItemDetailsComment from '@/components/ItemDetailsComment.vue'
@@ -79,14 +145,23 @@ export default {
           },
           comments: [],
           selectedIndex: 0,
-          newCommentMessage: ''
+          newCommentMessage: '',
+          currentPage: 1,
+          perPage: 3,
+          maxVisibleButtons: 3
       }
   },
   methods: {
     async createNewComment() {
-      let response = await CommentDataService.create(this.userId, this.itemId, this.newCommentMessage)
-      let newComment = response.data;
-      this.comments.push(newComment);
+      try {
+        let response = await CommentDataService.create(this.userId, this.itemId, this.newCommentMessage)
+        let newComment = response.data;
+        this.comments.push(newComment);
+        this.newCommentMessage = '';
+      } catch (e) {
+        console.log(e)
+      }
+      
     },
     async getItem() {
       let response = await ItemDataService.get(this.itemId)
@@ -103,13 +178,81 @@ export default {
     },
     setImageIndex(index) {
       this.selectedIndex = index;
+    },
+    onPageChange(page) {
+      this.currentPage = page;
+    },
+    onClickFirstPage() {
+      this.onPageChange(1);
+    },
+    onClickPreviousPage() {
+      this.onPageChange(this.currentPage - 1);
+    },
+    onClickPage(page) {
+      this.onPageChange(page);
+    },
+    onClickNextPage() {
+      this.onPageChange(this.currentPage + 1);
+    },
+    onClickLastPage() {
+      this.onPageChange(this.totalPages);
+    },
+    isPageActive(page) {
+      return this.currentPage === page;
     }
   },
   computed: {
+    startPage() {
+      if (this.currentPage === 1) {
+        return 1;
+      }
 
+      if (this.currentPage === this.totalPages) { 
+        return this.totalPages - this.maxVisibleButtons + 1 > 0 ? this.totalPages - this.maxVisibleButtons + 1 : 1;
+      }
+
+      return this.currentPage - 1;
+
+    },
+    endPage() {
+      
+      return Math.min(this.startPage + this.maxVisibleButtons - 1, this.totalPages);
+      
+    },
+    pages() {
+      const range = [];
+
+      for (let i = this.startPage; i <= this.endPage; i += 1 ) {
+        range.push({
+          name: i,
+          isDisabled: i === this.currentPage 
+        });
+      }
+
+      return range;
+    },
+    totalPages() {
+      return this.comments.length > 0 ? Math.ceil(this.comments.length / this.perPage) : 1
+    },
+    isInFirstPage() {
+      return this.currentPage === 1;
+    },
+    isInLastPage() {
+      return this.currentPage === this.totalPages;
+    },
+    paginatedComments() {
+      let startIndex = 1;
+
+      if (this.currentPage == 1) {
+        startIndex = 0;
+      } else {
+        startIndex = this.currentPage * this.perPage - this.perPage;
+      }
+
+      return this.comments.slice(startIndex, startIndex + this.perPage);
+    }
   },
   mounted() {
-    // this.getCart();
     this.getItem();
     this.getComments();
   }
@@ -119,4 +262,39 @@ export default {
   .cart-button {
     height: 46px;
   }
+
+  .pagination-container {
+  font-family: Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 10px;
+}
+
+.pagination {
+  list-style-type: none;
+}
+
+.pagination-item {
+  display: inline-block;
+  margin: 5px;
+  border-radius: 5px;
+}
+
+.pagination-item button {
+  padding: 2px 10px;
+}
+
+.active {
+  background-color: #FF947C;
+  color: #ffffff;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.disabled {
+  background-color: #ffffff;
+  color: #94a3b8;
+}
 </style>
