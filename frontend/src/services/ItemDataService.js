@@ -1,10 +1,13 @@
 import http from "../http-common";
 class ItemDataService {
-  getAll() {
-    return http.get("/item/find");
-  }
   get(id) {
     return http.get(`/item/find/itemId/${id}`);
+  }
+  searchAll() {
+    return http.get("/item/find");
+  }
+  searchByName(searchString) {
+    return http.get(`/item/find/searchString/${searchString}`);
   }
   getItemsBySeller(sellerId) {
     return http.get(`/item/find/sellerId/${sellerId}`);

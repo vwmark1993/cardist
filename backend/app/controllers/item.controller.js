@@ -7,19 +7,37 @@ exports.create = (req, res) => {
 };
 // Retrieve all Items from the database.
 exports.findAll = (req, res) => {
-    Item.findAll()
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving items."
-        });
+  Item.findAll()
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while searching items."
       });
+    });
+  };
+
+// Retrieve Items by search string. 
+exports.findBySearch = (req, res) => {
+  const searchString = req.params.searchString;
+  console.log('searchString:' + searchString)
+  var condition = searchString ? { name: { [Op.iLike]: `%${searchString}%` } } : null;
+  Item.findAll({ where: condition })
+    .then(data => {
+      console.log(data)
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while searching items."
+      });
+    });
   };
 // Find a single Item with an id
-exports.findOne = (req, res) => {
+exports.findByItemId = (req, res) => {
   const id = req.params.itemId;
   Item.findByPk(id)
     .then(data => {

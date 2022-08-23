@@ -5,8 +5,10 @@ module.exports = app => {
     router.post("/", items.create);
     // Retrieve all Items
     router.get("/find", items.findAll);
+    // Retrieve items by search string
+    router.get("/find/searchString/:searchString", items.findBySearch);
     // Retrieve a single Item by Item ID
-    router.get("/find/itemId/:itemId", items.findOne);
+    router.get("/find/itemId/:itemId", items.findByItemId);
     // Retrieve Items by Seller ID
     router.get("/find/sellerId/:selleriD", items.findBySellerId);
     // Update a Tutorial with id

@@ -28,8 +28,6 @@
 <script>
 import store from '@/store';
 
-// import CartItemDataService from '@/services/CartItemDataService.js'
-
 export default {
   name: 'ShoppingCartItem',
   props: {
@@ -64,8 +62,6 @@ export default {
       this.quantity++
 
       if (this.quantity >= 0) {
-        // CartItemDataService.update(this.quantity, this.id);
-        // this.$emit('update', this.index, this.quantity)
         store.dispatch('cart/updateCartItem', {
           index: this.index, 
           quantity: this.quantity
@@ -77,8 +73,6 @@ export default {
       this.quantity--
 
       if (this.quantity >= 0) {
-        // CartItemDataService.update(this.quantity, this.id);
-        // this.$emit('update', this.index, this.quantity)
         store.dispatch('cart/updateCartItem', {
           index: this.index, 
           quantity: this.quantity

@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const Category = sequelize.define("category", {
+  const Tag = sequelize.define("tag", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
@@ -21,5 +21,5 @@ module.exports = (sequelize, Sequelize) => {
   }, {
     timestamps: false
   });
-  return Category;
+  return Tag;
 };

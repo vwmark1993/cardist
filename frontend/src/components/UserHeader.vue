@@ -9,9 +9,9 @@
     />
     <div class="w-full mx-8 my-auto">
       <div class="relative">
-        <input type="search" name="search" class="w-full min-w-300px py-3 text-sm text-white bg-slate-300 rounded-md pl-3 focus:outline-none focus:bg-slate-200 focus:text-slate-900" placeholder="Search..." maxlength=50  autocomplete="off">
+        <input v-on:keyup.enter="searchItemsByName" v-model="searchString" type="search" name="search" class="w-full min-w-300px py-3 text-sm text-slate-900 bg-slate-300 rounded-md pl-3 focus:outline-none focus:bg-slate-200" placeholder="Search..." maxlength=50  autocomplete="off">
         <span class="absolute inset-y-0 right-0 flex items-stretch">
-          <button class="p-1 mr-2 focus:outline-none focus:shadow-outline text-secondary hover:text-tertiary">
+          <button @click="searchItemsByName" class="p-1 mr-2 focus:outline-none focus:shadow-outline text-secondary hover:text-tertiary">
             <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           </button>
         </span>
@@ -64,7 +64,7 @@ export default {
   data() {
     return {
       isOpen: false,
-
+      searchString: store.state.search.searchString
     }
   },
   created() {
@@ -111,6 +111,9 @@ export default {
     },
     goToCart() {
       this.$router.push({ name: 'shopping-cart' })
+    },
+    searchItemsByName() {
+      store.dispatch('search/searchItems', this.searchString)
     }
   }
 }

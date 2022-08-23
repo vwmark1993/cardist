@@ -1,17 +1,19 @@
 <template>
   <div class="grid grid-flow-col">
-    <div class="col-span-2">
-      <Filters />
+    <div :class="{ 'col-span-1': hideFilters, 'col-span-2': !hideFilters }">
+      <Filters @changeFilterMode="(hideFilters) => changeFilterMode(hideFilters)" />
     </div>
-    <div class="col-span-10">
+    <div :class="{ 'col-span-12': hideFilters, 'col-span-10': !hideFilters }">
       <Banner />
       <div class="p-3 m-3">
         <div class="flex items-center justify-end border-b pb-2">
           <label for="sort" class="text-sm font-medium text-slate-900 dark:text-slate-400">Sort:&nbsp;&nbsp;</label>
-          <select id="sort" class="p-1 bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded focus:ring-slate-500 focus:border-slate-500">
-            <option Selected value="date">Date Added</option>
+          <select v-model="sortMode" id="sort" class="p-1 bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded focus:border-slate-500">
+            <option selected value="dateAdded">Date Added</option>
             <option value="priceDesc">Price: Low to High</option>
             <option value="priceAsc">Price: High to Low</option>
+            <option selected value="nameAsc">Name (A-Z)</option>
+            <option selected value="nameDesc">Name (Z-A)</option>
           </select>
         </div>
         <div>
@@ -28,11 +30,11 @@
 </template>
 
 <script>
+import store from '@/store';
+
 import Filters from '@/components/Filters.vue'
 import Banner from '@/components/Banner.vue'
 import Thumbnail from '@/components/Thumbnail.vue'
-
-import ItemDataService from '@/services/ItemDataService.js'
 
 export default {
   name: 'Landing',
@@ -41,26 +43,49 @@ export default {
     Banner,
     Thumbnail
   }, 
-  props: {
-    
-  },
   data() {
     return {
-      items: []
+      sortMode: 'dateAdded',
+      hideFilters: false
+    }
+  },
+  computed: {
+    items() {
+      let items = store.state.search.queriedItems.slice();
+
+      if (this.sortMode === 'dateAdded') {
+        return items.sort((a,b) => (a.created_on > b.created_on) ? 1 : ((b.created_on > a.created_on) ? -1 : 0));
+      }
+      if (this.sortMode === 'priceAsc') {
+        return items.sort((a,b) => (a.price < b.price) ? 1 : ((b.price < a.price) ? -1 : 0));
+      }
+      if (this.sortMode === 'priceDesc') {
+        return items.sort((a,b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0));
+      }
+      if (this.sortMode === 'nameAsc') {
+        return items.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+      }
+      if (this.sortMode === 'nameDesc') {
+        return items.sort((a,b) => (a.name < b.name) ? 1 : ((b.name < a.name) ? -1 : 0));
+      }
+      return items;
     }
   },
   methods: {
-    async searchItems() {
-      let response = await ItemDataService.getAll()
-      let items = response.data;
-      this.items = items;
+    changeFilterMode(hideFilters) {
+      this.hideFilters = hideFilters;
+    },
+    sort() {
+      
     }
   },
-  mounted() {
-    this.searchItems();
+  async mounted() {
+    if (this.items.length === 0) {
+      store.dispatch('search/searchItems', '')
+    }
   }
 }
 </script>
 <style scoped>
-
+  
 </style>
