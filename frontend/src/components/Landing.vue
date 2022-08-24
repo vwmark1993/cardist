@@ -12,8 +12,8 @@
             <option selected value="dateAdded">Date Added</option>
             <option value="priceDesc">Price: Low to High</option>
             <option value="priceAsc">Price: High to Low</option>
-            <option selected value="nameAsc">Name (A-Z)</option>
-            <option selected value="nameDesc">Name (Z-A)</option>
+            <option selected value="nameAsc">Name: A-Z</option>
+            <option selected value="nameDesc">Name: Z-A</option>
           </select>
         </div>
         <div>
@@ -52,22 +52,34 @@ export default {
   computed: {
     items() {
       let items = store.state.search.queriedItems.slice();
+      let filters = store.state.search.filters;
+
+      if (filters.includes('new')) {
+        let last30Days = new Date();
+        last30Days.setDate(last30Days.getDate() - 30);
+
+        items = items.filter(item => item.created_on >= last30Days)
+      }
+      if (filters.includes('popular')) {
+        items = items.filter(item => item.number_sold >= 20)
+      }
 
       if (this.sortMode === 'dateAdded') {
-        return items.sort((a,b) => (a.created_on > b.created_on) ? 1 : ((b.created_on > a.created_on) ? -1 : 0));
+        items.sort((a,b) => (a.created_on > b.created_on) ? 1 : ((b.created_on > a.created_on) ? -1 : 0));
       }
       if (this.sortMode === 'priceAsc') {
-        return items.sort((a,b) => (a.price < b.price) ? 1 : ((b.price < a.price) ? -1 : 0));
+        items.sort((a,b) => (a.price < b.price) ? 1 : ((b.price < a.price) ? -1 : 0));
       }
       if (this.sortMode === 'priceDesc') {
-        return items.sort((a,b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0));
+        items.sort((a,b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0));
       }
       if (this.sortMode === 'nameAsc') {
-        return items.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+        items.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
       }
       if (this.sortMode === 'nameDesc') {
-        return items.sort((a,b) => (a.name < b.name) ? 1 : ((b.name < a.name) ? -1 : 0));
+        items.sort((a,b) => (a.name < b.name) ? 1 : ((b.name < a.name) ? -1 : 0));
       }
+
       return items;
     }
   },

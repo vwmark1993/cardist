@@ -14,8 +14,8 @@
       </div>
       <div>
         <h6 class="text-left my-3">General</h6>
-        <button @click="addFilterNewItem" class="block w-3/4 bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 my-2 mx-auto rounded truncate">New Items</button>
-        <button @click="addFilterPopular" class="block w-3/4 bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 my-2 mx-auto rounded truncate">Popular</button>
+        <button @click="toggleNewItemFilter" :class="{ 'bg-tertiary' : newItemFilter, 'text-primary' : newItemFilter }" class="block w-3/4 bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 my-2 mx-auto rounded truncate">New Items</button>
+        <button @click="togglePopularItemFilter" :class="{ 'bg-tertiary' : popularItemFilter, 'text-primary' : popularItemFilter }" class="block w-3/4 bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 my-2 mx-auto rounded truncate">Popular</button>
       </div>
       <div>
         <h6 class="text-left my-3">Tags</h6>
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-// import store from '@/store';
+import store from '@/store';
 
 import Tag from '@/components/Tag.vue'
 
@@ -48,16 +48,40 @@ export default {
           hideFilters: false
       }
   },
+  computed: {
+    newItemFilter() {
+      if (store.state.search.filters) {
+        return store.state.search.filters.includes('new');
+      } else {
+        return false;
+      }
+    },
+    popularItemFilter() {
+      if (store.state.search.filters) {
+        return store.state.search.filters.includes('popular');
+      } else {
+        return false;
+      }
+    }
+  },
   methods: {
     changeFilterMode() {
       this.hideFilters = !this.hideFilters;
       this.$emit('changeFilterMode', this.hideFilters)
     },
-    addFilterNewItem() {
-      // store.dispatch('search/searchItems', '')
+    toggleNewItemFilter() {
+      if (!store.state.search.filters.includes('new')) {
+        store.dispatch('search/addFilter', 'new')
+      } else {
+        store.dispatch('search/removeFilter', 'new')
+      }
     },
-    addFilterPopular() {
-
+    togglePopularItemFilter() {
+      if (!store.state.search.filters.includes('popular')) {
+        store.dispatch('search/addFilter', 'popular')
+      } else {
+        store.dispatch('search/removeFilter', 'popular')
+      }
     }
   }
 }

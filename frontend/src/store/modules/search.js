@@ -3,6 +3,8 @@ import ItemDataService from '@/services/ItemDataService.js'
 const state = () => (
   localStorage.getItem('vuex') ? JSON.parse(localStorage.getItem('vuex')).search
   : {
+  filters: [],
+  tags: [],
   searchString: '',
   queriedItems: []
 })
@@ -36,6 +38,12 @@ const actions = {
   },
   resetItems({ commit }) {
     commit('emptyQueriedItems');
+  },
+  addFilter({ commit }, filter) {
+    commit('insertFilter', filter);
+  },
+  removeFilter({ commit }, filter) {
+    commit('removeFilter', filter);
   }
 }
 
@@ -52,6 +60,17 @@ const mutations = {
   },
   emptyQueriedItems(state) {
     state.queriedItems = []
+  },
+  insertFilter(state, filter) {
+    if (!state.filters.includes(filter)) {
+      state.filters.push(filter)
+    } 
+  },
+  removeFilter(state, filter) {
+    if (state.filters.includes(filter)) {
+      let index = state.filters.findIndex(filterItem => filterItem === filter);
+      state.filters.splice(index, 1);
+    }
   }
 }
 
