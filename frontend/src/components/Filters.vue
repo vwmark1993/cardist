@@ -14,17 +14,25 @@
       </div>
       <div>
         <h6 class="text-left my-3">General</h6>
-        <button @click="toggleNewItemFilter" :class="{ 'bg-tertiary' : newItemFilter, 'text-primary' : newItemFilter }" class="block w-3/4 bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 my-2 mx-auto rounded truncate">New Items</button>
-        <button @click="togglePopularItemFilter" :class="{ 'bg-tertiary' : popularItemFilter, 'text-primary' : popularItemFilter }" class="block w-3/4 bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 my-2 mx-auto rounded truncate">Popular</button>
+        <button @click="toggleNewItemFilter" :class="{ 'bg-tertiary' : newItemFilter, 'text-primary' : newItemFilter, 'bg-primary' : !newItemFilter, 'text-secondary' : !newItemFilter }" class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate">New Items</button>
+        <button @click="togglePopularItemFilter" :class="{ 'bg-tertiary' : popularItemFilter, 'text-primary' : popularItemFilter, 'bg-primary' : !popularItemFilter, 'text-secondary' : !popularItemFilter }" class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate">Popular</button>
       </div>
       <div>
         <h6 class="text-left my-3">Tags</h6>
-        <Tag text="Limited Edition" />
-        <Tag text="Collectible" />
-        <Tag text="Card Game" />
-        <Tag text="Equipment" />
-        <Tag text="New" />
-        <Tag text="Used" />
+        <div v-for="tag in tags" :key="tag.id">
+          <button 
+            @click="toggleTagFilter(tag.id)" 
+            class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate"
+            :class="{ 
+              'bg-tertiary': selectedTags.includes(tag.id), 
+              'text-primary' : selectedTags.includes(tag.id),
+              'bg-primary': !selectedTags.includes(tag.id), 
+              'text-secondary' : !selectedTags.includes(tag.id)
+            }" 
+          >
+            {{ tag.name }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -33,19 +41,19 @@
 <script>
 import store from '@/store';
 
-import Tag from '@/components/Tag.vue'
+import TagDataService from '@/services/TagDataService.js'
+
 
 export default {
   name: 'Filters',
-  components: {
-    Tag
-  }, 
   props: {
     
   },
   data() {
       return {
-          hideFilters: false
+          hideFilters: false,
+          tags: [],
+          selectedTags: []
       }
   },
   computed: {
@@ -82,7 +90,20 @@ export default {
       } else {
         store.dispatch('search/removeFilter', 'popular')
       }
+    },
+    toggleTagFilter(id) {
+      if (!this.selectedTags.includes(id)) {
+        this.selectedTags.push(id)
+      } else {
+        let index = this.selectedTags.findIndex(tagItem => tagItem === id);
+        this.selectedTags.splice(index, 1);
+      }
     }
+  },
+  async mounted() {
+    let response = await TagDataService.getAll();
+    let tagResponse = response.data;
+    this.tags = tagResponse;
   }
 }
 </script>

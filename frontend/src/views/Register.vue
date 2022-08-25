@@ -25,7 +25,9 @@
 
 <script>
 import store from '@/store'
+
 import UserDataService from '@/services/UserDataService.js'
+import CartDataService from '@/services/CartDataService.js'
 
 export default {
   name: 'Register',
@@ -67,7 +69,17 @@ export default {
           if (response.status == 200) {
             console.log('User registered.');
 
-            this.$router.push({ name: 'login' })
+            response = await CartDataService.create(userResponse.user_id);
+            let cartResponse = response.data;
+            console.log(cartResponse);
+
+            if (response.status == 200) {
+              console.log('New cart created for user.');
+              this.$router.push({ name: 'login' })
+            } else {
+              console.log(response.data.message)
+            }
+
           } else if (response.status == 201) {
             console.log(response.data.message)
           }

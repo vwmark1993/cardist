@@ -6,8 +6,8 @@ class CartDataService {
   getUserCart(userId) {
     return http.get(`/cart/find/userId/${userId}`);
   }
-  create(data) {
-    return http.post("/tutorials", data);
+  create(userId) {
+    return http.post(`/cart/create/userId/${userId}`);
   }
   update(id, data) {
     return http.put(`/tutorials/${id}`, data);

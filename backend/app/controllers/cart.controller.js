@@ -6,7 +6,19 @@ const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
-  
+  const cart = {
+    user_id: req.params.userId
+  };
+  Cart.create(cart)
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while creating the Cart."
+      });
+    });
 };
 // Retrieve Cart tied to a User from the database.
 exports.findUserCart = (req, res) => {
@@ -50,7 +62,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   
 };
-// Delete all Tutorials from the database.
+// Stripe checkout
 exports.createCheckoutSession = async (req, res) => {
   // console.log(req.body.items)
 

@@ -47,6 +47,7 @@ require("./app/routes/cartItem.routes")(app);
 require("./app/routes/comment.routes")(app);
 require("./app/routes/item.routes")(app);
 require("./app/routes/order.routes")(app);
+require("./app/routes/tag.routes")(app);
 require("./app/routes/user.routes")(app);
 
 // const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
