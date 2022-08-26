@@ -15,9 +15,6 @@ class CartItemDataService {
   delete(id) {
     return http.delete(`/cartItem/delete/${id}`);
   }
-  deleteAll() {
-    return http.delete(`/tutorials`);
-  }
   findByTitle(title) {
     return http.get(`/tutorials?title=${title}`);
   }

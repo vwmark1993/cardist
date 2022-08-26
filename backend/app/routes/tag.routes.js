@@ -6,7 +6,7 @@ module.exports = app => {
     // Retrieve Cart by User ID
     router.get("/find", tags.findAll);
     // Retrieve a single Comment with id
-    router.get("/find/:id", tags.findOne);
+    router.get("/find/tagId/:id", tags.findOne);
     // Delete a Cart with id
     router.delete("/delete/:id", tags.delete);
     app.use('/api/tag', router);

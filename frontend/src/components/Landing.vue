@@ -52,18 +52,21 @@ export default {
   computed: {
     items() {
       let items = store.state.search.queriedItems.slice();
-      let filters = store.state.search.filters;
+      let generalFilters = store.state.search.generalFilters;
+      let tagFilters = store.state.search.tagFilters;
 
-      if (filters.includes('new')) {
+      // Apply general filters, which are fixed.
+      if (generalFilters.includes('new')) {
         let last30Days = new Date();
         last30Days.setDate(last30Days.getDate() - 30);
 
         items = items.filter(item => item.created_on >= last30Days)
       }
-      if (filters.includes('popular')) {
+      if (generalFilters.includes('popular')) {
         items = items.filter(item => item.number_sold >= 20)
       }
 
+      // Apply sort order.
       if (this.sortMode === 'dateAdded') {
         items.sort((a,b) => (a.created_on > b.created_on) ? 1 : ((b.created_on > a.created_on) ? -1 : 0));
       }
@@ -80,7 +83,8 @@ export default {
         items.sort((a,b) => (a.name < b.name) ? 1 : ((b.name < a.name) ? -1 : 0));
       }
 
-      return items;
+      // Apply tag filters.
+      return items.filter(item => tagFilters.every(tag => item.tags.includes(tag)));
     }
   },
   methods: {

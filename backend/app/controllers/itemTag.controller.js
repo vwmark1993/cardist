@@ -4,103 +4,57 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Cart Item
 exports.create = (req, res) => {
-  if (!req.params.itemId || !req.params.cartId) {
+  if (!req.params.itemId || !req.params.tagId) {
     res.status(400).send({
       message: "Content cannot be empty."
     });
     return;
   }
 
-  // Check if the item already exists in the cart
-  ItemTag.findAll({ where: { item_id: `${req.params.itemId}` } })
+  ItemTag.findAll({ where: { item_id: `${req.params.itemId}`, tag_id: `${req.params.tagId}` } })
     .then(data => {
       if (data.length > 0) {
-        // Item exists
+        // Item already has the tag
         res.status(201).send({
-          message: "Item already exists in cart."
+          message: "Item already has the specified tag."
         });
       } else {
-        // Item doesn't exist
-        const cartItem = {
+        // Item doesn't have the tag
+        const itemTag = {
           item_id: req.params.itemId,
-          cart_id: req.params.cartId,
-          quantity: 1
+          tag_id: req.params.tagId
         };
-        CartItem.create(cartItem)
+        ItemTag.create(itemTag)
           .then(data => {
             res.send(data);
           })
           .catch(err => {
             res.status(500).send({
               message:
-                err.message || "Some error occurred while creating the Cart Item."
+                err.message || "Some error occurred while creating the Item Tag."
             });
           });
       }
     })
 };
-// Retrieve Cart Items tied to a User from the database.
-exports.findCartItems = (req, res) => {
-    const cartId = req.params.cartId;
-    var condition = cartId ? { cart_id: `${cartId}` } : null;
-    ItemTag.findAll({ where: condition })
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving cart items."
-        });
-      });
-  };
-// Find a single Cart Item with an id
-exports.findOne = (req, res) => {
-  const id = req.params.id;
-  ItemTag.findByPk(id)
+// Retrieve Item Tags tied to a User from the database.
+exports.findItemTags = (req, res) => {
+  console.log('test')
+  const itemId = req.params.itemId;
+  console.log(itemId)
+  var condition = itemId ? { item_id: `${itemId}` } : null;
+  ItemTag.findAll({ where: condition })
     .then(data => {
-      if (data) {
-        res.send(data);
-      } else {
-        res.status(404).send({
-          message: `Cannot find Cart with id=${id}.`
-        });
-      }
+      res.send(data);
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Item with id=" + id
+        message:
+          err.message || "Some error occurred while retrieving item tags."
       });
     });
-};
-// Update a Carrt Item by the id in the request
-exports.update = (req, res) => {
-  const id = req.params.id;
-  const quantity = req.params.quantity;
-
-  CartItem.update({
-    quantity: quantity
-  }, {
-    where: { id: id }
-  })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "Cart Item was updated successfully."
-        });
-      } else {
-        res.send({
-          message: `Cannot update Cart Item with id=${id}. Maybe Cart Item was not found or req.body is empty!`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error updating Cart Item with id=" + id
-      });
-    });
-};
-// Delete a Cart Item with the specified id
+  };
+// Delete a Item Tag with the specified id
 exports.delete = (req, res) => {
   const id = req.params.id;
   ItemTag.destroy({
@@ -109,21 +63,17 @@ exports.delete = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Cart Item was deleted successfully!"
+          message: "Item Tag was deleted successfully!"
         });
       } else {
         res.send({
-          message: `Cannot delete Cart Item with id=${id}. Cart Item was not found!`
+          message: `Cannot delete Item Tag with id=${id}. Item Tag was not found!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete Cart Item with id=" + id
+        message: "Could not delete Item Tag with id=" + id
       });
     });
-};
-// Delete all Tutorials from the database.
-exports.deleteAll = (req, res) => {
-  
 };

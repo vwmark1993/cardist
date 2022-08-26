@@ -3,20 +3,14 @@ class TagDataService {
   getAll() {
     return http.get("/tag/find");
   }
-  getUserCart(userId) {
-    return http.get(`/tag/find/userId/${userId}`);
+  get(id) {
+    return http.get(`/tag/find/tagId/${id}`);
   }
   create(name) {
-    return http.post(`/tag/name/${name}`);
-  }
-  update(id, name) {
-    return http.put(`/tag/tagId/${id}/name/${name}`);
+    return http.post(`/tag/create/name/${name}`);
   }
   delete(id) {
     return http.delete(`/tag/delete/${id}`);
-  }
-  deleteAll() {
-    return http.delete(`/tutorials`);
   }
 }
 export default new TagDataService();

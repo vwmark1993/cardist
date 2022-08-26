@@ -21,13 +21,13 @@
         <h6 class="text-left my-3">Tags</h6>
         <div v-for="tag in tags" :key="tag.id">
           <button 
-            @click="toggleTagFilter(tag.id)" 
+            @click="toggleTagFilter(tag.name)" 
             class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate"
             :class="{ 
-              'bg-tertiary': selectedTags.includes(tag.id), 
-              'text-primary' : selectedTags.includes(tag.id),
-              'bg-primary': !selectedTags.includes(tag.id), 
-              'text-secondary' : !selectedTags.includes(tag.id)
+              'bg-tertiary': selectedTags.includes(tag.name), 
+              'text-primary' : selectedTags.includes(tag.name),
+              'bg-primary': !selectedTags.includes(tag.name), 
+              'text-secondary' : !selectedTags.includes(tag.name)
             }" 
           >
             {{ tag.name }}
@@ -58,15 +58,15 @@ export default {
   },
   computed: {
     newItemFilter() {
-      if (store.state.search.filters) {
-        return store.state.search.filters.includes('new');
+      if (store.state.search.generalFilters) {
+        return store.state.search.generalFilters.includes('new');
       } else {
         return false;
       }
     },
     popularItemFilter() {
-      if (store.state.search.filters) {
-        return store.state.search.filters.includes('popular');
+      if (store.state.search.generalFilters) {
+        return store.state.search.generalFilters.includes('popular');
       } else {
         return false;
       }
@@ -78,25 +78,29 @@ export default {
       this.$emit('changeFilterMode', this.hideFilters)
     },
     toggleNewItemFilter() {
-      if (!store.state.search.filters.includes('new')) {
-        store.dispatch('search/addFilter', 'new')
+      if (!store.state.search.generalFilters.includes('new')) {
+        store.dispatch('search/addGeneralFilter', 'new')
       } else {
-        store.dispatch('search/removeFilter', 'new')
+        store.dispatch('search/removeGeneralFilter', 'new')
       }
     },
     togglePopularItemFilter() {
-      if (!store.state.search.filters.includes('popular')) {
-        store.dispatch('search/addFilter', 'popular')
+      if (!store.state.search.generalFilters.includes('popular')) {
+        store.dispatch('search/addGeneralFilter', 'popular')
       } else {
-        store.dispatch('search/removeFilter', 'popular')
+        store.dispatch('search/removeGeneralFilter', 'popular')
       }
     },
-    toggleTagFilter(id) {
-      if (!this.selectedTags.includes(id)) {
-        this.selectedTags.push(id)
+    toggleTagFilter(name) {
+      if (!this.selectedTags.includes(name)) {
+        this.selectedTags.push(name)
+
+        store.dispatch('search/addTagFilter', name)
       } else {
-        let index = this.selectedTags.findIndex(tagItem => tagItem === id);
+        let index = this.selectedTags.findIndex(tagItem => tagItem === name);
         this.selectedTags.splice(index, 1);
+
+        store.dispatch('search/removeTagFilter', name)
       }
     }
   },
