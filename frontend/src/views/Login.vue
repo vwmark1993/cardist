@@ -4,6 +4,9 @@
       <div class="pt-2 pb-2 flex justify-end">
         <span @click="goToHomepage" class="material-symbols-outlined text-primary mr-2 p-1 rounded cursor-pointer hover:bg-secondary">exit_to_app</span>
       </div>
+      <div v-if="message !== ''" class="mb-4 mx-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+        <span class="text-red-500 font-semibold">{{ message }}</span>
+      </div>
       <div class="px-14">
         <span class="block text-sm text-left font-semibold text-primary mb-1">Username</span>
         <input v-model="username" type="text" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" name="username" />
@@ -27,7 +30,8 @@ export default {
   data() {
     return {
       username: '',
-      password: ''
+      password: '',
+      message: ''
     }
   },
   created() {
@@ -54,13 +58,13 @@ export default {
             });
             this.$router.push({ name: 'home' });
           } else if (response.status == 201 || response.status == 202) {
-            console.log(response.data.message)
+            this.message = response.data.message;
           }
         } else {
-          console.log('Please enter valid user credentials.')
+          this.message = 'Please enter valid user credentials.';
         }
       } catch (e) {
-        console.log(e)
+        this.message = e; 
       }
     },
     loginByPressingEnter(e) {

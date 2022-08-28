@@ -72,6 +72,9 @@ const actions = {
   },
   removeTagFilter({ commit }, filter) {
     commit('removeTagFilter', filter);
+  },
+  resetFilters({commit}) {
+    commit('removeAllFilters');
   }
 }
 
@@ -110,6 +113,10 @@ const mutations = {
       let index = state.tagFilters.findIndex(filterItem => filterItem === filter);
       state.tagFilters.splice(index, 1);
     }
+  },
+  removeAllFilters(state) {
+    state.generalFilters = [];
+    state.tagFilters = [];
   }
 }
 

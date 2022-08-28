@@ -21,10 +21,12 @@
       <div class="relative my-auto mx-3">
         <div @click="isOpen = !isOpen" class="relative z-50 p-2 rounded flex bg-white items-center cursor-pointer">
           <button v-if="isOpen" class="block h-8 w-8 rounded-full overflow-hidden border-2 border-primary">
-            <img class="h-full w-full object-cover" :src="$store.state.user.currentUser.picture" alt="user profile image" />
+            <img v-if="$store.state.user.currentUser.picture" class="h-full w-full object-cover" :src="$store.state.user.currentUser.picture" alt="user profile image" />
+            <img v-else class="h-full w-full object-cover" src="../assets/images/profile-picture-placeholder.png" alt="user profile image" />
           </button>
           <button v-else class="block h-8 w-8 rounded-full overflow-hidden border-2 border-slate-600">
-            <img class="h-full w-full object-cover" :src="$store.state.user.currentUser.picture" alt="user profile image" />
+            <img v-if="$store.state.user.currentUser.picture" class="h-full w-full object-cover" :src="$store.state.user.currentUser.picture" alt="user profile image" />
+            <img v-else class="h-full w-full object-cover" src="../assets/images/profile-picture-placeholder.png" alt="user profile image" />
           </button>
           <span class="ml-1 text-lg font-semibold select-none text-truncate">{{ $store.state.user.currentUser.username }}</span>
         </div>
@@ -46,7 +48,7 @@
     </div>
     <div v-else class="flex flex-row">
       <button @click="goToLogin" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold ml-20 py-2 px-8 rounded inline-flex items-center">
-        <span class="material-symbols-outlined text-3xl mr-1">login</span>
+        <span class="material-symbols-outlined text-3xl mr-1">account_circle</span>
         <span class="whitespace-nowrap">SIGN IN</span>
       </button>
     </div>
@@ -93,7 +95,9 @@ export default {
         }
       })
 
-      this.$router.push({ name: 'home' })
+      store.dispatch('search/resetFilters');
+
+      this.$router.push({ name: 'home' });
     },
     handleEscape(e) {
       if (e.key === 'Esc' || e.key === 'Escape') {
