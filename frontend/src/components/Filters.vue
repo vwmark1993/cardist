@@ -9,16 +9,16 @@
   <div v-else>
     <div class="m-3 p-5 bg-slate-300 rounded">
       <div class="flex justify-between items-center pb-2">
-        <h1 class="text-2xl text-left">Filters</h1>
+        <h1 class="text-2xl text-left font-semibold">Filters</h1>
         <span @click="changeFilterMode" class="material-symbols-outlined cursor-pointer">arrow_back_ios</span>
       </div>
       <div>
-        <h6 class="text-left my-3">General</h6>
+        <h6 class="text-left my-3 ml-3 font-semibold">General</h6>
         <button @click="toggleNewItemFilter" :class="{ 'bg-tertiary' : newItemFilter, 'text-primary' : newItemFilter, 'bg-primary' : !newItemFilter, 'text-secondary' : !newItemFilter }" class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate">New Items</button>
         <button @click="togglePopularItemFilter" :class="{ 'bg-tertiary' : popularItemFilter, 'text-primary' : popularItemFilter, 'bg-primary' : !popularItemFilter, 'text-secondary' : !popularItemFilter }" class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate">Popular</button>
       </div>
       <div>
-        <h6 class="text-left my-3">Tags</h6>
+        <h6 class="text-left my-3 ml-3 font-semibold">Tags</h6>
         <div v-for="tag in tags" :key="tag.id">
           <button 
             @click="toggleTagFilter(tag.name)" 
