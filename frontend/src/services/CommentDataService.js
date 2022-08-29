@@ -18,8 +18,5 @@ class CommentDataService {
   delete(id) {
     return http.delete(`/tutorials/${id}`);
   }
-  deleteAll() {
-    return http.delete(`/tutorials`);
-  }
 }
 export default new CommentDataService();

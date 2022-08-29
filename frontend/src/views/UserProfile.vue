@@ -57,7 +57,7 @@
             </div>
           </div>
           <div v-else>
-            <span class="text-left text-lg text-slate-700">No Item Listings</span>
+            <span class="inline-block text-left text-lg text-slate-400 my-2">No Item Listings</span>
           </div>
         </div>
 
@@ -91,7 +91,7 @@
             </div>
           </div>
           <div v-else>
-            <span class="text-left text-lg text-slate-700">No Orders</span>
+            <span class="inline-block text-left text-lg text-slate-400 my-2">No Orders</span>
           </div>
         </div>
 
@@ -116,7 +116,7 @@
             </div>
           </div>
           <div v-else>
-            <span class="text-left text-lg text-slate-700">No Comments</span>
+            <span class="inline-block text-left text-lg text-slate-400 my-2">No Comments</span>
           </div>
         </div>
       </div>
@@ -130,6 +130,7 @@ import store from '@/store'
 import UserDataService from '@/services/UserDataService.js'
 import ItemDataService from '@/services/ItemDataService.js'
 import OrderDataService from '@/services/OrderDataService.js'
+import OrderItemDataService from '@/services/OrderItemDataService.js'
 import CommentDataService from '@/services/CommentDataService.js'
 
 import UserHeader from '@/components/UserHeader.vue'
@@ -166,7 +167,7 @@ export default {
       this.user = response.data;
     },
     async getItemsSold() {
-      let response = await OrderDataService.getOrdersBySeller(this.userId);
+      let response = await OrderItemDataService.getOrderItemsBySeller(this.userId);
       this.ordersAsSeller = response.data;
     },
     async getItemListings() {
@@ -206,6 +207,8 @@ export default {
     }, 
     async getComments() {
       let response = await CommentDataService.getCommentsByUser(this.userId);
+
+      console.log(response)
 
       response.data.forEach(async comment => {
         let id = comment.id

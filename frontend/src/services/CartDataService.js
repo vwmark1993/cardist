@@ -15,9 +15,6 @@ class CartDataService {
   delete(id) {
     return http.delete(`/tutorials/${id}`);
   }
-  deleteAll() {
-    return http.delete(`/tutorials`);
-  }
   checkout(data) {
     return http.post("/cart/create-checkout-session", data);
   }

@@ -15,9 +15,6 @@ class UserDataService {
   delete(id) {
     return http.delete(`/tutorials/${id}`);
   }
-  deleteAll() {
-    return http.delete(`/tutorials`);
-  }
   authenticate(username, password) {
     return http.post(`/user/authenticate/username/${username}/password/${password}`);
   }

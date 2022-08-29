@@ -21,8 +21,5 @@ class ItemDataService {
   delete(id) {
     return http.delete(`/tutorials/${id}`);
   }
-  findByTitle(title) {
-    return http.get(`/tutorials?title=${title}`);
-  }
 }
 export default new ItemDataService();

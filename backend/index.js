@@ -47,6 +47,7 @@ require("./app/routes/cartItem.routes")(app);
 require("./app/routes/comment.routes")(app);
 require("./app/routes/item.routes")(app);
 require("./app/routes/order.routes")(app);
+require("./app/routes/orderItem.routes")(app);
 require("./app/routes/tag.routes")(app);
 require("./app/routes/itemTag.routes")(app);
 require("./app/routes/user.routes")(app);

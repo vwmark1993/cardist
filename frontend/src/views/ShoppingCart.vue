@@ -26,7 +26,7 @@
           <div class="w-full px-4">
             <div v-for="cartItem in cartItems" :key="cartItem.id">
               <div v-if="cartItem.quantity > 0" class="flex justify-between text-sm mb-1">
-                <span class="truncate">{{ cartItem.name }} x {{ cartItem.quantity }}</span>
+                <span class="truncate"><span class="font-semibold">{{ cartItem.name }}</span> x {{ cartItem.quantity }}</span>
                 <span>{{ cartItem.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</span>
               </div>
             </div>

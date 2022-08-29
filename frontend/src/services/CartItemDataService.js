@@ -15,8 +15,5 @@ class CartItemDataService {
   delete(id) {
     return http.delete(`/cartItem/delete/${id}`);
   }
-  findByTitle(title) {
-    return http.get(`/tutorials?title=${title}`);
-  }
 }
 export default new CartItemDataService();

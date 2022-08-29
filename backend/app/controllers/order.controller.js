@@ -6,10 +6,7 @@ const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 // Create and Save a new Order
 exports.create = (req, res) => {
   const order = {
-    buyer_id: req.params.buyerId,
-    seller_id: req.params.sellerId,
-    item_id: req.params.itemId,
-    quantity: req.params.itemId
+    buyer_id: req.params.buyerId
   };
   Order.create(order)
     .then(data => {
@@ -28,22 +25,6 @@ exports.findAll = (req, res) => {
   // need to replace this for search functionality
   const name = req.query.name;
   var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
-  Order.findAll({ where: condition })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving orders."
-      });
-    });
-};
-
-// Retrieve Orders tied to a Buyer from the database.
-exports.findOrdersBySeller = (req, res) => {
-  const sellerId = req.params.sellerId;
-  var condition = sellerId ? { seller_id: `${sellerId}` } : null;
   Order.findAll({ where: condition })
     .then(data => {
       res.send(data);

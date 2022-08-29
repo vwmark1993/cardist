@@ -7,7 +7,8 @@ const state = () => (
   localStorage.getItem('vuex') ? JSON.parse(localStorage.getItem('vuex')).cart
   : {
   cartId: null,
-  cartItems: []
+  cartItems: [],
+  orderConfirmationFlag: false
 })
 
 // getters
@@ -38,15 +39,18 @@ const actions = {
           let itemResponse = await ItemDataService.get(cartItem.item_id);
           let itemDetails = itemResponse.data;
 
-          commit('insertCartItem', {
+          let newCartItem = {
             id: id,
             itemId: itemId,
             name: itemDetails.name,
             thumbnail: itemDetails.images[0],
             quantity: quantity,
             price: itemDetails.price * quantity,
-            basePrice: itemDetails.price
-          })
+            basePrice: itemDetails.price,
+            sellerId: itemDetails.seller_id
+          }
+
+          commit('insertCartItem', newCartItem)
         })
       } catch (e) {
         console.log(e)
@@ -68,7 +72,8 @@ const actions = {
       thumbnail: itemDetails.images.length > 0 ? itemDetails.images[0] : null,
       quantity: 1,
       price: itemDetails.price,
-      basePrice: itemDetails.basePrice
+      basePrice: itemDetails.price,
+      sellerId: itemDetails.seller_id
     }
 
     if (cartItemResponse.status == 200) {
@@ -97,7 +102,8 @@ const actions = {
       thumbnail: cartItem.thumbnail,
       quantity: quantity,
       price: cartItem.quantity != 0 ? cartItem.price / cartItem.quantity * quantity : cartItem.basePrice,
-      basePrice: cartItem.basePrice
+      basePrice: cartItem.basePrice,
+      sellerId: cartItem.sellerId
     }
 
     commit('updateCartItemByIndex', {
@@ -111,6 +117,9 @@ const actions = {
     })
 
     commit('emptyCart');
+  },
+  setOrderConfirmationFlag({ commit }, flag) {
+    commit('setOrderConfirmationFlag', flag);
   }
 }
 
@@ -130,6 +139,9 @@ const mutations = {
   },
   updateCartItemByIndex(state, { index, cartItem }) {
     state.cartItems[index] = cartItem;
+  },
+  setOrderConfirmationFlag(state, flag) {
+    state.orderConfirmationFlag = flag;
   }
 }
 

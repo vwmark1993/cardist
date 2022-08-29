@@ -3,9 +3,9 @@
     <div class="m-auto px-20 pt-12 pb-10 bg-slate-400 rounded">
       <span class="material-symbols-outlined mt-2 mb-8">check_circle</span>
       <span class="block font-bold text-2xl mb-2">Order Confirmation</span>
-      <span class="block">Name: <span class="font-bold">{{ customerName }}</span></span>
-      <span class="block">Total: <span class="font-bold">$ {{ orderTotal }} {{ currency.toUpperCase() }}</span></span>
-      <div>
+      <span class="block mb-2">Name: <span class="font-bold">{{ customerName }}</span></span>
+      <span class="block mb-2">Total: <span class="font-bold">$ {{ orderTotal }} {{ currency.toUpperCase() }}</span></span>
+      <div class="mb-2">
         <span class="block font-bold">Items Ordered:</span>
         <span v-for="item in orderItems" :key="item.id" class="block">{{ item.name }} x {{ item.quantity }}</span>
       </div>
@@ -19,6 +19,7 @@
 <script>
 import store from '@/store'
 import OrderDataService from '@/services/OrderDataService.js'
+import OrderItemDataService from '@/services/OrderItemDataService.js'
 
 export default {
   name: 'OrderConfirmation',
@@ -56,6 +57,18 @@ export default {
         this.customerName = successfulOrder.customerName;
         this.currency = successfulOrder.currency;
         this.orderTotal = successfulOrder.total / 100;
+
+        if (!store.state.cart.orderConfirmationFlag) {
+          response = await OrderDataService.create(store.state.user.currentUser.id);
+          let orderResponse = response.data;
+          let orderId = orderResponse.id;
+
+          this.orderItems.forEach(async orderItem =>  {
+            response = await OrderItemDataService.create(orderId, orderItem.itemId, orderItem.sellerId, orderItem.quantity, orderItem.price);
+          })
+
+          store.dispatch('cart/setOrderConfirmationFlag', true);
+        }
       }
 
     } catch (e) {
@@ -63,7 +76,9 @@ export default {
     }
   },
   beforeRouteLeave () {
+    // Reset shopping cart once the user leaves the page.
     store.dispatch('cart/emptyCart');
+    store.dispatch('cart/setOrderConfirmationFlag', false);
   }
 }
 </script>
