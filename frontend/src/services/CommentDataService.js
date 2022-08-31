@@ -9,14 +9,14 @@ class CommentDataService {
   getCommentsByUser(userId) {
     return http.get(`/comment/find/userId/${userId}`);
   }
-  create(userId, itemId, message) {
-    return http.post(`/comment/create/userId/${userId}/itemId/${itemId}/message/${message}`);
+  create(data) {
+    return http.post("/comment/create", data);
   }
   update(id, data) {
-    return http.put(`/tutorials/${id}`, data);
+    return http.put("/comment/update", data);
   }
-  delete(id) {
-    return http.delete(`/tutorials/${id}`);
+  delete(data) {
+    return http.delete("/comment/delete", data);
   }
 }
 export default new CommentDataService();

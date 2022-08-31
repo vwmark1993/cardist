@@ -154,7 +154,13 @@ export default {
   methods: {
     async createNewComment() {
       try {
-        let response = await CommentDataService.create(this.userId, this.itemId, this.newCommentMessage)
+        let data = {
+          userId: this.userId,
+          itemId: this.itemId,
+          message: this.newCommentMessage
+        }
+
+        let response = await CommentDataService.create(data)
         let newComment = response.data;
         this.comments.push(newComment);
         this.newCommentMessage = '';
@@ -164,6 +170,7 @@ export default {
       
     },
     async getItem() {
+      console.log(this.itemId)
       let response = await ItemDataService.get(this.itemId)
       let itemDetails = response.data;
       this.itemDetails = itemDetails;

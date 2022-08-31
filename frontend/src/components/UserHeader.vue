@@ -96,6 +96,7 @@ export default {
       })
 
       store.dispatch('search/resetFilters');
+      store.dispatch('cart/emptyCart');
 
       this.$router.push({ name: 'home' });
     },

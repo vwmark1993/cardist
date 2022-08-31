@@ -10,6 +10,7 @@
             :key="cartItem.id" 
             :index="index" 
             :id="cartItem.id" 
+            :itemId="cartItem.itemId"
             :name="cartItem.name" 
             :thumbnail="cartItem.thumbnail" 
             :quantityProp="cartItem.quantity" 

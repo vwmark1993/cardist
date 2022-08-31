@@ -5,7 +5,7 @@
     </div>
     <div class="w-full truncate relative">
       <div class="shopping-cart-item-header flex justify-between items-center border-b border-slate-400 mb-3">
-        <h6 class="text-xl pb-2 truncate">{{ name }}</h6>
+        <h6 @click="goToItemDetails" class="text-xl pb-2 truncate hover:text-slate-400 hover:cursor-pointer">{{ name }}</h6>
         <button @click="removeItem" class="shopping-cart-item-remove-button bg-slate-500 hover:bg-slate-700 text-white px-3 rounded">Remove</button>
       </div>
       <span class="inline-block mb-3 text-xl">{{ price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</span>
@@ -32,6 +32,7 @@ export default {
   name: 'ShoppingCartItem',
   props: {
     id: String,
+    itemId: String,
     name: String,
     thumbnail: String,
     quantityProp: Number,
@@ -51,6 +52,9 @@ export default {
     }
   },  
   methods: {
+    goToItemDetails() {
+      this.$router.push({ name: 'item-details', params: { itemId: this.itemId } })
+    },
     removeItem() {
       store.dispatch('cart/deleteCartItem', {
         index: this.index,

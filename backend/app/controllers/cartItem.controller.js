@@ -4,7 +4,7 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Cart Item
 exports.create = (req, res) => {
-  if (!req.params.itemId || !req.params.cartId) {
+  if (!req.body.itemId || !req.body.cartId) {
     res.status(400).send({
       message: "Content cannot be empty."
     });
@@ -12,7 +12,7 @@ exports.create = (req, res) => {
   }
 
   // Check if the item already exists in the cart
-  CartItem.findAll({ where: { item_id: `${req.params.itemId}` } })
+  CartItem.findAll({ where: { item_id: `${req.body.itemId}` } })
     .then(data => {
       if (data.length > 0) {
         // Item exists
@@ -22,8 +22,8 @@ exports.create = (req, res) => {
       } else {
         // Item doesn't exist
         const cartItem = {
-          item_id: req.params.itemId,
-          cart_id: req.params.cartId,
+          item_id: req.body.itemId,
+          cart_id: req.body.cartId,
           quantity: 1
         };
         CartItem.create(cartItem)
@@ -75,8 +75,8 @@ exports.findOne = (req, res) => {
 };
 // Update a Carrt Item by the id in the request
 exports.update = (req, res) => {
-  const id = req.params.id;
-  const quantity = req.params.quantity;
+  const id = req.body.id;
+  const quantity = req.body.quantity;
 
   CartItem.update({
     quantity: quantity
@@ -102,7 +102,7 @@ exports.update = (req, res) => {
 };
 // Delete a Cart Item with the specified id
 exports.delete = (req, res) => {
-  const id = req.params.id;
+  const id = req.body.id;
   CartItem.destroy({
     where: { id: id }
   })

@@ -2,7 +2,7 @@ module.exports = app => {
     const items = require("../controllers/item.controller.js");
     var router = require("express").Router();
     // Create a new Item
-    router.post("/", items.create);
+    router.post("/create", items.create);
     // Retrieve all Items
     router.get("/find", items.findAll);
     // Retrieve items by search string
@@ -12,8 +12,8 @@ module.exports = app => {
     // Retrieve Items by Seller ID
     router.get("/find/sellerId/:selleriD", items.findBySellerId);
     // Update an Item with given id
-    router.put("/:id", items.update);
+    router.put("/update", items.update);
     // Delete an Item with given id
-    router.delete("/:id", items.delete);
+    router.delete("/delete", items.delete);
     app.use('/api/item', router);
   };

@@ -6,17 +6,17 @@ class UserDataService {
   get(id) {
     return http.get(`/user/find/${id}`);
   }
-  create(username, password, email, phone) {
-    return http.post(`/user/create/username/${username}/password/${password}/email/${email}/phone/${phone}`);
+  create(data) {
+    return http.post("/user/create", data);
   }
   update(id, data) {
-    return http.put(`/tutorials/${id}`, data);
+    return http.put(`/user/update/${id}`, data);
   }
   delete(id) {
-    return http.delete(`/tutorials/${id}`);
+    return http.delete(`/user/delete/${id}`);
   }
-  authenticate(username, password) {
-    return http.post(`/user/authenticate/username/${username}/password/${password}`);
+  authenticate(data) {
+    return http.post("/user/authenticate", data);
   }
 }
 export default new UserDataService();

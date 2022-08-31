@@ -6,7 +6,7 @@ const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 // Create and Save a new Order
 exports.create = (req, res) => {
   const order = {
-    buyer_id: req.params.buyerId
+    buyer_id: req.body.buyerId
   };
   Order.create(order)
     .then(data => {
@@ -72,26 +72,26 @@ exports.findOne = (req, res) => {
     });
 };
 
-// Delete a Cart Item with the specified id
+// Delete a Order with the specified id
 exports.delete = (req, res) => {
-  const id = req.params.id;
+  const id = req.body.id;
   Order.destroy({
     where: { id: id }
   })
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Cart Item was deleted successfully!"
+          message: "Order was deleted successfully!"
         });
       } else {
         res.send({
-          message: `Cannot delete Cart Item with id=${id}. Cart Item was not found!`
+          message: `Cannot delete Order with id=${id}. Order was not found!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete Cart Item with id=" + id
+        message: "Could not delete Order with id=" + id
       });
     });
 };

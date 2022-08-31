@@ -6,11 +6,11 @@ class ItemTagDataService {
   getItemTags(itemId) {
     return http.get(`/itemTag/find/itemId/${itemId}`);
   }
-  create(itemId, tagId) {
-    return http.post(`/itemTag/create/itemId/${itemId}/tagId/${tagId}`);
+  create(data) {
+    return http.post("/itemTag/create", data);
   }
-  delete(id) {
-    return http.delete(`/itemTag/delete/${id}`);
+  delete(data) {
+    return http.delete("/itemTag/delete", data);
   }
 }
 export default new ItemTagDataService();

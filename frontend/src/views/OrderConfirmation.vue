@@ -59,12 +59,24 @@ export default {
         this.orderTotal = successfulOrder.total / 100;
 
         if (!store.state.cart.orderConfirmationFlag) {
-          response = await OrderDataService.create(store.state.user.currentUser.id);
+          let data = {
+            buyerId: store.state.user.currentUser.id
+          }
+
+          response = await OrderDataService.create(data);
           let orderResponse = response.data;
           let orderId = orderResponse.id;
 
           this.orderItems.forEach(async orderItem =>  {
-            response = await OrderItemDataService.create(orderId, orderItem.itemId, orderItem.sellerId, orderItem.quantity, orderItem.price);
+            let data = {
+              orderId: orderId,
+              itemId: orderItem.itemId,
+              sellerId: orderItem.sellerId,
+              quantity: orderItem.quantity,
+              price: orderItem.price
+            }
+
+            response = await OrderItemDataService.create(data);
           })
 
           store.dispatch('cart/setOrderConfirmationFlag', true);

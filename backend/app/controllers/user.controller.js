@@ -5,8 +5,8 @@ const Op = db.Sequelize.Op;
 
 // Login authentication.
 exports.authenticate = (req, res) => {
-  const username = req.params.username;
-  const password = req.params.password;
+  const username = req.body.username;
+  const password = req.body.password;
 
   if (username == null || username.length == 0) {
     res.status(201).send({
@@ -75,7 +75,7 @@ exports.authenticate = (req, res) => {
 exports.create = (req, res) => {
 
   // Check if the username already exists.
-  User.findAll({ where: { username: `${req.params.username}` } })
+  User.findAll({ where: { username: `${req.body.username}` } })
     .then(data => {
       if (data.length > 0) {
         // Username exists.
@@ -84,14 +84,14 @@ exports.create = (req, res) => {
         });
       } else {
         // Username doesn't exist.
-        let password = req.params.password;
+        let password = req.body.password;
         let hashedPassword = crypto.createHash('md5').update(password).digest('hex');
 
         const user = {
-          username: req.params.username,
+          username: req.body.username,
           password: hashedPassword,
-          email: req.params.email,
-          phone: req.params.phone
+          email: req.body.email,
+          phone: req.body.phone
         };
         User.create(user)
           .then(data => {
@@ -145,17 +145,28 @@ exports.findOne = (req, res) => {
 };
 // Update a Tutorial by the id in the request
 exports.update = (req, res) => {
-  
+  const userId = req.body.userId;
+  User.update(req.body, {
+    where: { id: userId }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: "User was updated successfully."
+        });
+      } else {
+        res.send({
+          message: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error updating User with id=" + id
+      });
+    });
 };
 // Delete a Tutorial with the specified id in the request
 exports.delete = (req, res) => {
-  
-};
-// Delete all Tutorials from the database.
-exports.deleteAll = (req, res) => {
-  
-};
-// Find all published Tutorials
-exports.findAllPublished = (req, res) => {
   
 };

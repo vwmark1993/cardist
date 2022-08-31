@@ -2,16 +2,16 @@ const db = require("../models");
 const ItemTag = db.item_tags;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Cart Item
+// Create and Save a new Item Tag
 exports.create = (req, res) => {
-  if (!req.params.itemId || !req.params.tagId) {
+  if (!req.body.itemId || !req.body.tagId) {
     res.status(400).send({
       message: "Content cannot be empty."
     });
     return;
   }
 
-  ItemTag.findAll({ where: { item_id: `${req.params.itemId}`, tag_id: `${req.params.tagId}` } })
+  ItemTag.findAll({ where: { item_id: `${req.body.itemId}`, tag_id: `${req.body.tagId}` } })
     .then(data => {
       if (data.length > 0) {
         // Item already has the tag
@@ -21,8 +21,8 @@ exports.create = (req, res) => {
       } else {
         // Item doesn't have the tag
         const itemTag = {
-          item_id: req.params.itemId,
-          tag_id: req.params.tagId
+          item_id: req.body.itemId,
+          tag_id: req.body.tagId
         };
         ItemTag.create(itemTag)
           .then(data => {
@@ -56,7 +56,7 @@ exports.findItemTags = (req, res) => {
   };
 // Delete a Item Tag with the specified id
 exports.delete = (req, res) => {
-  const id = req.params.id;
+  const id = req.body.id;
   ItemTag.destroy({
     where: { id: id }
   })

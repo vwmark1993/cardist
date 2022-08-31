@@ -7,7 +7,7 @@ const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
   const cart = {
-    user_id: req.params.userId
+    user_id: req.body.userId
   };
   Cart.create(cart)
     .then(data => {
@@ -64,7 +64,6 @@ exports.delete = (req, res) => {
 };
 // Stripe checkout
 exports.createCheckoutSession = async (req, res) => {
-  // console.log(req.body.items)
 
   try {
     const items = await Item.findAll();

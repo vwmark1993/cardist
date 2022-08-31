@@ -2,11 +2,11 @@ const db = require("../models");
 const Tag = db.tags;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new Tutorial
+// Create and Save a new Tag
 exports.create = (req, res) => {
   
 };
-// Retrieve Cart tied to a User from the database.
+// Retrieve Tag tied to a User from the database.
 exports.findAll = (req, res) => {
   Tag.findAll()
     .then(data => {
@@ -19,7 +19,7 @@ exports.findAll = (req, res) => {
       });
     });
   };
-// Find a single Cart Item with an id
+// Find a single Tag Item with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
   Tag.findByPk(id)
@@ -34,15 +34,15 @@ exports.findOne = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Item with id=" + id
+        message: "Error retrieving Tag with id=" + id
       });
     });
 };
-// Update a Tutorial by the id in the request
+// Update a Tag by the id in the request
 exports.update = (req, res) => {
   
 };
-// Delete a Tutorial with the specified id in the request
+// Delete a Tag with the specified id in the request
 exports.delete = (req, res) => {
   
 };

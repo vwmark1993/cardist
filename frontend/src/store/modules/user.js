@@ -12,7 +12,8 @@ const state = () => (
     totalEarnings: null,
     totalSpending: null,
     admin: null
-  }
+  },
+  successfulRegistrationMessage: null
 })
 
 // getters
@@ -25,6 +26,12 @@ const actions = {
   async authentication({ commit }, { authenticated, user } ) {
     commit('setAuthenticated', authenticated)
     commit('setUser', user)
+  },
+  setRegistrationMessage({ commit }) {
+    commit('setRegistrationMessage');
+  },
+  removeRegistrationMessage({ commit }) {
+    commit('removeRegistrationMessage');
   }
 }
 
@@ -35,6 +42,12 @@ const mutations = {
   },
   setUser(state, user) {
     state.currentUser = user
+  },
+  setRegistrationMessage(state) {
+    state.successfulRegistrationMessage = "Registration completed."
+  },
+  removeRegistrationMessage(state) {
+    state.successfulRegistrationMessage = null;
   }
 }
 

@@ -72,11 +72,11 @@ exports.findBySellerId = (req, res) => {
     });
 };
 
-// Update a Tutorial by the id in the request
+// Update an Item by the id in the request
 exports.update = (req, res) => {
   
 };
-// Delete a Tutorial with the specified id in the request
+// Delete a Item with the specified id in the request
 exports.delete = (req, res) => {
   
 };

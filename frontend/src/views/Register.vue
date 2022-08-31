@@ -68,18 +68,28 @@ export default {
             this.phone = null;
           }
 
-          let response = await UserDataService.create(this.username, this.password, this.email, this.phone);
+          let data = {
+            username: this.username,
+            password: this.password,
+            email: this.email,
+            phone: this.phone
+          }
+
+          let response = await UserDataService.create(data);
           let userResponse = response.data;
-          console.log(userResponse);
 
           // New user created.
           if (response.status == 200) {
-
-            response = await CartDataService.create(userResponse.id);
+            let data = {
+              userId: userResponse.id
+            }
+            
+            response = await CartDataService.create(data);
 
             // New cart created. New user account registration is completed.
             if (response.status == 200) {
               this.message = "";
+              store.dispatch('user/setRegistrationMessage')
               this.$router.push({ name: 'login' })
             } else {
               this.message = response.data.message;
@@ -92,7 +102,7 @@ export default {
           this.message = "Please enter valid user credentials.";
         }
       } catch (e) {
-        console.log(e)
+        this.message = e;
       }
     },
     registerByPressingEnter(e) {

@@ -6,14 +6,14 @@ class CartItemDataService {
   getCartItems(cartId) {
     return http.get(`/cartItem/find/cartId/${cartId}`);
   }
-  create(itemId, cartId) {
-    return http.post(`/cartItem/create/itemId/${itemId}/cartId/${cartId}`);
+  create(data) {
+    return http.post("/cartItem/create", data);
   }
-  update(quantity, id) {
-    return http.put(`/cartItem/update/${quantity}/${id}`);
+  update(data) {
+    return http.put("/cartItem/update", data);
   }
-  delete(id) {
-    return http.delete(`/cartItem/delete/${id}`);
+  delete(data) {
+    return http.delete("/cartItem/delete", data);
   }
 }
 export default new CartItemDataService();

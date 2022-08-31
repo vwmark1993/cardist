@@ -4,9 +4,9 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
   const comment = {
-    user_id: req.params.userId,
-    item_id: req.params.itemId,
-    message: req.params.message
+    user_id: req.body.userId,
+    item_id: req.body.itemId,
+    message: req.body.message
   };
   Comment.create(comment)
     .then(data => {
@@ -51,8 +51,8 @@ exports.findByUserId = (req, res) => {
 };
 // Find a single Comment with an id
 exports.findOne = (req, res) => {
-  const id = req.params.id;
-  Comment.findByPk(id)
+  const commentId = req.params.commentId;
+  Comment.findByPk(commentId)
     .then(data => {
       if (data) {
         res.send(data);

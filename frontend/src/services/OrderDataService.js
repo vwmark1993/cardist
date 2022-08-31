@@ -6,14 +6,11 @@ class OrderDataService {
   getOrdersByBuyer(buyerId) {
     return http.get(`/order/find/buyerId/${buyerId}`);
   }
-  create(buyerId) {
-    return http.post(`/order/create/buyerId/${buyerId}`);
+  create(data) {
+    return http.post("/order/create", data);
   }
-  update(quantity, id) {
-    return http.put(`/order/update/${quantity}/${id}`);
-  }
-  delete(id) {
-    return http.delete(`/order/delete/${id}`);
+  delete(data) {
+    return http.delete("/order/delete", data);
   }
   successfulOrder(sessionId) {
     return http.get(`/order/success/sessionId/${sessionId}`);
