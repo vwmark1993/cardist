@@ -6,6 +6,6 @@ module.exports = app => {
     // Retrieve Cart Items by Cart ID
     router.get("/find/itemId/:itemId", itemTags.findItemTags);
     // Delete an ItemTag with id
-    router.delete("/delete", itemTags.delete);
+    router.delete("/delete/:id", itemTags.delete);
     app.use('/api/itemTag', router);
   };

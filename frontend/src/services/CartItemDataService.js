@@ -9,11 +9,11 @@ class CartItemDataService {
   create(data) {
     return http.post("/cartItem/create", data);
   }
-  update(data) {
-    return http.put("/cartItem/update", data);
+  update(id, data) {
+    return http.put(`/cartItem/update/${id}`, data);
   }
-  delete(data) {
-    return http.delete("/cartItem/delete", data);
+  delete(id) {
+    return http.delete(`/cartItem/delete/${id}`);
   }
 }
 export default new CartItemDataService();

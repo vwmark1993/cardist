@@ -9,8 +9,8 @@ class OrderDataService {
   create(data) {
     return http.post("/order/create", data);
   }
-  delete(data) {
-    return http.delete("/order/delete", data);
+  delete(id) {
+    return http.delete(`/order/delete/${id}`);
   }
   successfulOrder(sessionId) {
     return http.get(`/order/success/sessionId/${sessionId}`);

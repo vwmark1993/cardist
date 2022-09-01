@@ -13,10 +13,10 @@ class CommentDataService {
     return http.post("/comment/create", data);
   }
   update(id, data) {
-    return http.put("/comment/update", data);
+    return http.put(`/comment/update/${id}`, data);
   }
-  delete(data) {
-    return http.delete("/comment/delete", data);
+  delete(id) {
+    return http.delete(`/comment/delete/${id}`);
   }
 }
 export default new CommentDataService();

@@ -12,8 +12,8 @@ module.exports = app => {
     // Retrieve Items by Seller ID
     router.get("/find/sellerId/:selleriD", items.findBySellerId);
     // Update an Item with given id
-    router.put("/update", items.update);
+    router.put("/update/:id", items.update);
     // Delete an Item with given id
-    router.delete("/delete", items.delete);
+    router.delete("/delete/:id", items.delete);
     app.use('/api/item', router);
   };

@@ -75,12 +75,9 @@ exports.findOne = (req, res) => {
 };
 // Update a Carrt Item by the id in the request
 exports.update = (req, res) => {
-  const id = req.body.id;
-  const quantity = req.body.quantity;
+  const id = req.params.id;
 
-  CartItem.update({
-    quantity: quantity
-  }, {
+  CartItem.update(req.body, {
     where: { id: id }
   })
     .then(num => {
@@ -102,7 +99,7 @@ exports.update = (req, res) => {
 };
 // Delete a Cart Item with the specified id
 exports.delete = (req, res) => {
-  const id = req.body.id;
+  const id = req.params.id;
   CartItem.destroy({
     where: { id: id }
   })

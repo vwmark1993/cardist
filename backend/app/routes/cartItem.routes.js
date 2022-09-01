@@ -6,10 +6,10 @@ module.exports = app => {
     // Retrieve Cart Items by Cart ID
     router.get("/find/cartId/:cartId", cartItems.findCartItems);
     // Update Cart Item quantity
-    router.put("/update", cartItems.update);
+    router.put("/update/:id", cartItems.update);
     // Retrieve a single Cart Item with id
     router.get("/find/cartItemId/:id", cartItems.findOne);
     // Delete a CartItem with id
-    router.delete("/delete", cartItems.delete);
+    router.delete("/delete/:id", cartItems.delete);
     app.use('/api/cartItem', router);
   };

@@ -1,5 +1,5 @@
 <template>
-  <vue-final-modal v-model="showModal" classes="flex justify-center items-center" content-class="modal-content" name="UserProfileModal">
+  <vue-final-modal v-model="showModal" classes="flex justify-center items-center" content-class="modal-content" name="UserSettingsModal">
     <div class="flex justify-between">
       <span class="font-bold text-2xl truncate">User Settings</span>
       <button class="my-auto" @click="showModal = false">
@@ -7,38 +7,70 @@
     </div>
     <div class="flex flex-col rounded bg-white my-4">
       <div>
-        <label class="block text-gray-700 text-sm font-bold mb-1 text-left" for="username">Username</label>
-        <input class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="username" type="text" disabled="true" placeholder="Username">
-        <div class="flex items-center mb-1">
-          <label class="block text-gray-700 text-sm font-bold text-left" for="password">Password</label>
-          <input v-model="showPassword" type="checkbox" class="block text-gray-700 text-sm font-bold ml-2">
-          <span class="text-xs text-gray-500 ml-1">Show</span>
-        </div>
-        <input v-if="showPassword" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="password" type="text" placeholder="Password">
-        <input v-else class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="password" type="password" placeholder="Password">
         <label class="block text-gray-700 text-sm font-bold mb-1 text-left" for="password">Email</label>
-        <input class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="email" type="email" placeholder="Email">
+        <input v-model="updatedEmail" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="email" type="email">
         <label class="block text-gray-700 text-sm font-bold mb-1 text-left" for="password">Phone Number</label>
-        <input class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="phone" type="phone" placeholder="Phone">
+        <input v-model="updatedPhone" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="phone" type="phone">
         <label class="block text-gray-700 text-sm font-bold mb-1 text-left" for="password">Profile Picture</label>
-        <input class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="picture" type="text" placeholder="">
+        <input v-model="updatedPicture" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="picture" type="text">
       </div>
     </div>
     <div>
-      <button @click="showModal = false" class="user-profile-item-remove-button bg-green-600 hover:bg-green-800 text-white text-sm px-4 py-2 mr-1 rounded">Confirm</button>
-      <button @click="showModal = false" class="user-profile-item-remove-button bg-red-600 hover:bg-red-800 text-white text-sm px-4 py-2 mr-1 rounded">Cancel</button>
+      <button @click="updateUser" class="user-profile-item-remove-button bg-green-600 hover:bg-green-800 text-white text-sm px-4 py-2 mr-1 rounded">Change Settings</button>
+      <button @click="closeModal" class="user-profile-item-remove-button bg-red-600 hover:bg-red-800 text-white text-sm px-4 py-2 mr-1 rounded">Cancel</button>
     </div>
   </vue-final-modal>
 </template>
 
 <script>
+  import UserDataService from '@/services/UserDataService.js'
+import store from '@/store';
+
   export default {
     name: 'UserSettingsModal',
-    data: () => ({
-      showModal: false,
-      showPassword: false
-    })
-  }
+    props: {
+      id: String,
+      email: String,
+      phone: String,
+      picture: String
+    },
+    data() {
+      return {
+        showModal: false,
+        updatedEmail: this.email,
+        updatedPhone: this.phone,
+        updatedPicture: this.picture
+      }
+    },
+    methods: {
+      async updateUser() {
+        let data = {
+          email: this.updatedEmail,
+          phone: this.updatedPhone,
+          picture: this.updatedPicture
+        }
+
+        await UserDataService.update(this.id, data);
+        
+        store.dispatch('user/updateUser', data)
+
+        this.showModal = false;
+      },
+      closeModal() {
+        this.updatedEmail = this.email;
+        this.updatedPhone = this.phone;
+        this.updatedPicture = this.picture;
+        this.showModal = false;
+      }
+    }, 
+    async mounted() {
+      // Password is retrieved separately for security reasons (so that it doesn't go through Vuex and end up being saved in localstorage).
+      let response = await UserDataService.get(this.id);
+      let user = response.data;
+      this.password = user.password;
+      this.updatedPassword = user.password;
+    }
+  } 
   </script>
 
 <style scoped>

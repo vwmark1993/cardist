@@ -56,7 +56,7 @@ exports.findItemTags = (req, res) => {
   };
 // Delete a Item Tag with the specified id
 exports.delete = (req, res) => {
-  const id = req.body.id;
+  const id = req.params.id;
   ItemTag.destroy({
     where: { id: id }
   })

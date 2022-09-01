@@ -74,7 +74,7 @@ exports.findOne = (req, res) => {
 
 // Delete a Order with the specified id
 exports.delete = (req, res) => {
-  const id = req.body.id;
+  const id = req.params.id;
   Order.destroy({
     where: { id: id }
   })

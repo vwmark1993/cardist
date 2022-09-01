@@ -13,13 +13,13 @@ class ItemDataService {
     return http.get(`/item/find/sellerId/${sellerId}`);
   }
   create(data) {
-    return http.post("/tutorials", data);
+    return http.post("/item/create", data);
   }
   update(id, data) {
-    return http.put(`/tutorials/${id}`, data);
+    return http.put(`/item/${id}`, data);
   }
   delete(id) {
-    return http.delete(`/tutorials/${id}`);
+    return http.delete(`/item/${id}`);
   }
 }
 export default new ItemDataService();

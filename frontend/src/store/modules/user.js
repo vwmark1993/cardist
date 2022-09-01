@@ -23,9 +23,12 @@ const getters = {
 
 // actions
 const actions = {
-  async authentication({ commit }, { authenticated, user } ) {
-    commit('setAuthenticated', authenticated)
-    commit('setUser', user)
+  authentication({ commit }, { authenticated, user } ) {
+    commit('setAuthenticated', authenticated);
+    commit('setUser', user);
+  },
+  updateUser({ commit }, { email, phone, picture }) {
+    commit('updateUser', { email, phone, picture });
   },
   setRegistrationMessage({ commit }) {
     commit('setRegistrationMessage');
@@ -38,13 +41,15 @@ const actions = {
 // mutations
 const mutations = {
   setAuthenticated(state, authenticated) {
-    state.authenticated = authenticated
+    state.authenticated = authenticated;
   },
-  setUser(state, user) {
-    state.currentUser = user
+  updateUser(state, { email, phone, picture }) {
+    state.currentUser.email = email;
+    state.currentUser.phone = phone;
+    state.currentUser.picture = picture;
   },
   setRegistrationMessage(state) {
-    state.successfulRegistrationMessage = "Registration completed."
+    state.successfulRegistrationMessage = "Registration completed.";
   },
   removeRegistrationMessage(state) {
     state.successfulRegistrationMessage = null;

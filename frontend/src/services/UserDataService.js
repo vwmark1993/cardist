@@ -4,7 +4,7 @@ class UserDataService {
     return http.get("/user/find");
   }
   get(id) {
-    return http.get(`/user/find/${id}`);
+    return http.get(`/user/find/userId/${id}`);
   }
   create(data) {
     return http.post("/user/create", data);
@@ -14,6 +14,9 @@ class UserDataService {
   }
   delete(id) {
     return http.delete(`/user/delete/${id}`);
+  }
+  changePassword(id, data) {
+    return http.put(`/user/changePassword/${id}`, data);
   }
   authenticate(data) {
     return http.post("/user/authenticate", data);

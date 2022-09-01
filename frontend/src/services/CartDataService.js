@@ -10,10 +10,10 @@ class CartDataService {
     return http.post("/cart/create", data);
   }
   update(id, data) {
-    return http.put(`/tutorials/${id}`, data);
+    return http.put(`/cart/update/${id}`, data);
   }
   delete(id) {
-    return http.delete(`/tutorials/${id}`);
+    return http.delete(`/cart/delete/${id}`);
   }
   checkout(data) {
     return http.post("/cart/create-checkout-session", data);

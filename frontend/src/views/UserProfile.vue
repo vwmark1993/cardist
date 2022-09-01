@@ -1,6 +1,14 @@
 <template>
   <div>
-    <UserSettingsModal />
+    <UserSettingsModal 
+      :id="user.id"
+      :email="user.email"
+      :phone="user.phone"
+      :picture="user.picture"
+    />
+    <ChangePasswordModal 
+      :id="user.id"
+    />
     <UserHeader />
     <div class="grid grid-cols-12 grid-flow-col items-start">
       <div class="col-span-3 m-3 p-3 border border-slate-400 rounded">
@@ -8,11 +16,14 @@
           <img v-if="user.picture != null" :src="user.picture" class="rounded m-auto" />
           <img v-else src="../assets/images/profile-picture-placeholder.png" class="rounded m-auto" />
         </div>
-        <div class="flex justify-between items-center">
-          <span class="text-sm">Items Sold: {{ itemsSold }}</span>
-          <button @click="editProfile" class="bg-slate-500 hover:bg-slate-700 text-white text-sm font-semibold py-1 px-2 rounded">Edit Profile</button>
+        <div>
+          <div class="text-right mb-1">
+            <button @click="editProfile" class="bg-slate-500 hover:bg-slate-700 text-white text-sm font-semibold py-1 px-2 rounded">Edit Profile</button>
+            <button @click="changePassword" class="bg-slate-500 hover:bg-slate-700 text-white text-sm font-semibold ml-1 py-1 px-2 rounded">Change Password</button>
+          </div>
+          <span class="block text-sm text-left">Items Sold: {{ itemsSold }}</span>
         </div>
-        <div class="rounded bg-slate-100 text-left mt-3 p-2">
+        <div class="rounded bg-slate-100 text-left mt-2 p-2">
           <div>
             <span class="text-xs">Username:</span>
             <span class="block font-semibold">{{ user.username }}</span>
@@ -106,7 +117,6 @@
                 <div class="user-profile-item-header flex justify-between items-center border-b border-slate-400 mb-1">
                   <h6 class="text-lg truncate">{{ comment.itemName }}</h6>
                   <div>
-                    <button class="bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 mr-1 rounded">Edit</button>
                     <button class="bg-slate-500 hover:bg-red-700 text-white text-sm px-3 py-1 rounded">Remove</button>
                   </div>
                 </div>
@@ -137,25 +147,17 @@ import UserHeader from '@/components/UserHeader.vue'
 
 import { $vfm } from 'vue-final-modal'
 import UserSettingsModal from '@/components/UserSettingsModal.vue'
+import ChangePasswordModal from '@/components/ChangePasswordModal.vue'
 
 export default {
   name: 'UserProfile',
   components: {
     UserHeader,
-    UserSettingsModal
+    UserSettingsModal,
+    ChangePasswordModal
   },
   data() {
       return {
-          userId: store.state.user.currentUser.id,
-          user: {
-            username: null,
-            email: null,
-            phone: null,
-            picture: null,
-            totalEarnings: 0,
-            totalSpending: 0,
-            admin: false
-          },
           itemListings: [],
           ordersAsBuyer: [],
           ordersAsSeller: [],
@@ -164,22 +166,25 @@ export default {
   },
   methods: {
     editProfile() {
-      $vfm.show("UserProfileModal")
+      $vfm.show("UserSettingsModal");
+    },
+    changePassword() {
+      $vfm.show("ChangePasswordModal");
     },
     async getUser() {
-      let response = await UserDataService.get(this.userId);
+      let response = await UserDataService.get(this.user.id);
       this.user = response.data;
     },
     async getItemsSold() {
-      let response = await OrderItemDataService.getOrderItemsBySeller(this.userId);
+      let response = await OrderItemDataService.getOrderItemsBySeller(this.user.id);
       this.ordersAsSeller = response.data;
     },
     async getItemListings() {
-      let response = await ItemDataService.getItemsBySeller(this.userId);
+      let response = await ItemDataService.getItemsBySeller(this.user.id);
       this.itemListings = response.data;
     },
     async getOrders() {
-      let orderResponse = await OrderDataService.getOrdersByBuyer(this.userId);
+      let orderResponse = await OrderDataService.getOrdersByBuyer(this.user.id);
       let orders = orderResponse.data;
 
       orders.forEach(async order => {
@@ -206,7 +211,7 @@ export default {
       })
     }, 
     async getComments() {
-      let response = await CommentDataService.getCommentsByUser(this.userId);
+      let response = await CommentDataService.getCommentsByUser(this.user.id);
 
       response.data.forEach(async comment => {
 
@@ -239,6 +244,18 @@ export default {
         })
 
         return itemCount;
+      }
+    },
+    user() {
+      return {
+        id: store.state.user.currentUser.id,
+        username: store.state.user.currentUser.username,
+        email: store.state.user.currentUser.email,
+        phone: store.state.user.currentUser.phone,
+        picture: store.state.user.currentUser.picture,
+        totalEarnings: store.state.user.currentUser.total_earnings,
+        totalSpending: store.state.user.currentUser.total_spending,
+        admin: store.state.user.currentUser.admin
       }
     }
   },

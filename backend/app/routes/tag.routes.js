@@ -8,6 +8,6 @@ module.exports = app => {
     // Retrieve a single Comment with id
     router.get("/find/tagId/:id", tags.findOne);
     // Delete a Cart with id
-    router.delete("/delete", tags.delete);
+    router.delete("/delete/:id", tags.delete);
     app.use('/api/tag', router);
   };

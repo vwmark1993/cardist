@@ -10,7 +10,7 @@ module.exports = app => {
     // Retrieve a single Order with id
     router.get("/find/:id", orders.findOne);
     // Delete an Order with id
-    router.delete("/delete", orders.delete);
+    router.delete("/delete/:id", orders.delete);
     // Stripe routing
     router.get("/success/sessionId/:sessionId", orders.successfulOrder);
     app.use('/api/order', router);

@@ -91,11 +91,7 @@ const actions = {
     }
   },
   async deleteCartItem({ commit }, { index, id }) {
-    let data = {
-      id: id
-    }
-
-    await CartItemDataService.delete(data);
+    await CartItemDataService.delete(id);
 
     commit('removeCartItemByIndex', index)
   },
@@ -103,11 +99,10 @@ const actions = {
     let cartItem = store.state.cart.cartItems[index];
 
     let data = {
-      id: cartItem.id,
       quantity: quantity
     }
 
-    await CartItemDataService.update(data);
+    await CartItemDataService.update(cartItem.id, data);
 
     let updatedCartItem = {
       id: cartItem.id,
@@ -127,11 +122,7 @@ const actions = {
   },
   emptyCart({ commit }) {
     store.state.cart.cartItems.forEach(async cartItem => {
-      let data = {
-        id: cartItem.id
-      }
-
-      await CartItemDataService.delete(data);
+      await CartItemDataService.delete(cartItem.id);
     })
 
     commit('emptyCart');

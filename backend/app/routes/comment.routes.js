@@ -10,8 +10,8 @@ module.exports = app => {
     // Retrieve a single Comment with id
     router.get("/find/:commentId", comments.findOne);
     // Update a Comment with id
-    router.put("/update", comments.update);
+    router.put("/update/:id", comments.update);
     // Delete a Comment with id
-    router.delete("/delete", comments.delete);
+    router.delete("/delete/:id", comments.delete);
     app.use('/api/comment', router);
   };

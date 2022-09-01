@@ -20,53 +20,108 @@ exports.authenticate = (req, res) => {
     return
   }
 
+  // Check the username.
   let condition = username ? { username: `${username}` } : null;
   User.findAll({ where: condition })
-    .then(usernameCheckRes => {
-      if (usernameCheckRes.length == 0) {
+    .then(userRes => {
+      if (userRes.length == 0) {
         res.status(201).send({
           message: "Invalid username."
         });
         return
       }
 
+      // Check the password.
       let hashedPassword = crypto.createHash('md5').update(password).digest('hex');
-      let condition = hashedPassword ? { username: `${username}`, password: `${hashedPassword}` } : null;
-      User.findAll({ where: condition })
-      .then(passwordCheckRes => {
-        if (passwordCheckRes.length == 0) {
-          res.status(202).send({
-            message: "Invalid password."
-          });
-          return
-        }
 
-        res.status(200).send({
-          message: "Authenticated.",
-          user: {
-            id: passwordCheckRes[0].id,
-            username: passwordCheckRes[0].username,
-            email: passwordCheckRes[0].email,
-            phone: passwordCheckRes[0].phone,
-            picture: passwordCheckRes[0].picture,
-            settings: passwordCheckRes[0].settings,
-            totalEarnings: passwordCheckRes[0].total_earnings,
-            totalSpending: passwordCheckRes[0].totalSpending,
-            admin: passwordCheckRes[0].admin
-          }
+      if (hashedPassword !== userRes[0].password) {
+        res.status(202).send({
+          message: "Invalid password."
         });
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Invalid password."
-        });
+        return
+      }
+
+      res.status(200).send({
+        message: "Authenticated.",
+        user: {
+          id: userRes[0].id,
+          username: userRes[0].username,
+          email: userRes[0].email,
+          phone: userRes[0].phone,
+          picture: userRes[0].picture,
+          settings: userRes[0].settings,
+          totalEarnings: userRes[0].total_earnings,
+          totalSpending: userRes[0].total_spending,
+          admin: userRes[0].admin
+        }
       });
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Invalid username."
+          err.message || "Failed to authenticate."
+      });
+    });
+};
+
+// Change a user's password.
+exports.changePassword = (req, res) => {
+  const id = req.params.id;
+  const currentPassword = req.body.currentPassword;
+  const newPassword = req.body.newPassword;
+
+  if (newPassword == null || newPassword.length == 0) {
+    res.status(201).send({
+      message: "Invalid password."
+    });
+    return
+  }
+
+  let condition = id ? { id: `${id}` } : null;
+  User.findAll({ where: condition })
+    .then(userRes => {
+      if (userRes.length == 0) {
+        res.status(201).send({
+          message: "User not found."
+        });
+        return
+      }
+
+      let hashedPassword = crypto.createHash('md5').update(currentPassword).digest('hex');
+
+      if (hashedPassword !== userRes[0].password) {
+        res.status(202).send({
+          message: "Invalid password."
+        });
+        return
+      }
+
+      User.update({
+        password: crypto.createHash('md5').update(newPassword).digest('hex')
+      }, {
+        where: { id: id }
+      })
+        .then(num => {
+          if (num == 1) {
+            res.send({
+              message: "Password changed."
+            });
+          } else {
+            res.send({
+              message: `Failed to change password.`
+            });
+          }
+        })
+        .catch(err => {
+          res.status(500).send({
+            message: err.message || "Error occurred while attempting to change the password."
+          }); 
+        });
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Error occurred while querying the user."
       });
     });
 };
@@ -143,11 +198,11 @@ exports.findOne = (req, res) => {
       });
     });
 };
-// Update a Tutorial by the id in the request
+// Update a User
 exports.update = (req, res) => {
-  const userId = req.body.userId;
+  const id = req.params.id;
   User.update(req.body, {
-    where: { id: userId }
+    where: { id: id }
   })
     .then(num => {
       if (num == 1) {
@@ -166,7 +221,7 @@ exports.update = (req, res) => {
       });
     });
 };
-// Delete a Tutorial with the specified id in the request
+// Delete a User with the specified id in the request
 exports.delete = (req, res) => {
   
 };
