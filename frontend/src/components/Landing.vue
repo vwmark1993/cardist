@@ -90,13 +90,10 @@ export default {
   methods: {
     changeFilterMode(hideFilters) {
       this.hideFilters = hideFilters;
-    },
-    sort() {
-      
     }
   },
   async mounted() {
-    if (this.items.length === 0) {
+    if (this.items.length === 0 && store.state.search.searchString === '') {
       store.dispatch('search/searchItems', '')
     }
   }

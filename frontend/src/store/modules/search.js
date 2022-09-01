@@ -51,14 +51,13 @@ const actions = {
         item.tags = tags
       })
 
-      console.log(items)
-
       commit('setQueriedItems', items);
     } catch (e) {
       console.log(e)
     }
   },
-  resetItems({ commit }) {
+  resetSearchQuery({ commit }) {
+    commit('resetSearchString');
     commit('emptyQueriedItems');
   },
   addGeneralFilter({ commit }, filter) {

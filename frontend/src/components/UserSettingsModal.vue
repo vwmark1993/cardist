@@ -55,6 +55,8 @@ import store from '@/store';
         store.dispatch('user/updateUser', data)
 
         this.showModal = false;
+
+        this.$emit('updatedUser');
       },
       closeModal() {
         this.updatedEmail = this.email;

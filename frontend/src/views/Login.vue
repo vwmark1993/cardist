@@ -52,7 +52,8 @@ export default {
   },
   methods: {
     async login() {
-      store.dispatch('user/removeRegistrationMessage')
+      store.dispatch('user/removeRegistrationMessage');
+      store.dispatch('search/resetFilters');
 
       try {
         if (this.username.length > 0 && this.password.length > 0) {
@@ -68,6 +69,7 @@ export default {
               authenticated: true,
               user: response.data.user
             });
+
             this.$router.push({ name: 'home' });
           } else if (response.status == 201 || response.status == 202) {
             this.message = response.data.message;

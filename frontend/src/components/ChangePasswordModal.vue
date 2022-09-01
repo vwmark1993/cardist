@@ -59,7 +59,8 @@
     methods: {
       async updatePassword() {
         if (this.newPassword !== this.confirmNewPassword) {
-          alert("passwords don't match");
+          this.$emit('incorrectPasswords');
+          this.closeModal();
           return;
         }
 
@@ -69,9 +70,18 @@
         }
 
         let response = await UserDataService.changePassword(this.id, data);
-        console.log(response.data)
 
-        this.showModal = false;
+        let mode = '';
+
+        if (response.status === 200) {
+          mode = 'success';
+        } else {
+          mode = 'failure';
+        }
+
+        this.$emit('updatedPasswordResponse', response.data.message, mode);
+
+        this.closeModal();
       },
       closeModal() {
         this.currentPassword = '';

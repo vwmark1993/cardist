@@ -72,7 +72,7 @@ exports.changePassword = (req, res) => {
 
   if (newPassword == null || newPassword.length == 0) {
     res.status(201).send({
-      message: "Invalid password."
+      message: "Invalid Password"
     });
     return
   }
@@ -82,7 +82,7 @@ exports.changePassword = (req, res) => {
     .then(userRes => {
       if (userRes.length == 0) {
         res.status(201).send({
-          message: "User not found."
+          message: "User Not Found"
         });
         return
       }
@@ -91,7 +91,7 @@ exports.changePassword = (req, res) => {
 
       if (hashedPassword !== userRes[0].password) {
         res.status(202).send({
-          message: "Invalid password."
+          message: "Invalid Password"
         });
         return
       }
@@ -104,24 +104,24 @@ exports.changePassword = (req, res) => {
         .then(num => {
           if (num == 1) {
             res.send({
-              message: "Password changed."
+              message: "Password Changed"
             });
           } else {
             res.send({
-              message: `Failed to change password.`
+              message: `Failed to change password`
             });
           }
         })
         .catch(err => {
           res.status(500).send({
-            message: err.message || "Error occurred while attempting to change the password."
+            message: err.message || "Error occurred while attempting to change the password"
           }); 
         });
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Error occurred while querying the user."
+          err.message || "Error occurred while querying the user"
       });
     });
 };

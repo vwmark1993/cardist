@@ -95,9 +95,11 @@ export default {
         }
       })
 
+      store.dispatch('search/searchItems', '')
       store.dispatch('search/resetFilters');
       store.dispatch('cart/emptyCart');
 
+      this.searchString = '';
       this.$router.push({ name: 'home' });
     },
     handleEscape(e) {
@@ -118,6 +120,7 @@ export default {
       this.$router.push({ name: 'shopping-cart' })
     },
     searchItemsByName() {
+      this.$router.push({ name: 'home' }) 
       store.dispatch('search/searchItems', this.searchString)
     }
   }

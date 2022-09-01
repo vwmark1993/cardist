@@ -56,6 +56,13 @@ export default {
           selectedTags: []
       }
   },
+  watch: {
+    tagFilters() {
+      if (this.tagFilters.length === 0) {
+        this.selectedTags = [];
+      }
+    }
+  }, 
   computed: {
     newItemFilter() {
       if (store.state.search.generalFilters) {
@@ -70,6 +77,9 @@ export default {
       } else {
         return false;
       }
+    },
+    tagFilters() {
+      return store.state.search.tagFilters;
     }
   },
   methods: {

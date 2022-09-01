@@ -5,11 +5,19 @@
       :email="user.email"
       :phone="user.phone"
       :picture="user.picture"
+      @updatedUser="(message, mode) => showConfirmation(message, mode)"
     />
     <ChangePasswordModal 
       :id="user.id"
+      @updatedPasswordResponse="(message, mode) => showConfirmation(message, mode)"
+      @incorrectPasswords="() => showConfirmation('Passwords do not match', 'failure')"
     />
     <UserHeader />
+    <div class="fixed bottom-3 w-full">
+      <Transition name="slide-fade">
+        <AlertMessage v-if="showMessage" :message="message" :mode="messageMode" />
+      </Transition>
+    </div>
     <div class="grid grid-cols-12 grid-flow-col items-start">
       <div class="col-span-3 m-3 p-3 border border-slate-400 rounded">
         <div class="mb-2">
@@ -137,13 +145,13 @@
 <script>
 import store from '@/store'
 
-import UserDataService from '@/services/UserDataService.js'
 import ItemDataService from '@/services/ItemDataService.js'
 import OrderDataService from '@/services/OrderDataService.js'
 import OrderItemDataService from '@/services/OrderItemDataService.js'
 import CommentDataService from '@/services/CommentDataService.js'
 
 import UserHeader from '@/components/UserHeader.vue'
+import AlertMessage from '@/components/AlertMessage.vue'
 
 import { $vfm } from 'vue-final-modal'
 import UserSettingsModal from '@/components/UserSettingsModal.vue'
@@ -153,6 +161,7 @@ export default {
   name: 'UserProfile',
   components: {
     UserHeader,
+    AlertMessage,
     UserSettingsModal,
     ChangePasswordModal
   },
@@ -161,19 +170,28 @@ export default {
           itemListings: [],
           ordersAsBuyer: [],
           ordersAsSeller: [],
-          comments: []
+          comments: [],
+          message: '',
+          messageMode: '',
+          showMessage: false
       }
   },
   methods: {
+    showConfirmation(message, mode) {
+      this.message = message;
+      this.messageMode = mode;
+      this.showMessage = true;
+
+      setTimeout(() => {
+        this.message = '';
+        this.showMessage = false;
+      }, 3000)
+    }, 
     editProfile() {
       $vfm.show("UserSettingsModal");
     },
     changePassword() {
       $vfm.show("ChangePasswordModal");
-    },
-    async getUser() {
-      let response = await UserDataService.get(this.user.id);
-      this.user = response.data;
     },
     async getItemsSold() {
       let response = await OrderItemDataService.getOrderItemsBySeller(this.user.id);
@@ -263,7 +281,6 @@ export default {
     if (!store.state.user.authenticated) {
       this.$router.push({ name: 'login' });
     } else {
-      await this.getUser();
       await this.getItemListings();
       await this.getOrders();
       await this.getItemsSold();
@@ -273,6 +290,19 @@ export default {
 }
 </script>
 <style scoped>
+  .slide-fade-enter-active {
+    transition: all 0.3s ease-out;
+  }
+
+  .slide-fade-leave-active {
+    transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+  }
+
+  .slide-fade-enter-from,
+  .slide-fade-leave-to {
+    transform: translateY(20px);
+    opacity: 0;
+  }
 .user-profile-group-container {
     height: auto;
   }
@@ -282,11 +312,6 @@ export default {
   }
   .user-profile-item-container {
     min-height: 166px;
-  }
-
-  .user-profile-item-input-field {
-    height: 30px;
-    width: 40px;
   }
 
   .user-profile-item-image {
