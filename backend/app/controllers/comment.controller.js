@@ -68,11 +68,30 @@ exports.findOne = (req, res) => {
       });
     });
 };
-// Update a Tutorial by the id in the request
+// Update a Comment by the id in the request
 exports.update = (req, res) => {
   
 };
-// Delete a Tutorial with the specified id in the request
+// Delete a Comment with the specified id in the request
 exports.delete = (req, res) => {
-  
+  const id = req.params.id;
+  Comment.destroy({
+    where: { id: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: "Comment was deleted successfully!"
+        });
+      } else {
+        res.send({
+          message: `Cannot delete Comment with id=${id}. Comment was not found!`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Could not delete Comment with id=" + id
+      });
+    });
 };

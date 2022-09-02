@@ -18,6 +18,7 @@
 
 <script>
 import store from '@/store'
+import CartItemDataService from '@/services/CartItemDataService.js'
 import OrderDataService from '@/services/OrderDataService.js'
 import OrderItemDataService from '@/services/OrderItemDataService.js'
 
@@ -89,6 +90,10 @@ export default {
   },
   beforeRouteLeave () {
     // Reset shopping cart once the user leaves the page.
+    this.orderItems.forEach(async cartItem => {
+      await CartItemDataService.delete(cartItem.id);
+    })
+
     store.dispatch('cart/emptyCart');
     store.dispatch('cart/setOrderConfirmationFlag', false);
   }

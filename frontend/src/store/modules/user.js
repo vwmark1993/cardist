@@ -13,7 +13,9 @@ const state = () => (
     totalSpending: null,
     admin: null
   },
-  successfulRegistrationMessage: null
+  successfulRegistrationMessage: null,
+  successfulLoginMessage: null,
+  logoutMessage: null
 })
 
 // getters
@@ -35,6 +37,18 @@ const actions = {
   },
   removeRegistrationMessage({ commit }) {
     commit('removeRegistrationMessage');
+  },
+  setLoginMessage({ commit }, username) {
+    commit('setLoginMessage', username);
+  },
+  removeLoginMessage({ commit }) {
+    commit('removeLoginMessage');
+  },
+  setLogoutMessage({ commit }) {
+    commit('setLogoutMessage');
+  },
+  removeLogoutMessage({ commit }) {
+    commit('removeLogoutMessage');
   }
 }
 
@@ -43,16 +57,31 @@ const mutations = {
   setAuthenticated(state, authenticated) {
     state.authenticated = authenticated;
   },
+  setUser(state, user) {
+    state.currentUser = user;
+  },
   updateUser(state, { email, phone, picture }) {
     state.currentUser.email = email;
     state.currentUser.phone = phone;
     state.currentUser.picture = picture;
   },
   setRegistrationMessage(state) {
-    state.successfulRegistrationMessage = "Registration completed.";
+    state.successfulRegistrationMessage = "Registration Completed";
   },
   removeRegistrationMessage(state) {
     state.successfulRegistrationMessage = null;
+  },
+  setLoginMessage(state, username) {
+    state.successfulLoginMessage = "Welcome, " + username;
+  },
+  removeLoginMessage(state) {
+    state.successfulLoginMessage = null;
+  },
+  setLogoutMessage(state) {
+    state.logoutMessage = "Logged Out";
+  },
+  removeLogoutMessage(state) {
+    state.logoutMessage = null;
   }
 }
 

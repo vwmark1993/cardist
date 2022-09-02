@@ -5,7 +5,7 @@
       :email="user.email"
       :phone="user.phone"
       :picture="user.picture"
-      @updatedUser="(message, mode) => showConfirmation(message, mode)"
+      @updatedUser="() => showConfirmation('Updated Profile', 'success')"
     />
     <ChangePasswordModal 
       :id="user.id"
@@ -120,12 +120,13 @@
             <span class="block text-left text-xl font-bold ml-3">Comments</span>
           </div>
           <div v-if="comments.length > 0" class="user-profile-scroll-container">
-            <div v-for="comment in comments" :key="comment.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
+            <div v-for="comment, index in comments" :key="comment.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
               <div class="w-full">
                 <div class="user-profile-item-header flex justify-between items-center border-b border-slate-400 mb-1">
                   <h6 class="text-lg truncate">{{ comment.itemName }}</h6>
                   <div>
-                    <button class="bg-slate-500 hover:bg-red-700 text-white text-sm px-3 py-1 rounded">Remove</button>
+                    <button class="bg-slate-500 text-white text-sm mr-1 px-3 py-1 rounded">Edit</button>
+                    <button @click="removeComment(comment.id, index)" class="bg-slate-500 hover:bg-red-700 text-white text-sm px-3 py-1 rounded">Remove</button>
                   </div>
                 </div>
                 <span class="block text-left text-xs mb-1">Posted on: {{ new Date(comment.createdOn).toLocaleDateString("en-US") }}</span>
@@ -248,6 +249,15 @@ export default {
           updatedOn: comment.updated_on
         })
       })
+    },
+    async removeComment(id, index) {
+      try {
+        await CommentDataService.delete(id);
+        this.comments.splice(index, 1);
+      } catch(e) {
+        console.log(e)
+      }
+    
     }
   },
   computed: {
@@ -290,19 +300,6 @@ export default {
 }
 </script>
 <style scoped>
-  .slide-fade-enter-active {
-    transition: all 0.3s ease-out;
-  }
-
-  .slide-fade-leave-active {
-    transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
-  }
-
-  .slide-fade-enter-from,
-  .slide-fade-leave-to {
-    transform: translateY(20px);
-    opacity: 0;
-  }
 .user-profile-group-container {
     height: auto;
   }

@@ -8,7 +8,9 @@ const state = () => (
   : {
   cartId: null,
   cartItems: [],
-  orderConfirmationFlag: false
+  orderConfirmationFlag: false,
+  cartMessage: null,
+  cartMessageStatus: null
 })
 
 // getters
@@ -58,36 +60,57 @@ const actions = {
     }
   },
   async addCartItem({ commit }, itemId) {
-    let data = {
-      itemId: itemId,
-      cartId: store.state.cart.cartId
-    }
+    try {
+      let data = {
+        itemId: itemId,
+        cartId: store.state.cart.cartId
+      }
+  
+      let cartItemResponse = await CartItemDataService.create(data);
+      let cartItem = cartItemResponse.data;
+  
+      let itemResponse = await ItemDataService.get(itemId)
+      let itemDetails = itemResponse.data;
+      this.itemDetails = itemDetails;
+  
+      let newCartItem = {
+        id: cartItem.id,
+        itemId: cartItem.item_id,
+        name: itemDetails.name,
+        thumbnail: itemDetails.images.length > 0 ? itemDetails.images[0] : null,
+        quantity: 1,
+        price: itemDetails.price,
+        basePrice: itemDetails.price,
+        sellerId: itemDetails.seller_id
+      }
+  
+      if (cartItemResponse.status == 200) {
+        commit('insertCartItem', newCartItem)
+        commit('setCartMessage', 'Added to cart: ' + itemDetails.name);
+        commit('setCartMessageStatus', 'success');
 
-    let cartItemResponse = await CartItemDataService.create(data);
-    let cartItem = cartItemResponse.data;
+        setTimeout(() => {
+          commit('removeCartMessage');
+          commit('removeCartMessageStatus');
+        }, 3000)
+      } else if (cartItemResponse.status == 201) {
+        console.log(cartItemResponse)
+        commit('setCartMessage', 'Cart already contains: ' + itemDetails.name);
+        commit('setCartMessageStatus', 'failure');
 
-    let itemResponse = await ItemDataService.get(itemId)
-    let itemDetails = itemResponse.data;
-    this.itemDetails = itemDetails;
+        setTimeout(() => {
+          commit('removeCartMessage');
+          commit('removeCartMessageStatus');
+        }, 3000)
+      }
+    } catch (e) {
+      commit('setCartMessage', e.message);
+      commit('setCartMessageStatus', 'failure');
 
-    let newCartItem = {
-      id: cartItem.id,
-      itemId: cartItem.item_id,
-      name: itemDetails.name,
-      thumbnail: itemDetails.images.length > 0 ? itemDetails.images[0] : null,
-      quantity: 1,
-      price: itemDetails.price,
-      basePrice: itemDetails.price,
-      sellerId: itemDetails.seller_id
-    }
-
-    if (cartItemResponse.status == 200) {
-      commit('insertCartItem', newCartItem)
-      alert("added to cart")
-    } else if (cartItemResponse.status == 201) {
-      alert("item already exists in cart")
-    } else {
-      alert("error")
+      setTimeout(() => {
+        commit('removeCartMessage');
+        commit('removeCartMessageStatus');
+      }, 3000)
     }
   },
   async deleteCartItem({ commit }, { index, id }) {
@@ -121,10 +144,6 @@ const actions = {
     })
   },
   emptyCart({ commit }) {
-    store.state.cart.cartItems.forEach(async cartItem => {
-      await CartItemDataService.delete(cartItem.id);
-    })
-
     commit('emptyCart');
   },
   setOrderConfirmationFlag({ commit }, flag) {
@@ -151,6 +170,18 @@ const mutations = {
   },
   setOrderConfirmationFlag(state, flag) {
     state.orderConfirmationFlag = flag;
+  },
+  setCartMessage(state, message) {
+    state.cartMessage = message;
+  },
+  removeCartMessage(state) {
+    state.cartMessage = null;
+  },
+  setCartMessageStatus(state, status) {
+    state.cartMessageStatus = status;
+  },
+  removeCartMessageStatus(state) {
+    state.cartMessageStatus = null;
   }
 }
 

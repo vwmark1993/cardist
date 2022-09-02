@@ -1,10 +1,7 @@
 <template>
   <div class="flex flex-col justify-center h-screen bg-primary">
     <div class="flex flex-col justify-center items-center">
-      <div v-if="$store.state.user.successfulRegistrationMessage" class="mb-4 mx-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
-        <span class="text-green-500 font-semibold">{{ $store.state.user.successfulRegistrationMessage }}</span>
-      </div>
-      <div v-else-if="message !== ''" class="mb-4 mx-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+      <div v-if="message !== ''" class="mb-4 mx-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
         <span class="text-red-500 font-semibold">{{ message }}</span>
       </div>
       <div class="m-auto bg-tertiary rounded">
@@ -69,6 +66,9 @@ export default {
               authenticated: true,
               user: response.data.user
             });
+
+            store.dispatch('user/removeLogoutMessage');
+            store.dispatch('user/setLoginMessage', this.username)
 
             this.$router.push({ name: 'home' });
           } else if (response.status == 201 || response.status == 202) {

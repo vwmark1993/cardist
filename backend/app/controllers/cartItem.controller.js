@@ -12,7 +12,10 @@ exports.create = (req, res) => {
   }
 
   // Check if the item already exists in the cart
-  CartItem.findAll({ where: { item_id: `${req.body.itemId}` } })
+  const itemId = req.body.cartId;
+  const cartId = req.body.cartId;
+  var condition = itemId ? cartId ? { item_id: `${itemId}`, cart_id: `${cartId}` } : null : null;
+  CartItem.findAll({ where: condition })
     .then(data => {
       if (data.length > 0) {
         // Item exists
@@ -22,8 +25,8 @@ exports.create = (req, res) => {
       } else {
         // Item doesn't exist
         const cartItem = {
-          item_id: req.body.itemId,
-          cart_id: req.body.cartId,
+          item_id: itemId,
+          cart_id: cartId,
           quantity: 1
         };
         CartItem.create(cartItem)
@@ -73,7 +76,7 @@ exports.findOne = (req, res) => {
       });
     });
 };
-// Update a Carrt Item by the id in the request
+// Update a Cart Item by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
 

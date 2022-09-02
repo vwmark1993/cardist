@@ -98,6 +98,12 @@ export default {
       store.dispatch('search/searchItems', '')
       store.dispatch('search/resetFilters');
       store.dispatch('cart/emptyCart');
+      store.dispatch('user/removeLoginMessage');
+      store.dispatch('user/setLogoutMessage');
+
+      setTimeout(() => {
+        store.dispatch('user/removeLogoutMessage');
+      }, 3000)
 
       this.searchString = '';
       this.$router.push({ name: 'home' });

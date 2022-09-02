@@ -1,7 +1,7 @@
 import http from "../http-common";
 class OrderItemDataService {
-  create(orderId, itemId, sellerId, quantity, price) {
-    return http.post(`/orderItem/create/orderId/${orderId}/itemId/${itemId}/sellerId/${sellerId}/quantity/${quantity}/price/${price}`);
+  create(data) {
+    return http.post("/orderItem/create", data);
   }
   getOrderItems(orderId) {
     return http.get(`/orderItem/find/orderId/${orderId}`);

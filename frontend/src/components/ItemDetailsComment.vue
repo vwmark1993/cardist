@@ -32,15 +32,19 @@ export default {
   },
   methods: {
     getUser() {
-      UserDataService.get(this.user_id)
-      .then(response => {
-        this.username = response.data.username;
-      }).catch(e => {
+      try {
+        UserDataService.get(this.user_id)
+        .then(response => {
+          this.username = response.data.username;
+        }).catch(e => {
+          console.log(e)
+        })
+      } catch (e) {
         console.log(e)
-      })
+      }
     },
     flagComment() {
-      alert("comment flagged");
+      this.$emit('commentFlagged');
     }
   },
   mounted() {
@@ -52,6 +56,6 @@ export default {
   .flag-icon:hover {
     font-variation-settings:
     'FILL' 1;
-    color: #FF947C;
+    color: #ef4444;
   }
 </style>

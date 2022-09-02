@@ -1,6 +1,11 @@
 <template>
   <div>
     <UserHeader />
+    <div class="fixed bottom-3 w-full">
+      <Transition name="slide-fade">
+        <AlertMessage v-if="message" :message="message" mode="success" />
+      </Transition>
+    </div>
     <div class="grid grid-cols-12 grid-flow-col justify-between m-3">
       <div class="col-span-9 text-left">
         <h1 class="text-4xl font-bold text-slate-700 mb-6">Shopping Cart</h1>
@@ -15,6 +20,7 @@
             :thumbnail="cartItem.thumbnail" 
             :quantityProp="cartItem.quantity" 
             :price="cartItem.price"
+            @cartItemUpdated="(message) => showMessage(message)"
             />
         </div>
         <div v-else>
@@ -49,18 +55,22 @@ import CartDataService from '@/services/CartDataService.js'
 
 import UserHeader from '@/components/UserHeader.vue'
 import ShoppingCartItem from '@/components/ShoppingCartItem.vue'
+import AlertMessage from '@/components/AlertMessage.vue'
 
 export default {
   name: 'ShoppingCart',
   components: {
     UserHeader,
-    ShoppingCartItem
+    ShoppingCartItem,
+    AlertMessage
   },
   data() {
       return {
           userId: store.state.user.currentUser.id,
           cartId: store.state.cart.cartId,
-          cartItems: store.state.cart.cartItems
+          cartItems: store.state.cart.cartItems,
+
+          message: null
       }
   },
   computed: {
@@ -75,6 +85,13 @@ export default {
     }
   },
   methods: {
+    showMessage(message) {
+      this.message = message;
+
+      setTimeout(() => {
+        this.message = null;
+      }, 3000)
+    },
     checkout() {
       let data = {
         items: this.cartItems.map(item => {

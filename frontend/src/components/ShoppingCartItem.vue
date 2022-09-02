@@ -60,7 +60,7 @@ export default {
         index: this.index,
         id: this.id
       })
-      alert("cart item deleted")
+      this.$emit('cartItemUpdated', 'Removed: ' + this.name)
     },
     increment() {
       this.quantity++
@@ -70,7 +70,7 @@ export default {
           index: this.index, 
           quantity: this.quantity
         })
-        alert('quantity changed')
+        this.$emit('cartItemUpdated', 'Increased quantity: ' + this.name)
       }
     },
     decrement() {
@@ -81,7 +81,7 @@ export default {
           index: this.index, 
           quantity: this.quantity
         })
-        alert('quantity changed')
+        this.$emit('cartItemUpdated', 'Decreased quantity: ' + this.name)
       }
     }
   },

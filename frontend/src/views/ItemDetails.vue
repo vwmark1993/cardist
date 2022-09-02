@@ -1,6 +1,12 @@
 <template>
   <div>
     <UserHeader />
+    <div class="fixed bottom-3 w-full">
+      <Transition name="slide-fade">
+        <AlertMessage v-if="message" :message="message" mode="success" />
+        <AlertMessage v-else-if="$store.state.cart.cartMessage" :message="$store.state.cart.cartMessage" :mode="$store.state.cart.cartMessageStatus" />
+      </Transition>
+    </div>
     <div class="grid grid-cols-12 grid-flow-col">
       <div class="md:col-span-4 grid grid-cols-4 m-3">
         <div class="col-span-1 flex flex-col mx-2">
@@ -30,7 +36,14 @@
           </div>
           <div v-else>
             <h6 class="text-sm font-medium text-slate-500">Comments</h6>
-            <ItemDetailsComment v-for="comment in paginatedComments" :key="comment.id" :user_id="comment.user_id" :message="comment.message" :date="comment.updated_on" />
+            <ItemDetailsComment 
+              v-for="comment in paginatedComments" 
+              :key="comment.id" 
+              :user_id="comment.user_id" 
+              :message="comment.message" 
+              :date="comment.updated_on"
+              @commentFlagged="() => showMessage('Comment Flagged')"
+              />
             <div class="pagination-container">
               <ul class="pagination">
                 <li 
@@ -124,13 +137,14 @@ import CommentDataService from '@/services/CommentDataService.js'
 
 import UserHeader from '@/components/UserHeader.vue'
 import ItemDetailsComment from '@/components/ItemDetailsComment.vue'
-
+import AlertMessage from '@/components/AlertMessage.vue'
 
 export default {
   name: 'ItemDetails',
   components: {
     UserHeader,
-    ItemDetailsComment
+    ItemDetailsComment,
+    AlertMessage
   },
   data() {
       return {
@@ -148,10 +162,19 @@ export default {
           newCommentMessage: '',
           currentPage: 1,
           perPage: 3,
-          maxVisibleButtons: 3
+          maxVisibleButtons: 3,
+
+          message: null
       }
   },
   methods: {
+    showMessage(message) {
+      this.message = message;
+
+      setTimeout(() => {
+        this.message = null;
+      }, 3000)
+    },
     async createNewComment() {
       try {
         let data = {

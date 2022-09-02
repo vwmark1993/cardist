@@ -4,7 +4,7 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Order Item
 exports.create = (req, res) => {
-  if (!req.params.orderId || !req.params.itemId || !req.params.sellerId || !req.params.quantity || !req.params.price) {
+  if (!req.body.orderId || !req.body.itemId || !req.body.sellerId || !req.body.quantity || !req.body.price) {
     res.status(400).send({
       message: "Content cannot be empty."
     });
@@ -13,11 +13,11 @@ exports.create = (req, res) => {
 
   // Item doesn't exist
   const orderItem = {
-    order_id: req.params.orderId,
-    item_id: req.params.itemId,
-    seller_id: req.params.sellerId,
-    quantity: req.params.quantity,
-    price: req.params.price
+    order_id: req.body.orderId,
+    item_id: req.body.itemId,
+    seller_id: req.body.sellerId,
+    quantity: req.body.quantity,
+    price: req.body.price
   };
 
   OrderItem.create(orderItem)
