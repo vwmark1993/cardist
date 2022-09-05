@@ -1,9 +1,17 @@
 <template>
   <div>
+    <FlagCommentModal 
+      :id="paginatedComments[flaggedCommentPaginatedIndex] ? paginatedComments[flaggedCommentPaginatedIndex].id : ''"
+      :username="flaggedCommentUsername"
+      :itemName="itemDetails.name"
+      :date="paginatedComments[flaggedCommentPaginatedIndex] ? paginatedComments[flaggedCommentPaginatedIndex].updated_on : ''"
+      :message="paginatedComments[flaggedCommentPaginatedIndex] ? paginatedComments[flaggedCommentPaginatedIndex].message : ''"
+      @flaggedCommentModalSubmission="(message, mode) => showMessage(message, mode)"
+    />
     <UserHeader />
     <div class="fixed bottom-3 w-full">
       <Transition name="slide-fade">
-        <AlertMessage v-if="message" :message="message" mode="success" />
+        <AlertMessage v-if="alertMessage" :message="alertMessage" :mode="alertMessageMode" />
         <AlertMessage v-else-if="$store.state.cart.cartMessage" :message="$store.state.cart.cartMessage" :mode="$store.state.cart.cartMessageStatus" />
       </Transition>
     </div>
@@ -37,17 +45,18 @@
           <div v-else>
             <h6 class="text-sm font-medium text-slate-500">Comments</h6>
             <ItemDetailsComment 
-              v-for="comment in paginatedComments" 
+              v-for="comment, index in paginatedComments" 
               :key="comment.id" 
-              :user_id="comment.user_id" 
+              :id="comment.id"
+              :userId="comment.user_id" 
               :message="comment.message" 
               :date="comment.updated_on"
-              @commentFlagged="() => showMessage('Comment Flagged')"
+              @commentFlagged="(username) => flagComment(index, username)"
               />
             <div class="pagination-container">
               <ul class="pagination">
                 <li 
-                  class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white"
+                  class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white transition duration-150"
                 >
                   <button 
                     type="button" 
@@ -61,7 +70,7 @@
                 </li>
 
                 <li
-                  class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white"
+                  class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white transition duration-150"
                 >
                   <button 
                     type="button" 
@@ -74,7 +83,7 @@
                   </button>
                 </li>
 
-                <li v-for="page in pages" :key="page.name" class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white">
+                <li v-for="page in pages" :key="page.name" class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white transition duration-150">
                   <button 
                     type="button" 
                     @click="onClickPage(page.name)"
@@ -87,7 +96,7 @@
                   </button>
                 </li>
 
-                <li class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white">
+                <li class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white transition duration-150">
                   <button 
                     type="button" 
                     @click="onClickNextPage"
@@ -99,7 +108,7 @@
                   </button>
                 </li>
 
-                <li class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white">
+                <li class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white transition duration-150">
                   <button 
                     type="button" 
                     @click="onClickLastPage"
@@ -139,12 +148,16 @@ import UserHeader from '@/components/UserHeader.vue'
 import ItemDetailsComment from '@/components/ItemDetailsComment.vue'
 import AlertMessage from '@/components/AlertMessage.vue'
 
+import { $vfm } from 'vue-final-modal'
+import FlagCommentModal from '@/components/FlagCommentModal.vue'
+
 export default {
   name: 'ItemDetails',
   components: {
     UserHeader,
     ItemDetailsComment,
-    AlertMessage
+    AlertMessage,
+    FlagCommentModal
   },
   data() {
       return {
@@ -164,15 +177,21 @@ export default {
           perPage: 3,
           maxVisibleButtons: 3,
 
-          message: null
+          flaggedCommentPaginatedIndex: 0,
+          flaggedCommentUsername: '', 
+
+          alertMessage: null,
+          alertMessageMode: null
       }
   },
   methods: {
-    showMessage(message) {
-      this.message = message;
+    showMessage(message, mode) {
+      this.alertMessage = message;
+      this.alertMessageMode = mode;
 
       setTimeout(() => {
-        this.message = null;
+        this.alertMessage = null;
+        this.alertMessageMode = null;
       }, 3000)
     },
     async createNewComment() {
@@ -187,13 +206,19 @@ export default {
         let newComment = response.data;
         this.comments.push(newComment);
         this.newCommentMessage = '';
+
+        this.showMessage('Comment Added', 'success')
       } catch (e) {
-        console.log(e)
+        this.showMessage(e.message, 'failure')
       }
-      
+    },
+    async flagComment(paginatedIndex, username) {
+      this.flaggedCommentPaginatedIndex = paginatedIndex;
+      this.flaggedCommentUsername = username;
+
+      $vfm.show("FlagCommentModal");
     },
     async getItem() {
-      console.log(this.itemId)
       let response = await ItemDataService.get(this.itemId)
       let itemDetails = response.data;
       this.itemDetails = itemDetails;

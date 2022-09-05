@@ -94,7 +94,7 @@ export default {
   },
   async mounted() {
     if (this.items.length === 0 && store.state.search.searchString === '') {
-      store.dispatch('search/searchItems', '')
+      store.dispatch('search/searchItems', '');
     }
   }
 }

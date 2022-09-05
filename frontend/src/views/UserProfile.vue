@@ -5,12 +5,20 @@
       :email="user.email"
       :phone="user.phone"
       :picture="user.picture"
-      @updatedUser="() => showConfirmation('Updated Profile', 'success')"
+      @updatedUser="(message, mode) => showConfirmation(message, mode)"
     />
     <ChangePasswordModal 
       :id="user.id"
-      @updatedPasswordResponse="(message, mode) => showConfirmation(message, mode)"
+      @updatedPassword="(message, mode) => showConfirmation(message, mode)"
       @incorrectPasswords="() => showConfirmation('Passwords do not match', 'failure')"
+    />
+    <EditCommentModal 
+      :id="selectedComment.id"
+      :date="selectedComment.updatedOn" 
+      :itemName="selectedComment.itemName"
+      :message="selectedComment.message"
+      @updatedCommentAlertMessage="(message, mode) => showConfirmation(message, mode)"
+      @updatedCommentNewValue="(newValue) => updateComment(newValue)"
     />
     <UserHeader />
     <div class="fixed bottom-3 w-full">
@@ -125,7 +133,7 @@
                 <div class="user-profile-item-header flex justify-between items-center border-b border-slate-400 mb-1">
                   <h6 class="text-lg truncate">{{ comment.itemName }}</h6>
                   <div>
-                    <button class="bg-slate-500 text-white text-sm mr-1 px-3 py-1 rounded">Edit</button>
+                    <button @click="editComment(index)" class="bg-slate-500 text-white text-sm mr-1 px-3 py-1 rounded">Edit</button>
                     <button @click="removeComment(comment.id, index)" class="bg-slate-500 hover:bg-red-700 text-white text-sm px-3 py-1 rounded">Remove</button>
                   </div>
                 </div>
@@ -157,6 +165,7 @@ import AlertMessage from '@/components/AlertMessage.vue'
 import { $vfm } from 'vue-final-modal'
 import UserSettingsModal from '@/components/UserSettingsModal.vue'
 import ChangePasswordModal from '@/components/ChangePasswordModal.vue'
+import EditCommentModal from '@/components/EditCommentModal.vue'
 
 export default {
   name: 'UserProfile',
@@ -164,7 +173,8 @@ export default {
     UserHeader,
     AlertMessage,
     UserSettingsModal,
-    ChangePasswordModal
+    ChangePasswordModal,
+    EditCommentModal
   },
   data() {
       return {
@@ -174,6 +184,7 @@ export default {
           comments: [],
           message: '',
           messageMode: '',
+          selectedCommentIndex: 0,
           showMessage: false
       }
   },
@@ -193,6 +204,10 @@ export default {
     },
     changePassword() {
       $vfm.show("ChangePasswordModal");
+    },
+    editComment(index) {
+      this.selectedCommentIndex = index;
+      $vfm.show("EditCommentModal");
     },
     async getItemsSold() {
       let response = await OrderItemDataService.getOrderItemsBySeller(this.user.id);
@@ -254,10 +269,28 @@ export default {
       try {
         await CommentDataService.delete(id);
         this.comments.splice(index, 1);
+
+        this.message = 'Comment Removed';
+        this.messageMode = 'success';
+        this.showMessage = true;
+
+        setTimeout(() => {
+          this.message = '';
+          this.showMessage = false;
+        }, 3000)
       } catch(e) {
-        console.log(e)
+        this.message = e;
+        this.messageMode = 'failure';
+        this.showMessage = true;
+
+        setTimeout(() => {
+          this.message = '';
+          this.showMessage = true;
+        }, 3000)
       }
-    
+    },
+    updateComment(value) {
+      this.comments[this.selectedCommentIndex].message = value;
     }
   },
   computed: {
@@ -285,7 +318,19 @@ export default {
         totalSpending: store.state.user.currentUser.total_spending,
         admin: store.state.user.currentUser.admin
       }
-    }
+    },
+    selectedComment() {
+      if (this.comments[this.selectedCommentIndex]) {
+        return this.comments[this.selectedCommentIndex];
+      } else {
+        return {
+          id: null,
+          date: null,
+          itemName: null,
+          message: null
+        };
+      }
+    },
   },
   async mounted() {
     if (!store.state.user.authenticated) {

@@ -17,14 +17,18 @@ module.exports = (sequelize, Sequelize) => {
     message: {
       type: Sequelize.STRING
     },
-    flagged_reason: {
-      type: Sequelize.STRING,
-      defaultValue: null
-    },
     flagged: {
       type: Sequelize.BOOLEAN,
       defaultValue: false,
       allowNull: false
+    },
+    flagged_reason: {
+      type: Sequelize.STRING,
+      defaultValue: null
+    },
+    flagged_reason_message: {
+      type: Sequelize.STRING,
+      defaultValue: null
     },
     created_on: {
       type: Sequelize.DATE,

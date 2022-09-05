@@ -26,11 +26,17 @@
     },
     computed: {
       showMessage() {
-        if (store.state.user.successfulLoginMessage || store.state.user.logoutMessage) {
+        if (store.state.user.successfulLoginMessage || store.state.user.logoutMessage || store.state.search.newSearchAlert) {
           if (store.state.user.successfulLoginMessage) {
             return store.state.user.successfulLoginMessage;
           } else if (store.state.user.logoutMessage) {
             return store.state.user.logoutMessage;
+          } else if (store.state.search.newSearchAlert) {
+            if (store.state.search.queriedItems.length > 0) {
+              return store.state.search.queriedItems.length + ' Items Found';
+            } else {
+              return 'No Items Found';
+            }
           }
         } 
         return false;

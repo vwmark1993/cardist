@@ -1,6 +1,6 @@
 <template>
   <div v-if="hideFilters">
-    <div @click="changeFilterMode" class="filter-container my-3 m-r-3 py-10 bg-slate-300 rounded-r hover:bg-slate-400 cursor-pointer">
+    <div @click="changeFilterMode" class="filter-container my-3 m-r-3 py-10 bg-slate-300 rounded-r hover:bg-slate-400 cursor-pointer transition duration-150">
       <div class="filter flex justify-center items-center">
         <span class="material-symbols-outlined">arrow_forward_ios</span>
       </div>
@@ -14,15 +14,15 @@
       </div>
       <div>
         <h6 class="text-left my-3 ml-3 font-semibold">General</h6>
-        <button @click="toggleNewItemFilter" :class="{ 'bg-tertiary' : newItemFilter, 'text-primary' : newItemFilter, 'bg-primary' : !newItemFilter, 'text-secondary' : !newItemFilter }" class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate">New Items</button>
-        <button @click="togglePopularItemFilter" :class="{ 'bg-tertiary' : popularItemFilter, 'text-primary' : popularItemFilter, 'bg-primary' : !popularItemFilter, 'text-secondary' : !popularItemFilter }" class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate">Popular</button>
+        <button @click="toggleNewItemFilter" :class="{ 'bg-tertiary' : newItemFilter, 'text-primary' : newItemFilter, 'bg-primary' : !newItemFilter, 'text-secondary' : !newItemFilter }" class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate transition duration-150">New Items</button>
+        <button @click="togglePopularItemFilter" :class="{ 'bg-tertiary' : popularItemFilter, 'text-primary' : popularItemFilter, 'bg-primary' : !popularItemFilter, 'text-secondary' : !popularItemFilter }" class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate transition duration-150">Popular</button>
       </div>
       <div>
         <h6 class="text-left my-3 ml-3 font-semibold">Tags</h6>
         <div v-for="tag in tags" :key="tag.id">
           <button 
             @click="toggleTagFilter(tag.name)" 
-            class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate"
+            class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate transition duration-150"
             :class="{ 
               'bg-tertiary': selectedTags.includes(tag.name), 
               'text-primary' : selectedTags.includes(tag.name),

@@ -70,7 +70,27 @@ exports.findOne = (req, res) => {
 };
 // Update a Comment by the id in the request
 exports.update = (req, res) => {
-  
+  const id = req.params.id;
+
+  Comment.update(req.body, {
+    where: { id: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: "Comment Updated"
+        });
+      } else {
+        res.send({
+          message: `Could not update Comment with id=${id}.`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error updating Comment with id=" + id
+      });
+    });
 };
 // Delete a Comment with the specified id in the request
 exports.delete = (req, res) => {

@@ -50,13 +50,21 @@ import store from '@/store';
           picture: this.updatedPicture
         }
 
-        await UserDataService.update(this.id, data);
-        
-        store.dispatch('user/updateUser', data)
+        let response = await UserDataService.update(this.id, data);
+
+        let mode = '';
+
+        if (response.status === 200) {
+          mode = 'success';
+
+          store.dispatch('user/updateUser', data)
+        } else {
+          mode = 'failure';
+        }
 
         this.showModal = false;
 
-        this.$emit('updatedUser');
+        this.$emit('updatedUser', response.data.message, mode);
       },
       closeModal() {
         this.updatedEmail = this.email;
@@ -65,12 +73,8 @@ import store from '@/store';
         this.showModal = false;
       }
     }, 
-    async mounted() {
-      // Password is retrieved separately for security reasons (so that it doesn't go through Vuex and end up being saved in localstorage).
-      let response = await UserDataService.get(this.id);
-      let user = response.data;
-      this.password = user.password;
-      this.updatedPassword = user.password;
+    mounted() {
+      
     }
   } 
   </script>

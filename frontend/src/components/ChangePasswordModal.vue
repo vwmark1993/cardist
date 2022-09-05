@@ -79,7 +79,7 @@
           mode = 'failure';
         }
 
-        this.$emit('updatedPasswordResponse', response.data.message, mode);
+        this.$emit('updatedPassword', response.data.message, mode);
 
         this.closeModal();
       },
@@ -90,12 +90,8 @@
         this.showModal = false;
       }
     }, 
-    async mounted() {
-      // Password is retrieved separately for security reasons (so that it doesn't go through Vuex and end up being saved in localstorage).
-      let response = await UserDataService.get(this.id);
-      let user = response.data;
-      this.password = user.password;
-      this.updatedPassword = user.password;
+    mounted() {
+      
     }
   } 
   </script>

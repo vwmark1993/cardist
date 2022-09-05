@@ -9,9 +9,9 @@
     />
     <div class="w-full mx-8 my-auto">
       <div class="relative">
-        <input v-on:keyup.enter="searchItemsByName" v-model="searchString" type="search" name="search" class="w-full min-w-300px py-3 text-sm text-slate-900 bg-slate-300 rounded-md pl-3 focus:outline-none focus:bg-slate-200" placeholder="Search..." maxlength=50  autocomplete="off">
+        <input v-on:keyup.enter="searchItemsByName" v-model="searchString" type="search" name="search" class="w-full min-w-300px py-3 text-sm text-slate-900 bg-slate-300 rounded-md pl-3 focus:outline-none focus:bg-slate-150 transition duration-150" placeholder="Search..." maxlength=50  autocomplete="off">
         <span class="absolute inset-y-0 right-0 flex items-stretch">
-          <button @click="searchItemsByName" class="p-1 mr-2 focus:outline-none focus:shadow-outline text-secondary hover:text-tertiary">
+          <button @click="searchItemsByName" class="p-1 mr-2 focus:outline-none focus:shadow-outline text-secondary hover:text-primary transition duration-150">
             <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           </button>
         </span>
@@ -32,22 +32,22 @@
         </div>
         <div v-if="isOpen" @click="isOpen = false" class="fixed z-40 inset-0 h-full w-full bg-black opacity-30"></div>
         <div v-if="isOpen" class="absolute z-50 left-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl">
-          <a @click="goToProfile" class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer">Go to Profile</a>
-          <a @click="logout" class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer">Sign Out</a>
+          <a @click="goToProfile" class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer transition duration-150">Go to Profile</a>
+          <a @click="logout" class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer transition duration-150">Sign Out</a>
         </div>
       </div>
-      <button class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 mr-3 rounded inline-flex items-center select-none">
+      <button class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 mr-3 rounded inline-flex items-center select-none transition duration-150">
         <span class="material-symbols-outlined text-3xl mr-1">paid</span>
         <span>SELL</span>
       </button>
-      <button @click="goToCart" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 rounded inline-flex items-center select-none">
+      <button @click="goToCart" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 rounded inline-flex items-center select-none transition duration-150">
         <span class="material-symbols-outlined text-3xl mr-1">shopping_cart</span>
         <span v-if="$store.state.cart.cartItems.length > 0" class="whitespace-nowrap">CART ({{ $store.state.cart.cartItems.length }})</span>
         <span v-else class="whitespace-nowrap">CART</span>
       </button>
     </div>
     <div v-else class="flex flex-row">
-      <button @click="goToLogin" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold ml-20 py-2 px-8 rounded inline-flex items-center">
+      <button @click="goToLogin" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold ml-20 py-2 px-8 rounded inline-flex items-center transition duration-150">
         <span class="material-symbols-outlined text-3xl mr-1">account_circle</span>
         <span class="whitespace-nowrap">SIGN IN</span>
       </button>
@@ -126,8 +126,9 @@ export default {
       this.$router.push({ name: 'shopping-cart' })
     },
     searchItemsByName() {
-      this.$router.push({ name: 'home' }) 
-      store.dispatch('search/searchItems', this.searchString)
+      this.$router.push({ name: 'home' });
+      store.dispatch('search/searchItems', this.searchString);
+      store.dispatch('search/setNewSearchAlert');
     }
   }
 }

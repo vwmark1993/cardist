@@ -39,7 +39,7 @@
             </div>
             <div class="flex flex-wrap justify-between items-center border-t border-slate-400 mt-4 pt-1">
               <span class="text-lg font-bold truncate">SUBTOTAL</span>
-              <span>{{ subtotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</span>
+              <span class="text-lg font-bold">{{ subtotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</span>
             </div>
           </div>
         </div>

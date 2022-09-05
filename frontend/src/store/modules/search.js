@@ -8,7 +8,8 @@ const state = () => (
   generalFilters: [],
   tagFilters: [],
   searchString: '',
-  queriedItems: []
+  queriedItems: [],
+  newSearchAlert: false
 })
 
 // getters
@@ -72,8 +73,15 @@ const actions = {
   removeTagFilter({ commit }, filter) {
     commit('removeTagFilter', filter);
   },
-  resetFilters({commit}) {
+  resetFilters({ commit }) {
     commit('removeAllFilters');
+  },
+  setNewSearchAlert({ commit }) {
+    commit('setNewSearchAlert');
+
+    setTimeout(() => {
+      commit('removeNewSearchAlert');
+    }, 3000)
   }
 }
 
@@ -116,6 +124,12 @@ const mutations = {
   removeAllFilters(state) {
     state.generalFilters = [];
     state.tagFilters = [];
+  },
+  setNewSearchAlert(state) {
+    state.newSearchAlert = true;
+  },
+  removeNewSearchAlert(state) {
+    state.newSearchAlert = false;
   }
 }
 

@@ -90,7 +90,7 @@ exports.update = (req, res) => {
         });
       } else {
         res.send({
-          message: `Cannot update Cart Item with id=${id}. Maybe Cart Item was not found or req.body is empty!`
+          message: `Could not update Cart Item with id=${id}.`
         });
       }
     })

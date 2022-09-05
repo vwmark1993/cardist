@@ -207,7 +207,7 @@ exports.update = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "User was updated successfully."
+          message: "Updated Profile"
         });
       } else {
         res.send({
