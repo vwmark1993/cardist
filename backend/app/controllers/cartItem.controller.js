@@ -12,7 +12,7 @@ exports.create = (req, res) => {
   }
 
   // Check if the item already exists in the cart
-  const itemId = req.body.cartId;
+  const itemId = req.body.itemId;
   const cartId = req.body.cartId;
   var condition = itemId ? cartId ? { item_id: `${itemId}`, cart_id: `${cartId}` } : null : null;
   CartItem.findAll({ where: condition })
