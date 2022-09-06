@@ -120,6 +120,10 @@ export default {
     if (!store.state.user.authenticated) {
       this.$router.push({ name: 'login' });
     }
+
+    if (store.state.user.currentUser.admin) {
+      this.$router.push({ name: 'home' });
+    }
   }
 }
 </script>

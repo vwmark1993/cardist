@@ -36,6 +36,16 @@ const routes = [
     path: '/order/success',
     name: 'order-success',
     component: () => import('../views/OrderConfirmation.vue')
+  },
+  {
+    path: '/sell',
+    name: 'item-listings',
+    component: () => import('../views/ItemListings.vue')
+  },
+  {
+    path: '/admin',
+    name: 'admin-portal',
+    component: () => import('../views/AdminPortal.vue')
   }
 ]
 

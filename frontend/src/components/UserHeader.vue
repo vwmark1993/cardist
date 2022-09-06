@@ -17,7 +17,7 @@
         </span>
       </div>
     </div>
-    <div v-if="$store.state.user.authenticated" class="flex flex-row">
+    <div v-if="$store.state.user.authenticated && !$store.state.user.currentUser.admin" class="flex flex-row">
       <div class="relative my-auto mx-3">
         <div @click="isOpen = !isOpen" class="relative z-50 p-2 rounded flex bg-white items-center cursor-pointer">
           <button v-if="isOpen" class="block h-8 w-8 rounded-full overflow-hidden border-2 border-primary">
@@ -36,7 +36,7 @@
           <a @click="logout" class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer transition duration-150">Sign Out</a>
         </div>
       </div>
-      <button class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 mr-3 rounded inline-flex items-center select-none transition duration-150">
+      <button @click="goToItemListings" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-4 mr-3 rounded inline-flex items-center select-none transition duration-150">
         <span class="material-symbols-outlined text-3xl mr-1">paid</span>
         <span>SELL</span>
       </button>
@@ -44,6 +44,30 @@
         <span class="material-symbols-outlined text-3xl mr-1">shopping_cart</span>
         <span v-if="$store.state.cart.cartItems.length > 0" class="whitespace-nowrap">CART ({{ $store.state.cart.cartItems.length }})</span>
         <span v-else class="whitespace-nowrap">CART</span>
+      </button>
+    </div>
+    <div v-else-if="$store.state.user.authenticated && $store.state.user.currentUser.admin" class="flex flex-row">
+      <div class="relative my-auto mx-3">
+        <div @click="isOpen = !isOpen" class="relative z-50 p-2 rounded flex bg-white items-center cursor-pointer">
+          <button v-if="isOpen" class="block h-8 w-8 rounded-full overflow-hidden border-2 border-primary">
+            <img v-if="$store.state.user.currentUser.picture" class="h-full w-full object-cover" :src="$store.state.user.currentUser.picture" alt="user profile image" />
+            <img v-else class="h-full w-full object-cover" src="../assets/images/profile-picture-placeholder.png" alt="user profile image" />
+          </button>
+          <button v-else class="block h-8 w-8 rounded-full overflow-hidden border-2 border-slate-600">
+            <img v-if="$store.state.user.currentUser.picture" class="h-full w-full object-cover" :src="$store.state.user.currentUser.picture" alt="user profile image" />
+            <img v-else class="h-full w-full object-cover" src="../assets/images/profile-picture-placeholder.png" alt="user profile image" />
+          </button>
+          <span class="ml-1 text-lg font-semibold select-none text-truncate">{{ $store.state.user.currentUser.username }}</span>
+        </div>
+        <div v-if="isOpen" @click="isOpen = false" class="fixed z-40 inset-0 h-full w-full bg-black opacity-30"></div>
+        <div v-if="isOpen" class="absolute z-50 left-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl">
+          <a @click="goToProfile" class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer transition duration-150">Go to Profile</a>
+          <a @click="logout" class="block px-4 py-2 text-slate-800 hover:bg-primary hover-text-white cursor-pointer transition duration-150">Sign Out</a>
+        </div>
+      </div>
+      <button @click="goToAdminPortal" class="bg-primary hover:bg-tertiary hover:text-primary text-secondary font-bold py-2 px-8 rounded inline-flex items-center transition duration-150">
+        <span class="material-symbols-outlined text-3xl mr-1">tools_wrench</span>
+        <span class="whitespace-nowrap">ADMIN PORTAL</span>
       </button>
     </div>
     <div v-else class="flex flex-row">
@@ -79,6 +103,11 @@ export default {
     store.dispatch('cart/getCart');
   },
   methods: {
+    searchItemsByName() {
+      this.$router.push({ name: 'home' });
+      store.dispatch('search/searchItems', this.searchString);
+      store.dispatch('search/setNewSearchAlert');
+    },
     logout() {
       store.dispatch('user/authentication', {
         authenticated: false,
@@ -125,10 +154,11 @@ export default {
     goToCart() {
       this.$router.push({ name: 'shopping-cart' })
     },
-    searchItemsByName() {
-      this.$router.push({ name: 'home' });
-      store.dispatch('search/searchItems', this.searchString);
-      store.dispatch('search/setNewSearchAlert');
+    goToItemListings() {
+      this.$router.push({ name: 'item-listings' })
+    },
+    goToAdminPortal() {
+      this.$router.push({ name: 'admin-portal' })
     }
   }
 }

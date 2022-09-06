@@ -33,7 +33,7 @@
             <p class="text-2xl text-slate-800 mb-6">${{itemDetails.price}}</p>
           </div>
           <div v-if="$store.state.user.authenticated">
-            <button @click="addItemToCart" class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded select-none">Add to Cart</button>
+            <button v-if="!$store.state.user.currentUser.admin" @click="addItemToCart" class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded select-none">Add to Cart</button>
           </div>
         </div>
         <h6 class="text-sm font-medium text-slate-500">Description</h6>
