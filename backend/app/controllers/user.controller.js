@@ -10,12 +10,12 @@ exports.authenticate = (req, res) => {
 
   if (username == null || username.length == 0) {
     res.status(201).send({
-      message: "Invalid username."
+      message: "Invalid Username"
     });
     return
   } else if (password == null || password.length == 0) {
     res.status(202).send({
-      message: "Invalid password."
+      message: "Invalid Password"
     });
     return
   }
@@ -26,7 +26,7 @@ exports.authenticate = (req, res) => {
     .then(userRes => {
       if (userRes.length == 0) {
         res.status(201).send({
-          message: "Invalid username."
+          message: "Invalid Username"
         });
         return
       }
@@ -36,7 +36,7 @@ exports.authenticate = (req, res) => {
 
       if (hashedPassword !== userRes[0].password) {
         res.status(202).send({
-          message: "Invalid password."
+          message: "Invalid Password"
         });
         return
       }

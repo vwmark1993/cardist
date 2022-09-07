@@ -21,6 +21,7 @@ import store from '@/store'
 import CartItemDataService from '@/services/CartItemDataService.js'
 import OrderDataService from '@/services/OrderDataService.js'
 import OrderItemDataService from '@/services/OrderItemDataService.js'
+import ItemDataService from '@/services/ItemDataService.js'
 
 export default {
   name: 'OrderConfirmation',
@@ -59,15 +60,19 @@ export default {
         this.currency = successfulOrder.currency;
         this.orderTotal = successfulOrder.total / 100;
 
+        // Only execute order confirmation API call once per page mount.
         if (!store.state.cart.orderConfirmationFlag) {
           let data = {
             buyerId: store.state.user.currentUser.id
           }
 
+          // Create new order.
           response = await OrderDataService.create(data);
           let orderResponse = response.data;
           let orderId = orderResponse.id;
 
+          // Create new order item for each item ordered.
+          // Increase numbers sold for each item.
           this.orderItems.forEach(async orderItem =>  {
             let data = {
               orderId: orderId,
@@ -78,6 +83,19 @@ export default {
             }
 
             response = await OrderItemDataService.create(data);
+
+            response = await ItemDataService.get(orderItem.itemId);
+            let currentNumberSold = response.data.number_sold;
+
+            console.log(currentNumberSold)
+
+            data = {
+              number_sold: currentNumberSold + orderItem.quantity
+            }
+
+            response = await ItemDataService.update(orderItem.itemId, data);
+
+            console.log(response.data)
           })
 
           store.dispatch('cart/setOrderConfirmationFlag', true);
@@ -85,6 +103,7 @@ export default {
       }
 
     } catch (e) {
+      console.log(e)
       this.$router.push({ name: 'home' });
     }
   },

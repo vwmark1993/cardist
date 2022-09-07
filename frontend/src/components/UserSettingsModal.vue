@@ -44,11 +44,25 @@ import store from '@/store';
     },
     methods: {
       async updateUser() {
+        if (this.updatedEmail !== null && this.updatedEmail.trim() === '') {
+          this.updatedEmail = null;
+        }
+
+        if (this.updatedPhone !== null && this.updatedPhone.trim() === '') {
+          this.updatedPhone = null;
+        }
+
+        if (this.updatedPicture !== null && this.updatedPicture.trim() === '') {
+          this.updatedPicture = null;
+        }
+
         let data = {
           email: this.updatedEmail,
           phone: this.updatedPhone,
           picture: this.updatedPicture
         }
+
+        
 
         let response = await UserDataService.update(this.id, data);
 

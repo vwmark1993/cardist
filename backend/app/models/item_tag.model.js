@@ -8,11 +8,25 @@ module.exports = (sequelize, Sequelize) => {
     },
     item_id: {
       type: Sequelize.UUID,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: {
+          tableName: 'items',
+        },
+        key: 'id'
+      },
+      onDelete: 'CASCADE'
     },
     tag_id: {
       type: Sequelize.UUID,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: {
+          tableName: 'tags',
+        },
+        key: 'id'
+      },
+      onDelete: 'CASCADE'
     },
     created_on: {
       type: Sequelize.DATE,

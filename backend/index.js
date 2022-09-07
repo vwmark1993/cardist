@@ -5,10 +5,6 @@ const cors = require("cors");
 const app = express();
 // app.use(...);
 
-// db.sequelize.sync({ force: true }).then(() => {
-//   console.log("Drop and re-sync db.");
-// });
-
 var corsOptions = {
   origin: ["http://localhost:8000", "http://localhost:8081", "https://checkout.stripe.com"],
   //preflightContinue: true,
@@ -35,9 +31,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const db = require("./app/models");
-db.sequelize.sync()
 
-// simple route
+db.sequelize.sync()
+// db.sequelize.sync({ force: true }).then(() => {
+//   console.log("Drop and re-sync db.");
+// });
+
+// Base API route.
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the Cardist backend application." });
 });

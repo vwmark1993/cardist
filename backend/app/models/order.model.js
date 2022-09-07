@@ -8,7 +8,14 @@ module.exports = (sequelize, Sequelize) => {
     },
     buyer_id: {
       type: Sequelize.UUID,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: {
+          tableName: 'users',
+        },
+        key: 'id'
+      },
+      onDelete: 'CASCADE'
     },
     created_on: {
       type: Sequelize.DATE,

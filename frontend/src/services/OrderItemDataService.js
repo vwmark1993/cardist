@@ -9,6 +9,9 @@ class OrderItemDataService {
   getOrderItemsBySeller(sellerId) {
     return http.get(`/orderItem/find/sellerId/${sellerId}`);
   }
+  getTopSellers(size) {
+    return http.get(`/orderItem/find/topSellers/${size}`);
+  }
   delete(id) {
     return http.delete(`/orderItem/delete/${id}`);
   }

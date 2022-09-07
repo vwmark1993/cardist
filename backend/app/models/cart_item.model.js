@@ -8,11 +8,25 @@ module.exports = (sequelize, Sequelize) => {
     },
     item_id: {
       type: Sequelize.UUID,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: {
+          tableName: 'items',
+        },
+        key: 'id'
+      },
+      onDelete: 'CASCADE'
     },
     cart_id: {
       type: Sequelize.UUID,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: {
+          tableName: 'carts',
+        },
+        key: 'id'
+      },
+      onDelete: 'CASCADE'
     },
     quantity: {
       type: Sequelize.INTEGER,

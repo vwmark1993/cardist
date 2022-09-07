@@ -16,10 +16,10 @@ class ItemDataService {
     return http.post("/item/create", data);
   }
   update(id, data) {
-    return http.put(`/item/${id}`, data);
+    return http.put(`/item/update/${id}`, data);
   }
   delete(id) {
-    return http.delete(`/item/${id}`);
+    return http.delete(`/item/delete/${id}`);
   }
 }
 export default new ItemDataService();

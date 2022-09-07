@@ -8,7 +8,14 @@ module.exports = (sequelize, Sequelize) => {
     },
     seller_id: {
       type: Sequelize.UUID,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: {
+          tableName: 'users',
+        },
+        key: 'id'
+      },
+      onDelete: 'CASCADE'
     },
     images: {
       type: Sequelize.ARRAY(Sequelize.STRING)

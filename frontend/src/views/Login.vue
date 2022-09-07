@@ -1,9 +1,12 @@
 <template>
   <div class="flex flex-col justify-center h-screen bg-primary">
+    <div class="fixed bottom-3 w-full">
+      <Transition name="slide-fade">
+        <AlertMessage v-if="$store.state.user.successfulRegistrationMessage" :message="$store.state.user.successfulRegistrationMessage" mode="success" />
+        <AlertMessage v-else-if="message !== ''" :message="message" mode="failure" />
+      </Transition>
+    </div>
     <div class="flex flex-col justify-center items-center">
-      <div v-if="message !== ''" class="mb-4 mx-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-        <span class="text-red-500 font-semibold">{{ message }}</span>
-      </div>
       <div class="m-auto bg-tertiary rounded">
         <div class="pt-2 pb-2 flex justify-end">
           <span @click="goToHomepage" class="material-symbols-outlined text-primary mr-2 p-1 rounded cursor-pointer hover:bg-secondary">exit_to_app</span>
@@ -25,10 +28,16 @@
 
 <script>
 import store from '@/store'
+
+import AlertMessage from '@/components/AlertMessage.vue'
+
 import UserDataService from '@/services/UserDataService.js'
 
 export default {
   name: 'Login',
+  components: {
+    AlertMessage
+  },
   data() {
     return {
       username: '',
@@ -49,7 +58,6 @@ export default {
   },
   methods: {
     async login() {
-      store.dispatch('user/removeRegistrationMessage');
       store.dispatch('search/resetFilters');
 
       try {
@@ -75,10 +83,18 @@ export default {
             this.message = response.data.message;
           }
         } else {
-          this.message = 'Please enter valid user credentials.';
+          this.message = "Invalid User Credentials";
+
+          setTimeout(() => {
+            this.message = '';
+          }, 3000)
         }
       } catch (e) {
         this.message = e; 
+
+        setTimeout(() => {
+          this.message = '';
+        }, 3000)
       }
     },
     loginByPressingEnter(e) {
@@ -87,11 +103,9 @@ export default {
       }
     },
     goToHomepage() {
-      store.dispatch('user/removeRegistrationMessage')
       this.$router.push({ name: 'home' })
     },
     goToRegistration() {
-      store.dispatch('user/removeRegistrationMessage')
       this.$router.push({ name: 'register' })
     }
   }

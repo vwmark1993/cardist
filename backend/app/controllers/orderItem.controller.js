@@ -1,3 +1,4 @@
+const { sequelize } = require("../models");
 const db = require("../models");
 const OrderItem = db.order_items;
 const Op = db.Sequelize.Op;
@@ -66,7 +67,7 @@ exports.findOne = (req, res) => {
     });
 };
 
-// Retrieve Orders tied to a Buyer from the database.
+// Retrieve Order Items tied to a Buyer from the database.
 exports.findOrderItemsBySeller = (req, res) => {
   const sellerId = req.params.sellerId;
   var condition = sellerId ? { seller_id: `${sellerId}` } : null;
@@ -80,6 +81,43 @@ exports.findOrderItemsBySeller = (req, res) => {
           err.message || "Some error occurred while retrieving order items."
       });
     });
+};
+
+// Retrieve top sellers based on quantity sold.
+exports.findTopSellers = async (req, res) => {
+  try {
+    const size = req.params.size;
+  
+    const data = await sequelize.query(
+      `
+        SELECT username, SUM(quantity) AS number_of_sales
+        FROM order_items t1
+        INNER JOIN users t2 ON t2.id = t1.seller_id
+        GROUP BY username
+        ORDER BY number_of_sales
+        LIMIT ${size}
+      `
+    )
+
+    res.send(data[0]);
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving order items."
+    });
+  }
+  const size = req.params.size;
+  
+  const data = await sequelize.query(
+    `
+      SELECT username, SUM(quantity) AS number_of_sales
+      FROM order_items t1
+      INNER JOIN users t2 ON t2.id = t1.seller_id
+      GROUP BY username
+      ORDER BY number_of_sales
+      LIMIT 10
+    `
+  )
 };
 
 // Delete a Cart Item with the specified id

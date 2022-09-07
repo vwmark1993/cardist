@@ -1,9 +1,11 @@
 <template>
   <div class="flex flex-col justify-center h-screen bg-primary">
+    <div class="fixed bottom-3 w-full">
+      <Transition name="slide-fade">
+        <AlertMessage v-if="message !== ''" :message="message" mode="failure" />
+      </Transition>
+    </div>
     <div class="flex flex-col justify-center items-center">
-      <div v-if="message !== ''" class="mb-4 mx-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-        <span class="text-red-500 font-semibold">{{ message }}</span>
-      </div>
       <div class="m-auto rounded bg-tertiary">
         <div class="pt-2 pb-2 flex justify-end">
           <span @click="goToHomepage" class="material-symbols-outlined text-primary mr-2 p-1 rounded cursor-pointer hover:bg-secondary">exit_to_app</span>
@@ -31,11 +33,16 @@
 <script>
 import store from '@/store'
 
+import AlertMessage from '@/components/AlertMessage.vue'
+
 import UserDataService from '@/services/UserDataService.js'
 import CartDataService from '@/services/CartDataService.js'
 
 export default {
   name: 'Register',
+  components: {
+    AlertMessage
+  },
   data() {
     return {
       username: '',
@@ -89,7 +96,9 @@ export default {
             // New cart created. New user account registration is completed.
             if (response.status == 200) {
               this.message = "";
+
               store.dispatch('user/setRegistrationMessage')
+            
               this.$router.push({ name: 'login' })
             } else {
               this.message = response.data.message;
@@ -99,10 +108,18 @@ export default {
             this.message = response.data.message;
           }
         } else {
-          this.message = "Please enter valid user credentials.";
+          this.message = "Invalid User Credentials";
+
+          setTimeout(() => {
+            this.message = '';
+          }, 3000)
         }
       } catch (e) {
         this.message = e;
+
+        setTimeout(() => {
+          this.message = '';
+        }, 3000)
       }
     },
     registerByPressingEnter(e) {

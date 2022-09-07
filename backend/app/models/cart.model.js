@@ -8,7 +8,14 @@ module.exports = (sequelize, Sequelize) => {
     },
     user_id: {
       type: Sequelize.UUID,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: {
+          tableName: 'users',
+        },
+        key: 'id'
+      },
+      onDelete: 'CASCADE'
     },
     total_price: {
       type: Sequelize.FLOAT,

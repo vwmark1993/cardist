@@ -34,6 +34,10 @@ const actions = {
   },
   setRegistrationMessage({ commit }) {
     commit('setRegistrationMessage');
+
+    setTimeout(() => {
+      commit('removeRegistrationMessage');
+    }, 3000);
   },
   removeRegistrationMessage({ commit }) {
     commit('removeRegistrationMessage');
