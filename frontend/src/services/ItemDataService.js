@@ -12,6 +12,9 @@ class ItemDataService {
   getItemsBySeller(sellerId) {
     return http.get(`/item/find/sellerId/${sellerId}`);
   }
+  getPopularItems(size) {
+    return http.get(`/item/find/popularItems/${size}`);
+  }
   create(data) {
     return http.post("/item/create", data);
   }

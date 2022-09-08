@@ -26,18 +26,28 @@
         </div>
       </div>
       <div class="col-span-8 text-left m-3">
-        <h1 class="text-4xl font-bold border-b pb-3 mb-3">{{itemDetails.name}}</h1>
+        <div class="border-b pb-3 mb-3">
+          <h1 class="text-4xl font-bold">{{ itemDetails.name }}</h1>
+          <span class="text-xs font-medium text-slate-500">Sold By: </span>
+          <span class="text-sm text-slate-800 font-semibold">{{ itemDetails.seller_username }}</span>
+          <span v-if="itemDetails.seller_id === $store.state.user.currentUser.id" class="text-sm text-slate-800 font-semibold italic">(you)</span>
+        </div>
         <div class="flex justify-between items-center">
           <div>
             <h6 class="text-sm font-medium text-slate-500">Price</h6>
             <p class="text-2xl text-slate-800 mb-6">{{ itemDetails.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</p>
           </div>
           <div v-if="$store.state.user.authenticated">
-            <button v-if="!$store.state.user.currentUser.admin" @click="addItemToCart" class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded select-none">Add to Cart</button>
+            <button 
+              v-if="!$store.state.user.currentUser.admin && itemDetails.seller_id !== $store.state.user.currentUser.id" @click="addItemToCart" 
+              class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded select-none"
+            >
+              Add to Cart
+            </button>
           </div>
-        </div>
+        </div>  
         <h6 class="text-sm font-medium text-slate-500">Description</h6>
-        <p class="text-xl text-slate-800 mb-10">{{itemDetails.description}}</p>
+        <p class="text-xl text-slate-800 mb-10">{{ itemDetails.description }}</p>
         <div class="mb-5">
           <div v-if="comments.length == 0">
             <h6 class="text-sm font-medium text-slate-500">This item has no comments written about it.</h6>
@@ -142,6 +152,7 @@
 import store from '@/store'
 
 import ItemDataService from '@/services/ItemDataService.js'
+import UserDataService from '@/services/UserDataService.js'
 import CommentDataService from '@/services/CommentDataService.js'
 
 import UserHeader from '@/components/UserHeader.vue'
@@ -165,6 +176,7 @@ export default {
           itemId: this.$route.params.itemId,
           itemDetails: {
             id: null,
+            seller_id: null,
             name: null,
             description: null,
             price: 0,
@@ -202,7 +214,7 @@ export default {
           message: this.newCommentMessage
         }
 
-        let response = await CommentDataService.create(data)
+        let response = await CommentDataService.create(data);
         let newComment = response.data;
         this.comments.push(newComment);
         this.newCommentMessage = '';
@@ -219,14 +231,36 @@ export default {
       $vfm.show("FlagCommentModal");
     },
     async getItem() {
-      let response = await ItemDataService.get(this.itemId)
-      let itemDetails = response.data;
-      this.itemDetails = itemDetails;
+      try {
+        let response = await ItemDataService.get(this.itemId);
+        this.itemDetails = response.data;
+
+        response = await UserDataService.get(this.itemDetails.seller_id);
+        this.itemDetails.seller_username = response.data.username;
+
+      } catch (e) {
+        this.alertMessage = e;
+        this.alertMessageMode = 'failure';
+
+        setTimeout(() => {
+          this.alertMessage = '';
+          this.alertMessageMode = '';
+        }, 3000)
+      }
     },
     async getComments() {
-      let response = await CommentDataService.getCommentsByItem(this.itemId)
-      let comments = response.data;
-      this.comments = comments;
+      try {
+        let response = await CommentDataService.getCommentsByItem(this.itemId)
+        this.comments = response.data;
+      } catch (e) {
+        this.alertMessage = e;
+        this.alertMessageMode = 'failure';
+
+        setTimeout(() => {
+          this.alertMessage = '';
+          this.alertMessageMode = '';
+        }, 3000)
+      }
     },
     async addItemToCart() {
       store.dispatch('cart/addCartItem', this.itemId)
@@ -310,6 +344,8 @@ export default {
   mounted() {
     this.getItem();
     this.getComments();
+
+    console.log(this.itemDetails)
   }
 }
 </script>

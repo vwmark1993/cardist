@@ -32,7 +32,9 @@
           } else if (store.state.user.logoutMessage) {
             return store.state.user.logoutMessage;
           } else if (store.state.search.newSearchAlert) {
-            if (store.state.search.queriedItems.length > 0) {
+            if (store.state.search.queriedItems.length === 1) {
+              return store.state.search.queriedItems.length + ' Item Found';
+            } else if (store.state.search.queriedItems.length > 1) {
               return store.state.search.queriedItems.length + ' Items Found';
             } else {
               return 'No Items Found';

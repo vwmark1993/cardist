@@ -1,6 +1,6 @@
 <template>
   <div v-if="hideFilters">
-    <div @click="changeFilterMode" class="filter-container my-3 m-r-3 py-10 bg-slate-300 rounded-r hover:bg-slate-400 cursor-pointer transition duration-150">
+    <div @click="changeFilterMode" class="filter-container my-3 m-r-3 py-10 bg-slate-300 rounded-r hover:bg-slate-400 hover:text-tertiary cursor-pointer transition duration-150">
       <div class="filter flex justify-center items-center">
         <span class="material-symbols-outlined">arrow_forward_ios</span>
       </div>
@@ -10,7 +10,7 @@
     <div class="m-3 p-5 bg-slate-300 rounded">
       <div class="flex justify-between items-center pb-2">
         <h1 class="text-2xl text-left font-semibold">Filters</h1>
-        <span @click="changeFilterMode" class="material-symbols-outlined cursor-pointer">arrow_back_ios</span>
+        <span @click="changeFilterMode" class="material-symbols-outlined cursor-pointer hover:text-tertiary">arrow_back_ios</span>
       </div>
       <div>
         <h6 class="text-left my-3 ml-3 font-semibold">General</h6>

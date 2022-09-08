@@ -9,6 +9,9 @@ class OrderItemDataService {
   getOrderItemsBySeller(sellerId) {
     return http.get(`/orderItem/find/sellerId/${sellerId}`);
   }
+  getMonthlySales(year) {
+    return http.get(`/orderItem/find/monthlySales/${year}`);
+  }
   getTopSellers(size) {
     return http.get(`/orderItem/find/topSellers/${size}`);
   }

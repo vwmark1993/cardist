@@ -6,35 +6,37 @@ const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 // Create and Save a new Cart
 exports.create = (req, res) => {
-  const cart = {
-    user_id: req.body.userId
-  };
-  Cart.create(cart)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Cart."
-      });
+  try {
+    const cart = {
+      user_id: req.body.userId
+    };
+    Cart.create(cart)
+      .then(data => {
+        res.send(data);
+      })
+  } catch (e) {
+    res.status(500).send({
+      message:
+        e.message || "Some error occurred while creating the Cart."
     });
+  }
 };
 // Retrieve Cart tied to a User from the database.
 exports.findUserCart = (req, res) => {
+  try {
     const userId = req.params.userId;
     var condition = userId ? { user_id: `${userId}` } : null;
     Cart.findAll({ where: condition })
       .then(data => {
         res.send(data);
       })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving user cart."
-        });
-      });
-  };
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving user cart."
+    });
+  }
+};
 
 // Update a Cart by the id in the request
 exports.update = (req, res) => {

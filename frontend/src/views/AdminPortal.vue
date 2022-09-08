@@ -3,7 +3,7 @@
     <UserHeader />
     <div class="fixed bottom-3 w-full">
       <Transition name="slide-fade">
-        <AlertMessage v-if="showMessage" :message="showMessage" mode="success" />
+        <AlertMessage v-if="message !== ''" :message="message" :mode="messageStatus" />
       </Transition>
     </div>
     <h1 class="text-4xl font-bold text-slate-700 mb-6 text-left m-3">Admin Portal</h1>
@@ -111,20 +111,20 @@
             </div>
           </div>
           <MetricsChart
-            v-if="topSellersDataset"
-            title="Sales by Month"
-            :xAxisLabels="topSellersDataset.xAxisLabels"
-            yAxisLabel="Unit Sales"
-            :dataValues="topSellersDataset.dataValues"
+            v-if="mode === 'overview' && monthlySalesDataset"
+            title="Revenue by Month"
+            :xAxisLabels="monthlySalesDataset.xAxisLabels"
+            yAxisLabel="Revenue"
+            :dataValues="monthlySalesDataset.dataValues"
             class="col-span-10"
           />
         </div>
         <MetricsChart
-          v-else-if="mode === 'popularItems' && topSellersDataset"
+          v-else-if="mode === 'popularItems' && popularItemsDataset"
           title="Most Popular Items"
-          :xAxisLabels="topSellersDataset.xAxisLabels"
-          yAxisLabel="Unit Sales"
-          :dataValues="topSellersDataset.dataValues"
+          :xAxisLabels="popularItemsDataset.xAxisLabels"
+          yAxisLabel="Number Sold"
+          :dataValues="popularItemsDataset.dataValues"
         />
         <MetricsChart
           v-else-if="mode === 'topSellers' && topSellersDataset"
@@ -147,6 +147,7 @@
   import MetricsChart from '@/components/MetricsChart.vue'
 
   import OrderItemDataService from '@/services/OrderItemDataService.js'
+  import ItemDataService from '@/services/ItemDataService.js'
 
   export default {
     name: 'AdminPortal',
@@ -158,30 +159,97 @@
     data() {
       return {
         mode: 'overview',
-
-        topSellersDataset: null
+        message: '',
+        messageStatus: '',
+        monthlySalesDataset: null,
+        topSellersDataset: null,
+        popularItemsDataset: null
       }
     },
     computed: {
       
     },
     methods: {
+      async getMonthlySales() {
+        try {
+          let response = await OrderItemDataService.getMonthlySales(new Date().getFullYear());
+          let data = response.data;
+          
+          let xAxisLabels = [];
+          let dataValues = [];
+
+          data.forEach(item => {
+            xAxisLabels.push(item.month);
+            dataValues.push(item.sales);
+          });
+
+          this.monthlySalesDataset = {
+            xAxisLabels: xAxisLabels,
+            dataValues: dataValues
+          };
+        } catch (e) {
+          this.message = 'Error retrieving monthly sales.';
+          this.messageStatus = 'failure';
+
+          setTimeout(() => {
+            this.message = '';
+            this.messageStatus = '';
+          }, 3000)
+        } 
+      },
       async getTopSellers() {
-        let response = await OrderItemDataService.getTopSellers(10);
-        let data = response.data;
-        
-        let xAxisLabels = [];
-        let dataValues = [];
+        try {
+          let response = await OrderItemDataService.getTopSellers(10);
+          let data = response.data;
+          
+          let xAxisLabels = [];
+          let dataValues = [];
 
-        data.forEach(item => {
-          xAxisLabels.push(item.username);
-          dataValues.push(item.number_of_sales);
-        });
+          data.forEach(item => {
+            xAxisLabels.push(item.username);
+            dataValues.push(item.number_of_sales);
+          });
 
-        this.topSellersDataset = {
-          xAxisLabels: xAxisLabels.reverse(),
-          dataValues: dataValues.reverse()
-        };
+          this.topSellersDataset = {
+            xAxisLabels: xAxisLabels,
+            dataValues: dataValues
+          };
+        } catch (e) {
+          this.message = 'Error retrieving top sellers.';
+          this.messageStatus = 'failure';
+
+          setTimeout(() => {
+            this.message = '';
+            this.messageStatus = '';
+          }, 3000)
+        }
+      },
+      async getPopularItems() {
+        try {
+          let response = await ItemDataService.getPopularItems(10);
+          let data = response.data;
+          
+          let xAxisLabels = [];
+          let dataValues = [];
+
+          data.forEach(item => {
+            xAxisLabels.push(item.name);
+            dataValues.push(item.number_sold);
+          });
+
+          this.popularItemsDataset = {
+            xAxisLabels: xAxisLabels,
+            dataValues: dataValues
+          };
+        } catch (e) {
+          this.message = 'Error retrieving popular items.';
+          this.messageStatus = 'failure';
+
+          setTimeout(() => {
+            this.message = '';
+            this.messageStatus = '';
+          }, 3000)
+        } 
       }
     },
     mounted() {
@@ -189,7 +257,9 @@
       this.$router.push({ name: 'home' });
     }
 
+    this.getMonthlySales();
     this.getTopSellers();
+    this.getPopularItems();
   },
   }
 </script>
