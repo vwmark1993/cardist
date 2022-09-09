@@ -3,6 +3,7 @@
     <div class="flex justify-between">
       <span class="font-bold text-2xl truncate">User Settings</span>
       <button class="my-auto" @click="showModal = false">
+        <span class="material-symbols-outlined hover:text-tertiary">close</span>
       </button>
     </div>
     <div class="flex flex-col rounded bg-white my-4">
@@ -86,9 +87,6 @@ import store from '@/store';
         this.updatedPicture = this.picture;
         this.showModal = false;
       }
-    }, 
-    mounted() {
-      
     }
   } 
   </script>

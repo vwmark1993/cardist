@@ -25,7 +25,7 @@ exports.create = (req, res) => {
 exports.findUserCart = (req, res) => {
   try {
     const userId = req.params.userId;
-    var condition = userId ? { user_id: `${userId}` } : null;
+    let condition = userId ? { user_id: `${userId}` } : null;
     Cart.findAll({ where: condition })
       .then(data => {
         res.send(data);
@@ -46,9 +46,9 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   
 };
+
 // Stripe checkout
 exports.createCheckoutSession = async (req, res) => {
-
   try {
     const items = await Item.findAll();
     

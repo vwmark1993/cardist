@@ -1,11 +1,26 @@
 <template>
   <div>
+    <ConfirmDeleteModal 
+      :id="deleteId"
+      apiService="Comment"
+      :index="selectedCommentPaginatedIndex"
+      @confirmDeleteMessage="(message, mode) => showMessage(message, mode)"
+      @confirmDeleteComment="() => confirmDeleteComment()"
+    />
+    <EditCommentModal 
+      :id="paginatedComments[selectedCommentPaginatedIndex] ? paginatedComments[selectedCommentPaginatedIndex].id : ''"
+      :itemName="itemDetails.name"
+      :date="paginatedComments[selectedCommentPaginatedIndex] ? paginatedComments[selectedCommentPaginatedIndex].updated_on : ''"
+      :message="paginatedComments[selectedCommentPaginatedIndex] ? paginatedComments[selectedCommentPaginatedIndex].message : ''"
+      @updatedCommentAlertMessage="(message, mode) => showMessage(message, mode)"
+      @updatedCommentNewValue="(newValue) => updateComment(newValue)"
+    />
     <FlagCommentModal 
-      :id="paginatedComments[flaggedCommentPaginatedIndex] ? paginatedComments[flaggedCommentPaginatedIndex].id : ''"
+      :id="paginatedComments[selectedCommentPaginatedIndex] ? paginatedComments[selectedCommentPaginatedIndex].id : ''"
       :username="flaggedCommentUsername"
       :itemName="itemDetails.name"
-      :date="paginatedComments[flaggedCommentPaginatedIndex] ? paginatedComments[flaggedCommentPaginatedIndex].updated_on : ''"
-      :message="paginatedComments[flaggedCommentPaginatedIndex] ? paginatedComments[flaggedCommentPaginatedIndex].message : ''"
+      :date="paginatedComments[selectedCommentPaginatedIndex] ? paginatedComments[selectedCommentPaginatedIndex].updated_on : ''"
+      :message="paginatedComments[selectedCommentPaginatedIndex] ? paginatedComments[selectedCommentPaginatedIndex].message : ''"
       @flaggedCommentModalSubmission="(message, mode) => showMessage(message, mode)"
     />
     <UserHeader />
@@ -63,6 +78,7 @@
               :date="comment.updated_on"
               @userError="(error) => showMessage(error, 'failure')"
               @commentFlagged="(username) => flagComment(index, username)"
+              @editComment="() => editComment(index)"
               @deleteComment="(id) => deleteComment(id)"
             />
             <div class="pagination-container">
@@ -162,6 +178,8 @@ import ItemDetailsComment from '@/components/ItemDetailsComment.vue'
 import AlertMessage from '@/components/AlertMessage.vue'
 
 import { $vfm } from 'vue-final-modal'
+import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue'
+import EditCommentModal from '@/components/EditCommentModal.vue'
 import FlagCommentModal from '@/components/FlagCommentModal.vue'
 
 export default {
@@ -170,6 +188,8 @@ export default {
     UserHeader,
     ItemDetailsComment,
     AlertMessage,
+    ConfirmDeleteModal,
+    EditCommentModal,
     FlagCommentModal
   },
   data() {
@@ -184,6 +204,7 @@ export default {
             price: 0,
             images: []
           },
+
           comments: [],
           selectedIndex: 0,
           newCommentMessage: '',
@@ -191,7 +212,9 @@ export default {
           perPage: 3,
           maxVisibleButtons: 3,
 
-          flaggedCommentPaginatedIndex: 0,
+          deleteId: '',
+
+          selectedCommentPaginatedIndex: 0,
           flaggedCommentUsername: '', 
 
           alertMessage: null,
@@ -227,7 +250,7 @@ export default {
       }
     },
     async flagComment(paginatedIndex, username) {
-      this.flaggedCommentPaginatedIndex = paginatedIndex;
+      this.selectedCommentPaginatedIndex = paginatedIndex;
       this.flaggedCommentUsername = username;
 
       $vfm.show("FlagCommentModal");
@@ -255,18 +278,21 @@ export default {
     async addItemToCart() {
       store.dispatch('cart/addCartItem', this.itemId)
     },
+    editComment(paginatedIndex) {
+      this.selectedCommentPaginatedIndex = paginatedIndex;
+      
+      $vfm.show("EditCommentModal");
+    },
+    updateComment(value) {
+      this.paginatedComments[this.selectedCommentPaginatedIndex].message = value;
+    },
     async deleteComment(id) {
-      try {
-        await CommentDataService.delete(id);
+      this.deleteId = id;
 
-        let index = this.comments.findIndex(comment => comment.id === id);
-        
-        this.comments.splice(index, 1);
-
-        this.showMessage('Comment Deleted', 'success');
-      } catch (e) {
-        this.showMessage(e, 'failure');
-      } 
+      $vfm.show('ConfirmDeleteModal');
+    },
+    confirmDeleteComment() {
+      this.comments.splice(this.selectedCommentPaginatedIndex, 1);
     },
     setImageIndex(index) {
       this.selectedIndex = index;

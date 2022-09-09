@@ -1,5 +1,18 @@
 <template>
   <div>
+    <ConfirmDeleteModal 
+      :id="confirmDeleteModalId"
+      :apiService="confirmDeleteModalApi"
+      :name="confirmDeleteModalName"
+      :index="confirmDeleteModalIndex"
+      @confirmDeleteMessage="(message, mode) => showMessage(message, mode)"
+      @confirmDeleteUser="(index) => confirmDeleteUser(index)"
+      @confirmDeleteItem="(index) => confirmDeleteItem(index)"
+      @confirmDeleteComment="(index) => confirmDeleteComment(index)"
+    />
+    <UserDetailsModal 
+      :id="userDetailsModalId"
+    />
     <UserHeader />
     <div class="fixed bottom-3 w-full">
       <Transition name="slide-fade">
@@ -9,7 +22,7 @@
     <h1 class="text-4xl font-bold text-slate-700 mb-6 text-left m-3">Admin Portal</h1>
     <div class="grid grid-flow-col">
       <div class="col-span-2">
-        <div class="min-width-275 m-3 p-5 bg-slate-300 rounded">
+        <div class="width-275 mx-3 p-5 bg-slate-300 rounded">
           <div>
             <h6 class="text-left my-3 ml-3 font-semibold">Metrics</h6>
             <button 
@@ -76,7 +89,7 @@
       </div>
       <div class="col-span-10">
         <div v-if="mode === 'overview'" class="grid grid-flow-col">
-          <div class="flex flex-col m-3">
+          <div class="flex flex-col mx-3">
             <div class="mb-2">
               <div class="min-width-150 flex items-center rounded bg-slate-300 p-4">
                 <div>
@@ -142,13 +155,11 @@
         />
         <div v-else-if="mode === 'listOfUsers'">
           <span v-if="listOfUsers.length === 0" class="text-slate-400 text-xl mb-2">No Users</span>
-          <table v-else class="border-collapse border border-slate-400 mx-auto my-3">
+          <table v-else class="border-collapse border border-slate-400 mx-auto">
             <caption class="text-xl font-semibold mb-2">List of Users</caption>
             <thead>
               <tr>
                 <th class="border border-slate-300">Username</th>
-                <th class="border border-slate-300">Email</th>
-                <th class="border border-slate-300">Phone</th>
                 <th class="border border-slate-300">Admin</th>
                 <th class="border border-slate-300">Created Date</th>
                 <th class="border border-slate-300"></th>
@@ -158,15 +169,13 @@
             <tbody>
               <tr v-for="user, index in listOfUsers" :key="user.id">
                 <td class="border border-slate-300">{{ user.username }}</td>
-                <td class="border border-slate-300">{{ user.email }}</td>
-                <td class="border border-slate-300">{{ user.phone }}</td>
                 <td class="border border-slate-300">{{ user.admin }}</td>
                 <td class="border border-slate-300">{{ user.created_on ? new Date(user.created_on).toLocaleDateString("en-US") : null }}</td>
                 <td class="border border-slate-300">
-                  <button class="bg-slate-500 hover:bg-slate-700 text-white text-sm py-1 px-2 rounded select-none">Details</button>
+                  <button @click="showUserDetails(user.id)" class="bg-slate-500 hover:bg-slate-700 text-white text-sm py-1 px-2 rounded select-none">Details</button>
                 </td>
                 <td class="border border-slate-300">
-                  <button @click="deleteUser(user.id, index)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
+                  <button v-if="$store.state.user.currentUser.id !== user.id" @click="deleteUser(user.id, index, user.username)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -174,12 +183,11 @@
         </div>
         <div v-else-if="mode === 'listOfItems'">
           <span v-if="listOfItems.length === 0" class="text-slate-400 text-xl mb-2">No Items</span>
-          <table v-else class="border-collapse border border-slate-400 mx-auto my-3">
+          <table v-else class="border-collapse border border-slate-400 mx-auto">
             <caption class="text-xl font-semibold mb-2">List of Items</caption>
             <thead>
               <tr>
                 <th class="border border-slate-300">Name</th>
-                <th class="border border-slate-300">Description</th>
                 <th class="border border-slate-300">Price</th>
                 <th class="border border-slate-300">Created Date</th>
                 <th class="border border-slate-300"></th>
@@ -189,14 +197,13 @@
             <tbody>
               <tr v-for="item, index in listOfItems" :key="item.id">
                 <td class="border border-slate-300">{{ item.name }}</td>
-                <td class="border border-slate-300">{{ item.description }}</td>
-                <td class="border border-slate-300">{{ item.price }}</td>
+                <td class="border border-slate-300">{{ item.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</td>
                 <td class="border border-slate-300">{{ item.created_on ? new Date(item.created_on).toLocaleDateString("en-US") : null }}</td>
                 <td class="border border-slate-300">
                   <button class="bg-slate-500 hover:bg-slate-700 text-white text-sm py-1 px-2 rounded select-none">Details</button>
                 </td>
                 <td class="border border-slate-300">
-                  <button @click="deleteItem(item.id, index)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
+                  <button @click="deleteItem(item.id, index, item.name)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -242,23 +249,36 @@
 
   import MetricsChart from '@/components/MetricsChart.vue'
 
+  import { $vfm } from 'vue-final-modal'
+  import UserDetailsModal from '@/components/UserDetailsModal.vue'
+  import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue'
+
   import UserDataService from '@/services/UserDataService.js'
   import OrderItemDataService from '@/services/OrderItemDataService.js'
   import ItemDataService from '@/services/ItemDataService.js'
-import CommentDataService from '@/services/CommentDataService'
+  import CommentDataService from '@/services/CommentDataService'
 
   export default {
     name: 'AdminPortal',
     components: {
       UserHeader,
       AlertMessage,
-      MetricsChart
+      MetricsChart,
+      UserDetailsModal,
+      ConfirmDeleteModal
     },
     data() {
       return {
         mode: 'overview',
         alertMessage: '',
         alertMessageMode: '',
+
+        userDetailsModalId: '',
+
+        confirmDeleteModalId: '',
+        confirmDeleteModalApi: '',
+        confirmDeleteModalName: '',
+        confirmDeleteModalIndex: 0,
 
         newRegisteredUsersByYear: 0,
         salesRevenueByYear: 0,
@@ -294,13 +314,7 @@ import CommentDataService from '@/services/CommentDataService'
           this.newRegisteredUsersByYear = data.number_of_created_users;
           
         } catch (e) {
-          this.message = 'Error retrieving monthly sales.';
-          this.messageStatus = 'failure';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
+          this.showMessage('Error retrieving newly registered users by year.', 'failure');
         } 
       },
       async getTotalSalesRevenueByYear() {
@@ -311,13 +325,7 @@ import CommentDataService from '@/services/CommentDataService'
           this.salesRevenueByYear = data.sales;
 
         } catch (e) {
-          this.message = 'Error retrieving monthly sales.';
-          this.messageStatus = 'failure';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
+          this.showMessage('Error retrieving total sales revenue by year.', 'failure');
         } 
       },
       async getUnitsSoldByYear() {
@@ -328,13 +336,7 @@ import CommentDataService from '@/services/CommentDataService'
           this.unitsSoldByYear = data.units_sold;
 
         } catch (e) {
-          this.message = 'Error retrieving monthly sales.';
-          this.messageStatus = 'failure';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
+          this.showMessage('Error retrieving units sold by year.', 'failure');
         } 
       },
       async getMonthlySalesRevenueByYear() {
@@ -356,13 +358,7 @@ import CommentDataService from '@/services/CommentDataService'
           };
 
         } catch (e) {
-          this.message = 'Error retrieving newly registered users.';
-          this.messageStatus = 'failure';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
+          this.showMessage('Error retrieving monthly sales revenue by year.', 'failure');
         } 
       },
       async getTopSellers() {
@@ -383,13 +379,7 @@ import CommentDataService from '@/services/CommentDataService'
             dataValues: dataValues
           };
         } catch (e) {
-          this.message = 'Error retrieving top sellers.';
-          this.messageStatus = 'failure';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
+          this.showMessage('Error retrieving top sellers.', 'failure');
         }
       },
       async getPopularItems() {
@@ -410,13 +400,7 @@ import CommentDataService from '@/services/CommentDataService'
             dataValues: dataValues
           };
         } catch (e) {
-          this.message = 'Error retrieving popular items.';
-          this.messageStatus = 'failure';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
+          this.showMessage('Error retrieving popular items.', 'failure');
         } 
       },
       async getListOfUsers() {
@@ -424,36 +408,7 @@ import CommentDataService from '@/services/CommentDataService'
           let response = await UserDataService.getAll();
           this.listOfUsers = response.data;
         } catch (e) {
-          this.message = 'Error retrieving list of users.';
-          this.messageStatus = 'failure';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
-        } 
-      },
-      async deleteUser(id, index) {
-        try {
-          await UserDataService.delete(id);
-          
-          this.listOfUsers.splice(index, 1);
-
-          this.message = 'User Deleted';
-          this.messageStatus = 'success';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
-        } catch (e) {
-          this.message = 'Could not delete user.';
-          this.messageStatus = 'failure';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
+          this.showMessage('Error retrieving list of users.', 'failure');
         } 
       },
       async getListOfItems() {
@@ -461,36 +416,7 @@ import CommentDataService from '@/services/CommentDataService'
           let response = await ItemDataService.searchAll();
           this.listOfItems = response.data;
         } catch (e) {
-          this.message = 'Error retrieving list of items.';
-          this.messageStatus = 'failure';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
-        } 
-      },
-      async deleteItem(id, index) {
-        try {
-          await ItemDataService.delete(id);
-          
-          this.listOfItems.splice(index, 1);
-
-          this.message = 'Item Deleted';
-          this.messageStatus = 'success';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
-        } catch (e) {
-          this.message = 'Could not delete item.';
-          this.messageStatus = 'failure';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
+          this.showMessage('Error retrieving list of items.', 'failure');
         } 
       },
       async getFlaggedComments() {
@@ -508,13 +434,7 @@ import CommentDataService from '@/services/CommentDataService'
 
           this.flaggedComments = flaggedComments;
         } catch (e) {
-          this.message = 'Error retrieving flagged comments.';
-          this.messageStatus = 'failure';
-
-          setTimeout(() => {
-            this.message = '';
-            this.messageStatus = '';
-          }, 3000)
+          this.showMessage('Error retrieving flagged comments.', 'failure');
         } 
       },
       async dismissFlaggedComment(id, index) {
@@ -531,19 +451,45 @@ import CommentDataService from '@/services/CommentDataService'
 
           this.showMessage('Flagged Comment Dismissed', 'success');
         } catch (e) {
-          this.showMessage(e, 'failure');
+          this.showMessage('Could not dismiss flagged comment.', 'failure');
         }
       },
+      showUserDetails(id) {
+        this.userDetailsModalId = id;
+
+        $vfm.show('UserDetailsModal');
+      },
+      async deleteUser(id, index, name) {
+        this.confirmDeleteModalId = id;
+        this.confirmDeleteModalApi = 'User';
+        this.confirmDeleteModalName = name;
+        this.confirmDeleteModalIndex = index;
+
+        $vfm.show('ConfirmDeleteModal');
+      },
+      confirmDeleteUser(index) {
+        this.listOfUsers.splice(index, 1);
+      },
+      async deleteItem(id, index, name) {
+        this.confirmDeleteModalId = id;
+        this.confirmDeleteModalApi = 'Item';
+        this.confirmDeleteModalName = name;
+        this.confirmDeleteModalIndex = index;
+
+        $vfm.show('ConfirmDeleteModal');
+      },
+      confirmDeleteItem(index) {
+        this.listOfItems.splice(index, 1);
+      },
       async deleteComment(id, index) {
-        try {
-          await CommentDataService.delete(id);
+        this.confirmDeleteModalApi = 'Comment';
+        this.confirmDeleteModalName = '';
+        this.confirmDeleteModalIndex = index;
 
-          this.flaggedComments.splice(index, 1);
-
-          this.showMessage('Flagged Comment Deleted', 'success');
-        } catch (e) {
-          this.showMessage(e, 'failure');
-        }
+        $vfm.show('ConfirmDeleteModal');
+      },
+      confirmDeleteComment(index) {
+        this.flaggedComments.splice(index, 1);
       }
     },
     mounted() {
@@ -580,8 +526,8 @@ import CommentDataService from '@/services/CommentDataService'
     min-width: 150px;
   }
 
-  .min-width-275 {
-    min-width: 275px;
+  .width-275 {
+    width: 275px;
   }
 
   th, td {

@@ -10,7 +10,7 @@ module.exports = app => {
     // Retrieve a single Item by Item ID
     router.get("/find/itemId/:itemId", items.findByItemId);
     // Retrieve Items by Seller ID
-    router.get("/find/sellerId/:selleriD", items.findBySellerId);
+    router.get("/find/sellerId/:sellerId", items.findBySellerId);
     // Retrieve the most popular items with the highest numbers sold
     router.get("/find/popularItems/:size", items.findPopularItems);
     // Update an Item with given id

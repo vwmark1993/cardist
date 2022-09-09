@@ -16,7 +16,7 @@ exports.create = (req, res) => {
     const itemId = req.body.itemId;
     const cartId = req.body.cartId;
 
-    var condition = itemId ? cartId ? { item_id: `${itemId}`, cart_id: `${cartId}` } : null : null;
+    let condition = itemId ? cartId ? { item_id: `${itemId}`, cart_id: `${cartId}` } : null : null;
 
     CartItem.findAll({ where: condition })
     .then(data => {
@@ -50,7 +50,7 @@ exports.create = (req, res) => {
 exports.findCartItems = (req, res) => {
   try {
     const cartId = req.params.cartId;
-    var condition = cartId ? { cart_id: `${cartId}` } : null;
+    let condition = cartId ? { cart_id: `${cartId}` } : null;
     CartItem.findAll({ where: condition })
     .then(data => {
       res.send(data);

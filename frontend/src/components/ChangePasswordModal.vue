@@ -3,6 +3,7 @@
     <div class="flex justify-between">
       <span class="font-bold text-2xl truncate">Change Password</span>
       <button class="my-auto" @click="showModal = false">
+        <span class="material-symbols-outlined hover:text-tertiary">close</span>
       </button>
     </div>
     <div class="flex flex-col rounded bg-white my-4">
@@ -19,15 +20,15 @@
           <input v-model="showNewPassword" type="checkbox" class="block text-gray-700 text-sm font-bold ml-2">
           <span class="text-xs text-gray-500 ml-1">Show</span>
         </div>
-        <input v-model="newPassword" v-if="showNewPassword" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="newPassword" type="text">
-        <input v-model="newPassword" v-else class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="newPassword" type="password">
+        <input v-model="newPassword" v-if="showNewPassword" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="newPassword" type="text" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
+        <input v-model="newPassword" v-else class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="newPassword" type="password" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
         <div class="flex items-center mb-1">
           <label class="block text-gray-700 text-sm font-bold text-left" for="confirmNewPassword">Confirm New Password</label>
           <input v-model="showConfirmNewPassword" type="checkbox" class="block text-gray-700 text-sm font-bold ml-2">
           <span class="text-xs text-gray-500 ml-1">Show</span>
         </div>
-        <input v-model="confirmNewPassword" v-if="showConfirmNewPassword" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="confirmNewPassword" type="text">
-        <input v-model="confirmNewPassword" v-else class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="confirmNewPassword" type="password">
+        <input v-model="confirmNewPassword" v-if="showConfirmNewPassword" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="confirmNewPassword" type="text" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
+        <input v-model="confirmNewPassword" v-else class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="confirmNewPassword" type="password" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
       </div>
     </div>
     <div>
@@ -59,7 +60,19 @@
     methods: {
       async updatePassword() {
         if (this.newPassword !== this.confirmNewPassword) {
-          this.$emit('incorrectPasswords');
+          this.$emit('incorrectPasswords', 'Passwords do not match.');
+          this.closeModal();
+          return;
+        }
+
+        if (this.confirmNewPassword === this.currentPassword) {
+          this.$emit('incorrectPasswords', 'Please enter a different value than the current password.');
+          this.closeModal();
+          return;
+        }
+
+        if (!this.confirmNewPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)) {
+          this.$emit('incorrectPasswords', 'Password must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.');
           this.closeModal();
           return;
         }

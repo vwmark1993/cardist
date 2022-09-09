@@ -10,7 +10,7 @@
     <ChangePasswordModal 
       :id="user.id"
       @updatedPassword="(message, mode) => showMessage(message, mode)"
-      @incorrectPasswords="() => showMessage('Passwords do not match', 'failure')"
+      @incorrectPasswords="(message) => showMessage(message, 'failure')"
     />
     <EditCommentModal 
       :id="selectedComment.id"

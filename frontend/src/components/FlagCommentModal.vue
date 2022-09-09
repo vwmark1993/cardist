@@ -3,6 +3,7 @@
     <div class="flex justify-between">
       <span class="font-bold text-2xl truncate">Report a Comment</span>
       <button class="my-auto" @click="showModal = false">
+        <span class="material-symbols-outlined hover:text-tertiary">close</span>
       </button>
     </div>
     <div class="bg-slate-300 rounded p-3 m-3">

@@ -3,56 +3,60 @@ const Comment = db.comments;
 const Op = db.Sequelize.Op;
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
-  const comment = {
-    user_id: req.body.userId,
-    item_id: req.body.itemId,
-    message: req.body.message
-  };
-  Comment.create(comment)
+  try {
+    const comment = {
+      user_id: req.body.userId,
+      item_id: req.body.itemId,
+      message: req.body.message
+    };
+    Comment.create(comment)
     .then(data => {
       res.send(data);
     })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Comment."
-      });
+  } catch (e) {
+    res.status(500).send({
+      message:
+        e.message || "Some error occurred while creating the Comment."
     });
+  }
 };
 // Retrieve all Comments tied to an Item from the database.
 exports.findByItemId = (req, res) => {
+  try {
     const itemId = req.params.itemId;
-    var condition = itemId ? { item_id: `${itemId}` } : null;
+    let condition = itemId ? { item_id: `${itemId}` } : null;
     Comment.findAll({ where: condition })
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving comments."
-        });
-      });
-  };
-// Retrieve all Comments tied to a User from the database.
-exports.findByUserId = (req, res) => {
-  const userId = req.params.userId;
-  var condition = userId ? { user_id: `${userId}` } : null;
-  Comment.findAll({ where: condition })
     .then(data => {
       res.send(data);
     })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving comments."
-      });
+  } catch (e) {
+    res.status(500).send({
+      message:
+        e.message || "Some error occurred while retrieving comments."
     });
+  }
+};
+// Retrieve all Comments tied to a User from the database.
+exports.findByUserId = (req, res) => {
+  try {
+    const userId = req.params.userId;
+    let condition = userId ? { user_id: `${userId}` } : null;
+    Comment.findAll({ where: condition })
+    .then(data => {
+      res.send(data);
+    })
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving comments."
+    });
+  }
 };
 // Find a single Comment with an id
 exports.findOne = (req, res) => {
-  const commentId = req.params.commentId;
-  Comment.findByPk(commentId)
+  try {
+    const commentId = req.params.commentId;
+    Comment.findByPk(commentId)
     .then(data => {
       if (data) {
         res.send(data);
@@ -62,11 +66,11 @@ exports.findOne = (req, res) => {
         });
       }
     })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error retrieving Item with id=" + id
-      });
+  } catch (e) {
+    res.status(500).send({
+      message: "Error retrieving Item with id=" + id
     });
+  }s
 };
 
 // Find all flagged comments

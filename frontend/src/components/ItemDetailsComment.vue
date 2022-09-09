@@ -6,7 +6,10 @@
         <span class="font-bold ml-1">{{ username }}</span>
         <span v-if="$store.state.user.currentUser.id === userId" class="italic">(you)</span>
       </div>
-      <button v-if="$store.state.user.currentUser.admin || $store.state.user.currentUser.id === userId" @click="deleteComment" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
+      <div v-if="$store.state.user.currentUser.admin || $store.state.user.currentUser.id === userId">
+        <button v-if="$store.state.user.currentUser.id === userId" @click="editComment" class="bg-slate-500 hover:bg-slate-700 text-white text-sm mr-1 py-1 px-2 rounded select-none">Edit</button>
+        <button @click="deleteComment" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
+      </div>
       <span v-else-if="!$store.state.user.currentUser.admin" @click="flagComment" class="material-symbols-outlined cursor-pointer transition duration-300 flag-icon select-none">flag</span>
     </div>
     <p class="text-sm text-slate-500 mb-1">{{ new Date(date).toLocaleDateString("en-US") }}</p>
@@ -44,6 +47,9 @@ export default {
     },
     async flagComment() {
       this.$emit('commentFlagged', this.username);
+    },
+    async editComment() {
+      this.$emit('editComment');
     },
     async deleteComment() {
       this.$emit('deleteComment', this.id);
