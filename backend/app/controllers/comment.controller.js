@@ -68,6 +68,21 @@ exports.findOne = (req, res) => {
       });
     });
 };
+
+// Find all flagged comments
+exports.findFlaggedComments = (req, res) => {
+  Comment.findAll({ where: { flagged: true } })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving flagged comments."
+      });
+    });
+};
+
 // Update a Comment by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;

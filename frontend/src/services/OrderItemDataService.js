@@ -9,8 +9,14 @@ class OrderItemDataService {
   getOrderItemsBySeller(sellerId) {
     return http.get(`/orderItem/find/sellerId/${sellerId}`);
   }
-  getMonthlySales(year) {
-    return http.get(`/orderItem/find/monthlySales/${year}`);
+  getTotalSalesRevenueByYear(year) {
+    return http.get(`/orderItem/find/totalSalesRevenueByYear/${year}`);
+  }
+  getUnitsSoldByYear(year) {
+    return http.get(`/orderItem/find/unitsSoldByYear/${year}`);
+  }
+  getMonthlySalesRevenueByYear(year) {
+    return http.get(`/orderItem/find/monthlySalesRevenueByYear/${year}`);
   }
   getTopSellers(size) {
     return http.get(`/orderItem/find/topSellers/${size}`);

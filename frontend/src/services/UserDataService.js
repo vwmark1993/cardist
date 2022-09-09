@@ -6,6 +6,9 @@ class UserDataService {
   get(id) {
     return http.get(`/user/find/userId/${id}`);
   }
+  getNewUsersByYear(year) {
+    return http.get(`/user/find/newUsersByYear/${year}`);
+  }
   create(data) {
     return http.post("/user/create", data);
   }

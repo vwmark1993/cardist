@@ -4,8 +4,10 @@
       <div class="flex">
         <span class="material-symbols-outlined select-none">account_circle</span>
         <span class="font-bold ml-1">{{ username }}</span>
+        <span v-if="$store.state.user.currentUser.id === userId" class="italic">(you)</span>
       </div>
-      <span @click="flagComment" class="material-symbols-outlined cursor-pointer transition duration-300 flag-icon select-none">flag</span>
+      <button v-if="$store.state.user.currentUser.admin || $store.state.user.currentUser.id === userId" @click="deleteComment" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
+      <span v-else-if="!$store.state.user.currentUser.admin" @click="flagComment" class="material-symbols-outlined cursor-pointer transition duration-300 flag-icon select-none">flag</span>
     </div>
     <p class="text-sm text-slate-500 mb-1">{{ new Date(date).toLocaleDateString("en-US") }}</p>
     <p class="text-slate-800 mb-2">{{ message }}</p>
@@ -37,11 +39,14 @@ export default {
         let response = await UserDataService.get(this.userId)
         this.username = response.data.username;
       } catch (e) {
-        console.log(e)
+        this.$emit('userError', e);
       }
     },
     async flagComment() {
       this.$emit('commentFlagged', this.username);
+    },
+    async deleteComment() {
+      this.$emit('deleteComment', this.id);
     }
   },
   mounted() {

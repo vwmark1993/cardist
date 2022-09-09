@@ -1,4 +1,5 @@
 const { sequelize } = require("../models");
+
 const db = require("../models");
 const Item = db.items;
 const Op = db.Sequelize.Op;
@@ -83,18 +84,21 @@ exports.findPopularItems = async (req, res) => {
   try {
     const size = req.params.size;
   
+    // Execute a custom prepared statement query.
     const data = await sequelize.query(
       `
         SELECT name, number_sold
         FROM items
         ORDER BY number_sold DESC
-        LIMIT ${size}
-      `
+        LIMIT ?
+      `, 
+      {
+        replacements: [size],
+        type: sequelize.QueryTypes.SELECT
+      }
     )
-
-    console.log(data)
-
-    res.send(data[0]);
+    
+    res.send(data);
   } catch (e) {
     res.status(500).send({
       message:

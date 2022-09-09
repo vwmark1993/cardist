@@ -7,8 +7,12 @@ module.exports = app => {
     router.get("/find/orderId/:orderId", orderItems.findOrderItems);
     // Retrieve Order Items by Seller ID
     router.get("/find/sellerId/:sellerId", orderItems.findOrderItemsBySeller);
+    // Retrieve the yearly unit sales of specified year
+    router.get("/find/totalSalesRevenueByYear/:year", orderItems.findTotalSalesRevenueByYear);
+    // Retrieve the yearly unit sales of specified year
+    router.get("/find/unitsSoldByYear/:year", orderItems.findUnitsSoldByYear);
     // Retrieve the monthly unit sales of specified year
-    router.get("/find/monthlySales/:year", orderItems.findMonthlySales);
+    router.get("/find/monthlySalesRevenueByYear/:year", orderItems.findMonthlySalesRevenueByYear);
     // Retrieve the top sellers with the highest quantity sold
     router.get("/find/topSellers/:size", orderItems.findTopSellers);
     // Delete an Order Item with id

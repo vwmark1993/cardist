@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { sequelize } = require("../models");
 const db = require("../models");
 const User = db.users;
 const Op = db.Sequelize.Op;
@@ -165,10 +166,7 @@ exports.create = (req, res) => {
 };
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
-    // need to replace this for search functionality
-    const userId = req.params.id;
-    let condition = userId ? { id: `${userId}` } : null;
-    User.findAll({ where: condition })
+    User.findAll()
       .then(data => {
         res.send(data);
       })
@@ -198,6 +196,35 @@ exports.findOne = (req, res) => {
       });
     });
 };
+
+// Retrieve newly created user accounts.
+exports.findNewUsersByYear = async (req, res) => {
+  try {
+    const year = req.params.year;
+  
+    const data = await sequelize.query(
+      `
+        SELECT
+        COUNT(*) AS number_of_created_users
+        FROM users
+        WHERE EXTRACT(YEAR FROM created_on) = ?
+      `, 
+      {
+        replacements: [year],
+        type: sequelize.QueryTypes.SELECT
+      }
+    )
+
+    res.send(data[0]);
+  } catch (e) {
+    console.log(e)
+    res.status(500).send({
+      message:
+        e.message || "Some error occurred while retrieving newly registered users."
+    });
+  }
+};
+
 // Update a User
 exports.update = (req, res) => {
   const id = req.params.id;
@@ -223,5 +250,25 @@ exports.update = (req, res) => {
 };
 // Delete a User with the specified id in the request
 exports.delete = (req, res) => {
-  
+  try {
+    const id = req.params.id;
+  User.destroy({
+    where: { id: id }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: "User was deleted successfully!"
+        });
+      } else {
+        res.send({
+          message: `User delete Comment with id=${id}. User was not found!`
+        });
+      }
+    })
+  } catch (e) {
+    res.status(500).send({
+      message: "Could not delete Comment with id=" + id
+    });
+  }
 };

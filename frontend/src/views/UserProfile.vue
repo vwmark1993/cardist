@@ -5,25 +5,25 @@
       :email="user.email"
       :phone="user.phone"
       :picture="user.picture"
-      @updatedUser="(message, mode) => showConfirmation(message, mode)"
+      @updatedUser="(message, mode) => showMessage(message, mode)"
     />
     <ChangePasswordModal 
       :id="user.id"
-      @updatedPassword="(message, mode) => showConfirmation(message, mode)"
-      @incorrectPasswords="() => showConfirmation('Passwords do not match', 'failure')"
+      @updatedPassword="(message, mode) => showMessage(message, mode)"
+      @incorrectPasswords="() => showMessage('Passwords do not match', 'failure')"
     />
     <EditCommentModal 
       :id="selectedComment.id"
       :date="selectedComment.updatedOn" 
       :itemName="selectedComment.itemName"
       :message="selectedComment.message"
-      @updatedCommentAlertMessage="(message, mode) => showConfirmation(message, mode)"
+      @updatedCommentAlertMessage="(message, mode) => showMessage(message, mode)"
       @updatedCommentNewValue="(newValue) => updateComment(newValue)"
     />
     <UserHeader />
     <div class="fixed bottom-3 w-full">
       <Transition name="slide-fade">
-        <AlertMessage v-if="showMessage" :message="message" :mode="messageMode" />
+        <AlertMessage v-if="alertMessage" :message="alertMessage" :mode="alertMessageMode" />
       </Transition>
     </div>
     <div class="grid grid-cols-12 grid-flow-col items-start">
@@ -182,21 +182,19 @@ export default {
           ordersAsBuyer: [],
           ordersAsSeller: [],
           comments: [],
-          message: '',
-          messageMode: '',
-          selectedCommentIndex: 0,
-          showMessage: false
+          alertMessage: null,
+          alertMessageMode: null,
+          selectedCommentIndex: 0
       }
   },
   methods: {
-    showConfirmation(message, mode) {
-      this.message = message;
-      this.messageMode = mode;
-      this.showMessage = true;
+    showMessage(message, mode) {
+      this.alertMessage = message;
+      this.alertMessageMode = mode;
 
       setTimeout(() => {
-        this.message = '';
-        this.showMessage = false;
+        this.alertMessage = null;
+        this.alertMessageMode = null;
       }, 3000)
     }, 
     editProfile() {
@@ -270,23 +268,9 @@ export default {
         await CommentDataService.delete(id);
         this.comments.splice(index, 1);
 
-        this.message = 'Comment Removed';
-        this.messageMode = 'success';
-        this.showMessage = true;
-
-        setTimeout(() => {
-          this.message = '';
-          this.showMessage = false;
-        }, 3000)
+        this.showMessage('Comment Removed', 'success');
       } catch(e) {
-        this.message = e;
-        this.messageMode = 'failure';
-        this.showMessage = true;
-
-        setTimeout(() => {
-          this.message = '';
-          this.showMessage = true;
-        }, 3000)
+        this.showMessage(e, 'failure');
       }
     },
     updateComment(value) {

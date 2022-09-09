@@ -3,7 +3,7 @@
     <UserHeader />
     <div class="fixed bottom-3 w-full">
       <Transition name="slide-fade">
-        <AlertMessage v-if="message" :message="message" mode="success" />
+        <AlertMessage v-if="alertMessage" :message="alertMessage" :mode="alertMessageStatus" />
       </Transition>
     </div>
     <div class="grid grid-cols-12 grid-flow-col justify-between m-3">
@@ -70,7 +70,8 @@ export default {
           cartId: store.state.cart.cartId,
           cartItems: store.state.cart.cartItems,
 
-          message: null
+          alertMessage: null,
+          alertMessageMode: null
       }
   },
   computed: {
@@ -85,35 +86,36 @@ export default {
     }
   },
   methods: {
-    showMessage(message) {
-      this.message = message;
+    showMessage(message, mode) {
+      this.alertMessage = message;
+      this.alertMessageMode = mode;
 
       setTimeout(() => {
-        this.message = null;
+        this.alertMessage = null;
+        this.alertMessageMode = null;
       }, 3000)
     },
-    checkout() {
-      let data = {
-        items: this.cartItems.map(item => {
-          return {
-            id: item.itemId,
-            quantity: item.quantity
-          }
-        })
-      }
+    async checkout() {
+      try {
+        let data = {
+          items: this.cartItems.map(item => {
+            return {
+              id: item.itemId,
+              quantity: item.quantity
+            }
+          })
+        }
 
-      CartDataService.checkout(data)
-      .then (res => {
-        if (res.status == 200) {
-          let url = res.data.url
+        let response = await CartDataService.checkout(data)
+        if (response.status == 200) {
+          let url = response.data.url
           window.location = url
           // window.location.replace(url)
         }
 
-      })
-      .catch(e => {
-        console.error(e.error)
-      })
+      } catch (e) {
+        this.showMessage(e, 'failure');
+      }
     }
   },
   async mounted() {

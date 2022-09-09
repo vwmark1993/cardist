@@ -1,4 +1,5 @@
 const { sequelize } = require("../models");
+
 const db = require("../models");
 const OrderItem = db.order_items;
 const Op = db.Sequelize.Op;
@@ -89,10 +90,11 @@ exports.findOrderItemsBySeller = (req, res) => {
 };
 
 // Retrieve monthly sales numbers of specified year.
-exports.findMonthlySales = async (req, res) => {
+exports.findMonthlySalesRevenueByYear = async (req, res) => {
   try {
     const year = req.params.year;
   
+    // Execute a custom prepared statement query.
     const data = await sequelize.query(
       `
         SELECT
@@ -113,17 +115,77 @@ exports.findMonthlySales = async (req, res) => {
         END AS month
         , SUM(price) AS sales
         FROM order_items
-        WHERE EXTRACT(YEAR FROM created_on) = ${year}
+        WHERE EXTRACT(YEAR FROM created_on) = ?
         GROUP BY month_number, month
         ORDER BY month_number DESC
+      `, 
+      {
+        replacements: [year],
+        type: sequelize.QueryTypes.SELECT
+      }
+    )
+
+    res.send(data);
+  } catch (e) {
+    res.status(500).send({
+      message:
+        e.message || "Some error occurred while retrieving monthly sales revenue."
+    });
+  }
+};
+
+// Retrieve monthly sales numbers of specified year.
+exports.findTotalSalesRevenueByYear = async (req, res) => {
+  try {
+    const year = req.params.year;
+  
+    // Execute a custom prepared statement query.
+    const data = await sequelize.query(
       `
+        SELECT
+        SUM(price) AS sales
+        FROM order_items
+        WHERE EXTRACT(YEAR FROM created_on) = ?
+      `, 
+      {
+        replacements: [year],
+        type: sequelize.QueryTypes.SELECT
+      }
     )
 
     res.send(data[0]);
   } catch (e) {
     res.status(500).send({
       message:
-        e.message || "Some error occurred while retrieving monthly sale numbers."
+        e.message || "Some error occurred while retrieving sales revenue by year."
+    });
+  }
+};
+
+// Retrieve monthly sales numbers of specified year.
+exports.findUnitsSoldByYear = async (req, res) => {
+  try {
+    const year = req.params.year;
+  
+    // Execute a custom prepared statement query.
+    const data = await sequelize.query(
+      `
+        SELECT
+        SUM(quantity) AS units_sold
+        FROM order_items
+        WHERE EXTRACT(YEAR FROM created_on) = ?
+      `, 
+      {
+        replacements: [year],
+        type: sequelize.QueryTypes.SELECT
+      }
+    )
+
+    res.send(data[0]);
+  } catch (e) {
+    res.status(500).send({
+      message:
+        e.message || "Some error occurred while retrieving units sold by year."
     });
   }
 };
@@ -133,6 +195,7 @@ exports.findTopSellers = async (req, res) => {
   try {
     const size = req.params.size;
   
+    // Execute a custom prepared statement query.
     const data = await sequelize.query(
       `
         SELECT username, SUM(quantity) AS number_of_sales
@@ -140,11 +203,15 @@ exports.findTopSellers = async (req, res) => {
         INNER JOIN users t2 ON t2.id = t1.seller_id
         GROUP BY username
         ORDER BY number_of_sales DESC
-        LIMIT ${size}
-      `
+        LIMIT ?
+      `, 
+      {
+        replacements: [size],
+        type: sequelize.QueryTypes.SELECT
+      }
     )
 
-    res.send(data[0]);
+    res.send(data);
   } catch (e) {
     res.status(500).send({
       message:

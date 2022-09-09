@@ -61,8 +61,10 @@
               :userId="comment.user_id" 
               :message="comment.message" 
               :date="comment.updated_on"
+              @userError="(error) => showMessage(error, 'failure')"
               @commentFlagged="(username) => flagComment(index, username)"
-              />
+              @deleteComment="(id) => deleteComment(id)"
+            />
             <div class="pagination-container">
               <ul class="pagination">
                 <li 
@@ -239,13 +241,7 @@ export default {
         this.itemDetails.seller_username = response.data.username;
 
       } catch (e) {
-        this.alertMessage = e;
-        this.alertMessageMode = 'failure';
-
-        setTimeout(() => {
-          this.alertMessage = '';
-          this.alertMessageMode = '';
-        }, 3000)
+        this.showMessage(e, 'failure');
       }
     },
     async getComments() {
@@ -253,17 +249,24 @@ export default {
         let response = await CommentDataService.getCommentsByItem(this.itemId)
         this.comments = response.data;
       } catch (e) {
-        this.alertMessage = e;
-        this.alertMessageMode = 'failure';
-
-        setTimeout(() => {
-          this.alertMessage = '';
-          this.alertMessageMode = '';
-        }, 3000)
+        this.showMessage(e, 'failure');
       }
     },
     async addItemToCart() {
       store.dispatch('cart/addCartItem', this.itemId)
+    },
+    async deleteComment(id) {
+      try {
+        await CommentDataService.delete(id);
+
+        let index = this.comments.findIndex(comment => comment.id === id);
+        
+        this.comments.splice(index, 1);
+
+        this.showMessage('Comment Deleted', 'success');
+      } catch (e) {
+        this.showMessage(e, 'failure');
+      } 
     },
     setImageIndex(index) {
       this.selectedIndex = index;
@@ -344,8 +347,6 @@ export default {
   mounted() {
     this.getItem();
     this.getComments();
-
-    console.log(this.itemDetails)
   }
 }
 </script>

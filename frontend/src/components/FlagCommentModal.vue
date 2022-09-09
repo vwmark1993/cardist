@@ -38,7 +38,7 @@
       </div>
     </div>
     <div>
-      <button @click="updateComment" class="user-profile-item-remove-button bg-green-600 hover:bg-green-800 text-white text-sm px-4 py-2 mr-1 rounded">Flag Comment</button>
+      <button @click="flagComment" class="user-profile-item-remove-button bg-green-600 hover:bg-green-800 text-white text-sm px-4 py-2 mr-1 rounded">Flag Comment</button>
       <button @click="closeModal" class="user-profile-item-remove-button bg-red-600 hover:bg-red-800 text-white text-sm px-4 py-2 mr-1 rounded">Cancel</button>
     </div>
   </vue-final-modal>
@@ -64,7 +64,7 @@
       }
     },
     methods: {
-      async updateComment() {
+      async flagComment() {
         if (!this.flaggedReason || (this.flaggedReason === 'Other' && !this.flaggedReasonMessage) || (this.flaggedReason === 'Other' && this.flaggedReasonMessage.trim() === '')) {
           this.$emit('flaggedCommentModalSubmission', 'Invalid Submission', 'failure');
           return
@@ -73,7 +73,7 @@
         let data = {
           flagged: true,
           flagged_reason: this.flaggedReason,
-          flagged_reason_message: this.flaggedReasonMessage.trim()
+          flagged_reason_message: this.flaggedReasonMessage ? this.flaggedReasonMessage.trim() : null
         }
 
         if (this.flaggedReason !== 'Other') {
@@ -82,19 +82,13 @@
 
         let response = await CommentDataService.update(this.id, data);
 
-        console.log(response.data)
-
-        let mode = '';
-
         if (response.status === 200) {
-          mode = 'success';
+          this.$emit('flaggedCommentModalSubmission', 'Comment Flagged', 'success');
         } else {
-          mode = 'failure';
+          this.$emit('flaggedCommentModalSubmission', response.data.message, 'failure');
         }
 
         this.showModal = false;
-
-        this.$emit('flaggedCommentModalSubmission', response.data.message, mode);
       },
       closeModal() {
         this.flaggedReason = '';

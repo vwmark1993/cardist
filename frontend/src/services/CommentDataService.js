@@ -9,6 +9,9 @@ class CommentDataService {
   getCommentsByUser(userId) {
     return http.get(`/comment/find/userId/${userId}`);
   }
+  getFlaggedComments() {
+    return http.get("/comment/find/flaggedComments");
+  }
   create(data) {
     return http.post("/comment/create", data);
   }
