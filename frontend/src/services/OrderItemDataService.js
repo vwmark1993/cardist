@@ -18,8 +18,8 @@ class OrderItemDataService {
   getMonthlySalesRevenueByYear(year) {
     return http.get(`/orderItem/find/monthlySalesRevenueByYear/${year}`);
   }
-  getTopSellers(size) {
-    return http.get(`/orderItem/find/topSellers/${size}`);
+  getTopSellersByYear(year) {
+    return http.get(`/orderItem/find/topSellersByYear/${year}`);
   }
   delete(id) {
     return http.delete(`/orderItem/delete/${id}`);

@@ -191,9 +191,9 @@ exports.findUnitsSoldByYear = async (req, res) => {
 };
 
 // Retrieve top sellers based on quantity sold.
-exports.findTopSellers = async (req, res) => {
+exports.findTopSellersByYear = async (req, res) => {
   try {
-    const size = req.params.size;
+    const year = req.params.year;
   
     // Execute a custom prepared statement query.
     const data = await sequelize.query(
@@ -201,12 +201,13 @@ exports.findTopSellers = async (req, res) => {
         SELECT username, SUM(quantity) AS number_of_sales
         FROM order_items t1
         INNER JOIN users t2 ON t2.id = t1.seller_id
+        WHERE EXTRACT(YEAR FROM t1.created_on) = ?
         GROUP BY username
         ORDER BY number_of_sales DESC
-        LIMIT ?
+        LIMIT 10
       `, 
       {
-        replacements: [size],
+        replacements: [year],
         type: sequelize.QueryTypes.SELECT
       }
     )

@@ -64,9 +64,9 @@
         default: () => [Title, Legend]
       }
     },
-    data() {
-      return {
-        chartData: {
+    computed: {
+      chartData() { 
+        return {
           labels: this.xAxisLabels,
           datasets: [ { 
             label: this.yAxisLabel,
@@ -74,8 +74,10 @@
             backgroundColor: '#0D1B42',
             hoverBackgroundColor: '#132964'
           } ]
-        },
-        chartOptions: {
+        } 
+      },
+      chartOptions() { 
+        return {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
@@ -91,6 +93,35 @@
             }
           },
         }
+      }
+    },
+    data() {
+      return {
+        // chartData: {
+        //   labels: this.xAxisLabels,
+        //   datasets: [ { 
+        //     label: this.yAxisLabel,
+        //     data: this.dataValues,
+        //     backgroundColor: '#0D1B42',
+        //     hoverBackgroundColor: '#132964'
+        //   } ]
+        // },
+        // chartOptions: {
+        //   responsive: true,
+        //   maintainAspectRatio: false,
+        //   plugins: {
+        //     title: {
+        //       display: true,
+        //       text: this.title
+        //     },
+        //     legend: {
+        //         display: true,
+        //         labels: {
+        //             color: '#0D1B42'
+        //         }
+        //     }
+        //   },
+        // }
       }
     }
   }

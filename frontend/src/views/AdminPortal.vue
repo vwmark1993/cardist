@@ -8,10 +8,24 @@
       @confirmDeleteMessage="(message, mode) => showMessage(message, mode)"
       @confirmDeleteUser="(index) => confirmDeleteUser(index)"
       @confirmDeleteItem="(index) => confirmDeleteItem(index)"
+      @confirmDeleteTag="(index) => confirmDeleteTag(index)"
       @confirmDeleteComment="(index) => confirmDeleteComment(index)"
     />
     <UserDetailsModal 
       :id="userDetailsModalId"
+      @userDetailsError="(message) => showMessage(message, 'failure')"
+    />
+    <ItemDetailsModal 
+      :id="itemDetailsModalId"
+      @itemDetailsError="(message) => showMessage(message, 'failure')"
+    />
+    <TagDetailsModal 
+      :id="tagDetailsModalId"
+      @tagDetailsError="(message) => showMessage(message, 'failure')"
+    />
+    <CreateNewTagModal
+      @createdTagMessage="(message, mode) => showMessage(message, mode)"
+      @newTag="(tag) => createdTag(tag)"
     />
     <UserHeader />
     <div class="fixed bottom-3 w-full">
@@ -21,8 +35,8 @@
     </div>
     <h1 class="text-4xl font-bold text-slate-700 mb-6 text-left m-3">Admin Portal</h1>
     <div class="grid grid-flow-col">
-      <div class="col-span-2">
-        <div class="width-275 mx-3 p-5 bg-slate-300 rounded">
+      <div class="width-300">
+        <div class="mx-3 p-5 bg-slate-300 rounded">
           <div>
             <h6 class="text-left my-3 ml-3 font-semibold">Metrics</h6>
             <button 
@@ -51,15 +65,15 @@
             <h6 class="text-left my-3 ml-3 font-semibold">Administration</h6>
             <button 
               class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate transition duration-150"
-              :class="{ 'bg-tertiary' : mode === 'listOfUsers', 'text-primary' : mode === 'listOfUsers', 'bg-primary' : mode !== 'listOfUsers', 'text-secondary' : mode !== 'listOfUsers' }"
-              @click="mode = 'listOfUsers'"
+              :class="{ 'bg-tertiary' : mode === 'users', 'text-primary' : mode === 'users', 'bg-primary' : mode !== 'users', 'text-secondary' : mode !== 'users' }"
+              @click="mode = 'users'"
               >
               List of Users
             </button>
             <button 
               class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate transition duration-150"
-              :class="{ 'bg-tertiary' : mode === 'listOfItems', 'text-primary' : mode === 'listOfItems', 'bg-primary' : mode !== 'listOfItems', 'text-secondary' : mode !== 'listOfItems' }"
-              @click="mode = 'listOfItems'"
+              :class="{ 'bg-tertiary' : mode === 'items', 'text-primary' : mode === 'items', 'bg-primary' : mode !== 'items', 'text-secondary' : mode !== 'items' }"
+              @click="mode = 'items'"
               >
               List of Items
             </button>
@@ -87,7 +101,16 @@
           </div>
         </div>  
       </div>
-      <div class="col-span-10">
+      <div class="col-span-12">
+        <div v-if="mode === 'overview' || mode === 'popularItems' || mode === 'topSellers'" class="flex items-center justify-end border-b mx-3 mb-3 pb-2">
+          <label for="year" class="text-sm font-medium text-slate-900 dark:text-slate-400">Year:&nbsp;&nbsp;</label>
+          <select  @change="queryMetricsForYear" v-model="metricsYear" id="year" class="p-1 bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded focus:border-slate-500">
+            <option selected :value="currentYear">{{ currentYear }}</option>
+            <option :value="currentYear - 1">{{ currentYear - 1 }}</option>
+            <option :value="currentYear - 2">{{ currentYear - 2 }}</option>
+            <option :value="currentYear - 3">{{ currentYear -3 }}</option>
+          </select>
+        </div>
         <div v-if="mode === 'overview'" class="grid grid-flow-col">
           <div class="flex flex-col mx-3">
             <div class="mb-2">
@@ -110,7 +133,7 @@
                 </div>
                 <div class="w-full flex justify-center">
                   <div class="flex w-full flex-col mx-4">
-                    <span class="text-sm text-slate-800 font-semibold">{{ salesRevenueByYear ? salesRevenueByYear.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : null }}</span>
+                    <span class="text-sm text-slate-800 font-semibold">{{ salesRevenueByYear ? salesRevenueByYear.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '$0.00' }}</span>
                     <span class="border-t border-slate-900 text-sm text-slate-600 pt-2 mt-2">Sales Revenue</span>
                   </div>
                 </div>
@@ -132,6 +155,7 @@
           </div>
           <MetricsChart
             v-if="mode === 'overview' && monthlySalesDataset"
+            ref="monthlySalesChart"
             title="Revenue by Month"
             :xAxisLabels="monthlySalesDataset.xAxisLabels"
             yAxisLabel="Revenue"
@@ -153,10 +177,10 @@
           yAxisLabel="Unit Sales"
           :dataValues="topSellersDataset.dataValues"
         />
-        <div v-else-if="mode === 'listOfUsers'">
-          <span v-if="listOfUsers.length === 0" class="text-slate-400 text-xl mb-2">No Users</span>
+        <div v-else-if="mode === 'users'">
+          <span v-if="users.length === 0" class="text-slate-400 text-xl mb-2">No Users</span>
           <table v-else class="border-collapse border border-slate-400 mx-auto">
-            <caption class="text-xl font-semibold mb-2">List of Users</caption>
+            <caption class="text-xl font-semibold mb-2">Users</caption>
             <thead>
               <tr>
                 <th class="border border-slate-300">Username</th>
@@ -167,7 +191,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="user, index in listOfUsers" :key="user.id">
+              <tr v-for="user, index in users" :key="user.id">
                 <td class="border border-slate-300">{{ user.username }}</td>
                 <td class="border border-slate-300">{{ user.admin }}</td>
                 <td class="border border-slate-300">{{ user.created_on ? new Date(user.created_on).toLocaleDateString("en-US") : null }}</td>
@@ -181,10 +205,10 @@
             </tbody>
           </table>
         </div>
-        <div v-else-if="mode === 'listOfItems'">
-          <span v-if="listOfItems.length === 0" class="text-slate-400 text-xl mb-2">No Items</span>
+        <div v-else-if="mode === 'items'">
+          <span v-if="items.length === 0" class="text-slate-400 text-xl mb-2">No Items</span>
           <table v-else class="border-collapse border border-slate-400 mx-auto">
-            <caption class="text-xl font-semibold mb-2">List of Items</caption>
+            <caption class="text-xl font-semibold mb-2">Items</caption>
             <thead>
               <tr>
                 <th class="border border-slate-300">Name</th>
@@ -195,12 +219,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item, index in listOfItems" :key="item.id">
+              <tr v-for="item, index in items" :key="item.id">
                 <td class="border border-slate-300">{{ item.name }}</td>
                 <td class="border border-slate-300">{{ item.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</td>
                 <td class="border border-slate-300">{{ item.created_on ? new Date(item.created_on).toLocaleDateString("en-US") : null }}</td>
                 <td class="border border-slate-300">
-                  <button class="bg-slate-500 hover:bg-slate-700 text-white text-sm py-1 px-2 rounded select-none">Details</button>
+                  <button @click="showItemDetails(item.id)" class="bg-slate-500 hover:bg-slate-700 text-white text-sm py-1 px-2 rounded select-none">Details</button>
                 </td>
                 <td class="border border-slate-300">
                   <button @click="deleteItem(item.id, index, item.name)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
@@ -208,6 +232,41 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div v-else-if="mode === 'tags'">
+          <div v-if="tags.length === 0">
+            <span class="block text-slate-400 text-xl mb-4">No Tags</span>
+            <button @click="createTag" class="flex items-center bg-slate-500 hover:bg-slate-700 text-white mx-auto p-3 font-semibold tracking-wider rounded select-none">
+              <span class="material-symbols-outlined text-3xl mr-1">add</span>
+              <span>Create New Tag</span>
+            </button>
+          </div>
+          <div v-else >
+            <div class="flex justify-center items-center mb-2">
+              <span class="text-xl font-semibold">Tags</span>
+              <span @click="createTag" class="material-symbols-outlined ml-2 p-1 rounded cursor-pointer text-slate-600 bg-slate-300 hover:text-slate-800 hover:bg-slate-400">add</span>
+            </div>
+            <table class="border-collapse border border-slate-400 mx-auto">
+              <thead>
+                <tr>
+                  <th class="border border-slate-300">Name</th>
+                  <th class="border border-slate-300"></th>
+                  <th class="border border-slate-300"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="tag, index in tags" :key="tag.id">
+                  <td class="border border-slate-300">{{ tag.name }}</td>
+                  <td class="border border-slate-300">
+                    <button @click="showTagDetails(tag.id)" class="bg-slate-500 hover:bg-slate-700 text-white text-sm py-1 px-2 rounded select-none">Details</button>
+                  </td>
+                  <td class="border border-slate-300">
+                    <button @click="deleteTag(tag.id, index, tag.name)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div v-else-if="mode === 'flaggedComments'">
           <span v-if="flaggedComments.length === 0" class="text-slate-400 text-xl mb-2">No Flagged Comments</span>
@@ -251,11 +310,15 @@
 
   import { $vfm } from 'vue-final-modal'
   import UserDetailsModal from '@/components/UserDetailsModal.vue'
+  import ItemDetailsModal from '@/components/ItemDetailsModal.vue'
+  import TagDetailsModal from '@/components/TagDetailsModal.vue'
+  import CreateNewTagModal from '@/components/CreateNewTagModal.vue'
   import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue'
 
   import UserDataService from '@/services/UserDataService.js'
   import OrderItemDataService from '@/services/OrderItemDataService.js'
   import ItemDataService from '@/services/ItemDataService.js'
+  import TagDataService from '@/services/TagDataService'
   import CommentDataService from '@/services/CommentDataService'
 
   export default {
@@ -265,6 +328,9 @@
       AlertMessage,
       MetricsChart,
       UserDetailsModal,
+      ItemDetailsModal,
+      TagDetailsModal,
+      CreateNewTagModal,
       ConfirmDeleteModal
     },
     data() {
@@ -274,11 +340,15 @@
         alertMessageMode: '',
 
         userDetailsModalId: '',
+        itemDetailsModalId: '',
+        tagDetailsModalId: '',
 
         confirmDeleteModalId: '',
         confirmDeleteModalApi: '',
         confirmDeleteModalName: '',
         confirmDeleteModalIndex: 0,
+
+        metricsYear: new Date().getFullYear(),
 
         newRegisteredUsersByYear: 0,
         salesRevenueByYear: 0,
@@ -288,13 +358,17 @@
         topSellersDataset: null,
         popularItemsDataset: null,
 
-        listOfUsers: [],
-        listOfItems: [],
+        users: [],
+        items: [],
+        tags: [],
         flaggedComments: []
       }
     },
     computed: {
-      
+      currentYear() {
+        const d = new Date();
+        return d.getFullYear();
+      }
     },
     methods: {
       showMessage(message, mode) {
@@ -306,11 +380,23 @@
           this.alertMessageMode = null;
         }, 3000)
       },
+      queryMetricsForYear() {
+        if (this.mode === 'overview') {
+          this.getNewUsersByYear();
+          this.getTotalSalesRevenueByYear();
+          this.getUnitsSoldByYear();
+          this.getMonthlySalesRevenueByYear();
+        } else if (this.mode === 'popularItems') {
+          this.getPopularItemsByYear();
+        } else if (this.mode === 'topSellers') {
+          this.getTopSellersByYear();
+        }
+      },
       async getNewUsersByYear() {
         try {
-          let response = await UserDataService.getNewUsersByYear(new Date().getFullYear());
+          let response = await UserDataService.getNewUsersByYear(this.metricsYear);
           let data = response.data;
-          
+
           this.newRegisteredUsersByYear = data.number_of_created_users;
           
         } catch (e) {
@@ -319,10 +405,14 @@
       },
       async getTotalSalesRevenueByYear() {
         try {
-          let response = await OrderItemDataService.getTotalSalesRevenueByYear(new Date().getFullYear());
+          let response = await OrderItemDataService.getTotalSalesRevenueByYear(this.metricsYear);
           let data = response.data;
-          
-          this.salesRevenueByYear = data.sales;
+
+          if (data.sales && data.sales !== null) {
+            this.salesRevenueByYear = data.sales;
+          } else {
+            this.salesRevenueByYear = 0;
+          }
 
         } catch (e) {
           this.showMessage('Error retrieving total sales revenue by year.', 'failure');
@@ -330,10 +420,14 @@
       },
       async getUnitsSoldByYear() {
         try {
-          let response = await OrderItemDataService.getUnitsSoldByYear(new Date().getFullYear());
+          let response = await OrderItemDataService.getUnitsSoldByYear(this.metricsYear);
           let data = response.data;
-          
-          this.unitsSoldByYear = data.units_sold;
+
+          if (data.units_sold && data.units_sold !== null) {
+            this.unitsSoldByYear = data.units_sold;
+          } else {
+            this.unitsSoldByYear = 0;
+          }
 
         } catch (e) {
           this.showMessage('Error retrieving units sold by year.', 'failure');
@@ -341,29 +435,35 @@
       },
       async getMonthlySalesRevenueByYear() {
         try {
-          let response = await OrderItemDataService.getMonthlySalesRevenueByYear(new Date().getFullYear());
+          let response = await OrderItemDataService.getMonthlySalesRevenueByYear(this.metricsYear);
           let data = response.data;
 
           let xAxisLabels = [];
           let dataValues = [];
 
-          data.forEach(item => {
-            xAxisLabels.push(item.month);
-            dataValues.push(item.sales);
-          });
+          if (data.length > 0) {
+            data.forEach(item => {
+              xAxisLabels.push(item.month);
+              dataValues.push(item.sales);
+            });
 
-          this.monthlySalesDataset = {
-            xAxisLabels: xAxisLabels,
-            dataValues: dataValues
-          };
-
+            this.monthlySalesDataset = {
+              xAxisLabels: xAxisLabels,
+              dataValues: dataValues
+            };
+          } else {
+            this.monthlySalesDataset = {
+              xAxisLabels: [],
+              dataValues: []
+            }
+          }
         } catch (e) {
           this.showMessage('Error retrieving monthly sales revenue by year.', 'failure');
         } 
       },
-      async getTopSellers() {
+      async getTopSellersByYear() {
         try {
-          let response = await OrderItemDataService.getTopSellers(10);
+          let response = await OrderItemDataService.getTopSellersByYear(this.metricsYear);
           let data = response.data;
 
           let xAxisLabels = [];
@@ -379,16 +479,17 @@
             dataValues: dataValues
           };
         } catch (e) {
+          console.log(e)
           this.showMessage('Error retrieving top sellers.', 'failure');
         }
       },
-      async getPopularItems() {
+      async getPopularItemsByYear() {
         try {
-          let response = await ItemDataService.getPopularItems(10);
+          let response = await ItemDataService.getPopularItemsByYear(this.metricsYear);
           let data = response.data;
           
-          let xAxisLabels = [];
-          let dataValues = [];
+          let xAxisLabels = ['test'];
+          let dataValues = [1];
 
           data.forEach(item => {
             xAxisLabels.push(item.name);
@@ -403,21 +504,35 @@
           this.showMessage('Error retrieving popular items.', 'failure');
         } 
       },
-      async getListOfUsers() {
+      async getUsers() {
         try {
           let response = await UserDataService.getAll();
-          this.listOfUsers = response.data;
+          this.users = response.data;
         } catch (e) {
           this.showMessage('Error retrieving list of users.', 'failure');
         } 
       },
-      async getListOfItems() {
+      async getItems() {
         try {
           let response = await ItemDataService.searchAll();
-          this.listOfItems = response.data;
+          this.items = response.data;
         } catch (e) {
           this.showMessage('Error retrieving list of items.', 'failure');
         } 
+      },
+      async getTags() {
+        try {
+          let response = await TagDataService.getAll();
+          this.tags = response.data;
+        } catch (e) {
+          this.showMessage('Error retrieving tags.', 'failure');
+        } 
+      },
+      async createTag() {
+        $vfm.show('CreateNewTagModal');
+      },
+      createdTag(tag) {
+        this.tags.push(tag);
       },
       async getFlaggedComments() {
         try {
@@ -459,6 +574,16 @@
 
         $vfm.show('UserDetailsModal');
       },
+      showItemDetails(id) {
+        this.itemDetailsModalId = id;
+
+        $vfm.show('ItemDetailsModal');
+      },
+      showTagDetails(id) {
+        this.tagDetailsModalId = id;
+
+        $vfm.show('TagDetailsModal');
+      },
       async deleteUser(id, index, name) {
         this.confirmDeleteModalId = id;
         this.confirmDeleteModalApi = 'User';
@@ -468,7 +593,7 @@
         $vfm.show('ConfirmDeleteModal');
       },
       confirmDeleteUser(index) {
-        this.listOfUsers.splice(index, 1);
+        this.users.splice(index, 1);
       },
       async deleteItem(id, index, name) {
         this.confirmDeleteModalId = id;
@@ -479,9 +604,21 @@
         $vfm.show('ConfirmDeleteModal');
       },
       confirmDeleteItem(index) {
-        this.listOfItems.splice(index, 1);
+        this.items.splice(index, 1);
+      },
+      async deleteTag(id, index, name) {
+        this.confirmDeleteModalId = id;
+        this.confirmDeleteModalApi = 'Tag';
+        this.confirmDeleteModalName = name;
+        this.confirmDeleteModalIndex = index;
+
+        $vfm.show('ConfirmDeleteModal');
+      },
+      confirmDeleteTag(index) {
+        this.tags.splice(index, 1);
       },
       async deleteComment(id, index) {
+        this.confirmDeleteModalId = id;
         this.confirmDeleteModalApi = 'Comment';
         this.confirmDeleteModalName = '';
         this.confirmDeleteModalIndex = index;
@@ -504,16 +641,19 @@
     this.getMonthlySalesRevenueByYear();
 
     // Most Popular Items tab
-    this.getPopularItems();
+    this.getPopularItemsByYear();
 
     // Top Sellers tab
-    this.getTopSellers();
+    this.getTopSellersByYear();
 
     //List of Users tab
-    this.getListOfUsers();
+    this.getUsers();
 
     // List of Items tab
-    this.getListOfItems();
+    this.getItems();
+
+    // Manage Tags tab
+    this.getTags();
 
     // Flagged Comments tab
     this.getFlaggedComments();
@@ -526,8 +666,8 @@
     min-width: 150px;
   }
 
-  .width-275 {
-    width: 275px;
+  .width-300 {
+    width: 300px;
   }
 
   th, td {

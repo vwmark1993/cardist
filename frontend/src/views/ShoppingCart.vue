@@ -3,7 +3,7 @@
     <UserHeader />
     <div class="fixed bottom-3 w-full">
       <Transition name="slide-fade">
-        <AlertMessage v-if="alertMessage" :message="alertMessage" :mode="alertMessageStatus" />
+        <AlertMessage v-if="alertMessage" :message="alertMessage" :mode="alertMessageMode" />
       </Transition>
     </div>
     <div class="grid grid-cols-12 grid-flow-col justify-between m-3">
@@ -20,7 +20,7 @@
             :thumbnail="cartItem.thumbnail" 
             :quantityProp="cartItem.quantity" 
             :price="cartItem.price"
-            @cartItemUpdated="(message) => showMessage(message)"
+            @cartItemUpdated="(message) => showMessage(message, 'success')"
             />
         </div>
         <div v-else>

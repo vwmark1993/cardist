@@ -6,8 +6,8 @@ class TagDataService {
   get(id) {
     return http.get(`/tag/find/tagId/${id}`);
   }
-  create(name) {
-    return http.post(`/tag/create/name/${name}`);
+  create(data) {
+    return http.post("/tag/create", data);
   }
   delete(id) {
     return http.delete(`/tag/delete/${id}`);

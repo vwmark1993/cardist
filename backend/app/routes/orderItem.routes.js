@@ -14,7 +14,7 @@ module.exports = app => {
     // Retrieve the monthly unit sales of specified year
     router.get("/find/monthlySalesRevenueByYear/:year", orderItems.findMonthlySalesRevenueByYear);
     // Retrieve the top sellers with the highest quantity sold
-    router.get("/find/topSellers/:size", orderItems.findTopSellers);
+    router.get("/find/topSellersByYear/:year", orderItems.findTopSellersByYear);
     // Delete an Order Item with id
     router.delete("/delete/:id", orderItems.delete);
     app.use('/api/orderItem', router);

@@ -63,23 +63,17 @@ import store from '@/store';
           picture: this.updatedPicture
         }
 
-        
-
         let response = await UserDataService.update(this.id, data);
 
-        let mode = '';
-
         if (response.status === 200) {
-          mode = 'success';
+          this.$emit('updatedUser', 'Updated Profile', 'success');
 
           store.dispatch('user/updateUser', data)
         } else {
-          mode = 'failure';
+          this.$emit('updatedUser', response.data.message, 'failure');
         }
 
         this.showModal = false;
-
-        this.$emit('updatedUser', response.data.message, mode);
       },
       closeModal() {
         this.updatedEmail = this.email;

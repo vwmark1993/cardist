@@ -7,6 +7,10 @@
       </button>
     </div>
     <div class="flex flex-col rounded bg-white my-4">
+      <div class="width-300 mb-2 mx-auto">
+        <img v-if="picture && picture !== ''" :src="picture" class="max-height-300 border rounded m-auto" />
+        <img v-else src="../assets/images/profile-picture-placeholder.png" class="max-height-300 border rounded m-auto" />
+      </div>
       <div class="text-left">
         <div v-if="admin">
           <span class="block text-gray-700 font-bold mb-2">Admin Account</span>
@@ -38,7 +42,7 @@
       </div>
     </div>
     <div>
-      <button @click="closeModal" class="user-profile-item-remove-button bg-red-600 hover:bg-red-800 text-white text-sm px-4 py-2 mr-1 rounded">Close</button>
+      <button @click="showModal = false" class="bg-slate-600 hover:bg-slate-800 text-white text-sm px-4 py-2 mr-1 rounded">Close</button>
     </div>
   </vue-final-modal>
 </template>
@@ -55,6 +59,7 @@
     data() {
       return {
         showModal: false,
+
         username: '',
         email: '',
         phone: '',
@@ -62,38 +67,47 @@
         createdOn: '',
         itemsSold: '',
         totalSpending: '',
-        totalEarnings: ''
+        totalEarnings: '',
+        picture: null
       }
     },
     methods: {
       async getUser() {
-        let response = await UserDataService.get(this.id);
-        let user = response.data;
+        try {
+          let response = await UserDataService.get(this.id);
+          let user = response.data;
 
-        this.username = user.username;
-        this.email = user.email;
-        this.phone = user.phone;
-        this.admin = user.admin;
-        this.createdOn = user.created_on;
-        this.totalSpending = user.total_spending;
-        this.totalEarnings = user.total_earnings;
+          this.username = user.username;
+          this.email = user.email;
+          this.phone = user.phone;
+          this.admin = user.admin;
+          this.createdOn = user.created_on;
+          this.totalSpending = user.total_spending;
+          this.totalEarnings = user.total_earnings;
+          this.picture = user.picture;
 
-        response = await OrderItemDataService.getOrderItemsBySeller(this.id);
-        let count = response.data.length;
+          response = await OrderItemDataService.getOrderItemsBySeller(this.id);
+          let count = response.data.length;
 
-        this.itemsSold = count;
-      },
-      closeModal() {
-        this.updatedEmail = this.email;
-        this.updatedPhone = this.phone;
-        this.updatedPicture = this.picture;
-        this.showModal = false;
+          this.itemsSold = count;
+        } catch (e) {
+          this.$emit('userDetailsError', e);
+          this.showModal = false;
+        }
       }
     }
   } 
   </script>
 
 <style scoped>
+  .width-300 {
+    width: 300px;
+  }
+
+  .max-height-300 {
+    max-height: 300px;
+  }
+
   ::v-deep .modal-content {
     display: flex;
     flex-direction: column;

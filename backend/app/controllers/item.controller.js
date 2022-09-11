@@ -80,20 +80,21 @@ exports.findBySellerId = (req, res) => {
 };
 
 // Retrieve most popular items based on numbers sold.
-exports.findPopularItems = async (req, res) => {
+exports.findPopularItemsByYear = async (req, res) => {
   try {
-    const size = req.params.size;
+    const year = req.params.year;
   
     // Execute a custom prepared statement query.
     const data = await sequelize.query(
       `
         SELECT name, number_sold
         FROM items
+        WHERE EXTRACT(YEAR FROM created_on) = ?
         ORDER BY number_sold DESC
-        LIMIT ?
+        LIMIT 10
       `, 
       {
-        replacements: [size],
+        replacements: [year],
         type: sequelize.QueryTypes.SELECT
       }
     )

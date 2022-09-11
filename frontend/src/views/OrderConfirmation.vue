@@ -1,5 +1,10 @@
 <template>
   <div class="flex flex-col items-center h-screen bg-slate-100">
+    <div class="fixed bottom-3 w-full">
+      <Transition name="slide-fade">
+        <AlertMessage v-if="alertMessage" :message="alertMessage" :mode="alertMessageMode" />
+      </Transition>
+    </div>
     <div class="m-auto px-20 pt-12 pb-10 bg-slate-400 rounded">
       <span class="material-symbols-outlined mt-2 mb-8">check_circle</span>
       <span class="block font-bold text-2xl mb-2">Order Confirmation</span>
@@ -18,18 +23,28 @@
 
 <script>
 import store from '@/store'
+
+import AlertMessage from '@/components/AlertMessage.vue'
+
 import CartItemDataService from '@/services/CartItemDataService.js'
 import OrderDataService from '@/services/OrderDataService.js'
 import OrderItemDataService from '@/services/OrderItemDataService.js'
 import ItemDataService from '@/services/ItemDataService.js'
+import UserDataService from '@/services/UserDataService.js'
 
 export default {
   name: 'OrderConfirmation',
+  components: {
+    AlertMessage
+  }, 
   data() {
     return {
+      alertMessage: '',
+      alertMessageMode: '',
+
       customerName: '',
       currency: '',
-      orderTotal: '',
+      orderTotal: 0,
       orderItems: store.state.cart.cartItems
     }
   },
@@ -71,6 +86,14 @@ export default {
           let orderResponse = response.data;
           let orderId = orderResponse.id;
 
+          // Update the buyer's total spending.
+          data = {
+            total_spending: store.state.user.currentUser.totalSpending + this.orderTotal
+          }
+
+          response = await UserDataService.update(store.state.user.currentUser.id, data);
+
+
           // Create new order item for each item ordered.
           // Increase numbers sold for each item.
           this.orderItems.forEach(async orderItem =>  {
@@ -84,10 +107,9 @@ export default {
 
             response = await OrderItemDataService.create(data);
 
+            // Update number sold on item.
             response = await ItemDataService.get(orderItem.itemId);
             let currentNumberSold = response.data.number_sold;
-
-            console.log(currentNumberSold)
 
             data = {
               number_sold: currentNumberSold + orderItem.quantity
@@ -95,26 +117,39 @@ export default {
 
             response = await ItemDataService.update(orderItem.itemId, data);
 
-            console.log(response.data)
+            // Update each seller's total earnings.
+            response = await UserDataService.get(orderItem.sellerId);
+
+            let currentTotalEarnings = response.data.total_earnings;
+
+            data = {
+              total_earnings: currentTotalEarnings + ( orderItem.quantity * orderItem.price )
+            }
+            response = await UserDataService.update(orderItem.sellerId, data);
           })
 
-          store.dispatch('cart/setOrderConfirmationFlag', true);
+          // Empty the cart.
+          this.orderItems.forEach(async cartItem => {
+            await CartItemDataService.delete(cartItem.id);
+          })
+
+          store.dispatch('cart/emptyCart');
         }
+        
+        store.dispatch('cart/setOrderConfirmationFlag', true);
       }
 
     } catch (e) {
-      console.log(e)
-      this.$router.push({ name: 'home' });
-    }
-  },
-  beforeRouteLeave () {
-    // Reset shopping cart once the user leaves the page.
-    this.orderItems.forEach(async cartItem => {
-      await CartItemDataService.delete(cartItem.id);
-    })
+      this.alertMessage = e;
+      this.alertMessageMode = 'failure';
 
-    store.dispatch('cart/emptyCart');
-    store.dispatch('cart/setOrderConfirmationFlag', false);
+      setTimeout(() => {
+        this.alertMessage = null;
+        this.alertMessageMode = null;
+
+        this.$router.push({ name: 'home' });
+      }, 3000)
+    }
   }
 }
 </script>

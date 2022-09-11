@@ -12,7 +12,7 @@ module.exports = app => {
     // Retrieve Items by Seller ID
     router.get("/find/sellerId/:sellerId", items.findBySellerId);
     // Retrieve the most popular items with the highest numbers sold
-    router.get("/find/popularItems/:size", items.findPopularItems);
+    router.get("/find/popularItemsByYear/:year", items.findPopularItemsByYear);
     // Update an Item with given id
     router.put("/update/:id", items.update);
     // Delete an Item with given id

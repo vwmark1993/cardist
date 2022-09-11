@@ -3,8 +3,11 @@ class ItemTagDataService {
   getAll() {
     return http.get("/itemTag/find");
   }
-  getItemTags(itemId) {
+  getTagsByItem(itemId) {
     return http.get(`/itemTag/find/itemId/${itemId}`);
+  }
+  getItemsByTag(tagId) {
+    return http.get(`/itemTag/find/tagId/${tagId}`);
   }
   create(data) {
     return http.post("/itemTag/create", data);

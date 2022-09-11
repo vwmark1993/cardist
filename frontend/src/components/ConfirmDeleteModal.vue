@@ -20,6 +20,7 @@
 <script>
   import UserDataService from '@/services/UserDataService.js'
   import ItemDataService from '@/services/ItemDataService.js'
+  import TagDataService from '@/services/TagDataService.js'
   import CommentDataService from '@/services/CommentDataService.js'
 
   export default {
@@ -47,6 +48,8 @@
             response = await UserDataService.delete(this.id);
           } else if (this.apiService === 'Item') {
             response = await ItemDataService.delete(this.id);
+          } else if (this.apiService === 'Tag') {
+            response = await TagDataService.delete(this.id);
           } else if (this.apiService === 'Comment') {
             response = await CommentDataService.delete(this.id);
           }
@@ -58,6 +61,8 @@
               this.$emit('confirmDeleteUser', this.index);
             } else if (this.apiService === 'Item') {
               this.$emit('confirmDeleteItem', this.index);
+            } else if (this.apiService === 'Tag') {
+              this.$emit('confirmDeleteTag', this.index);
             } else if (this.apiService === 'Comment') {
               this.$emit('confirmDeleteComment', this.index);
             }

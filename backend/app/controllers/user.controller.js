@@ -129,9 +129,9 @@ exports.changePassword = (req, res) => {
 
 // Create and save a new User.
 exports.create = (req, res) => {
-
-  // Check if the username already exists.
-  User.findAll({ where: { username: `${req.body.username}` } })
+  try {
+    // Check if the username already exists.
+    User.findAll({ where: { username: `${req.body.username}` } })
     .then(data => {
       if (data.length > 0) {
         // Username exists.
@@ -150,17 +150,17 @@ exports.create = (req, res) => {
           phone: req.body.phone
         };
         User.create(user)
-          .then(data => {
-            res.send(data);
-          })
-          .catch(err => {
-            res.status(500).send({
-              message:
-                err.message || "Some error occurred while creating the User."
-            });
-          });
+        .then(data => {
+          res.send(data);
+        })
       }
     })
+  } catch (e) {
+    res.status(500).send({
+      message:
+        e.message || "Some error occurred while creating the User."
+    });
+  }
 
   
 };
@@ -234,7 +234,7 @@ exports.update = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Updated Profile"
+          message: "Updated User"
         });
       } else {
         res.send({

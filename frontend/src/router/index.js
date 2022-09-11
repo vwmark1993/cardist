@@ -1,11 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import store from '@/store'
+
+// Used to make sure API calls for order confirmations aren't called multiple times.
+function resetOrderConfirmationFlag() {
+  if (store.state.user.resetOrderConfirmationFlag) {
+    store.dispatch('cart/setOrderConfirmationFlag', false);
+  }
+}
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: () => import('../views/Home.vue'),
+    beforeEnter: [resetOrderConfirmationFlag]
   },
   {
     path: '/login',
@@ -20,17 +28,20 @@ const routes = [
   {
     path: '/item/:itemId',
     name: 'item-details',
-    component: () => import('../views/ItemDetails.vue')
+    component: () => import('../views/ItemDetails.vue'),
+    beforeEnter: [resetOrderConfirmationFlag]
   },
   {
     path: '/cart',
     name: 'shopping-cart',
-    component: () => import('../views/ShoppingCart.vue')
+    component: () => import('../views/ShoppingCart.vue'),
+    beforeEnter: [resetOrderConfirmationFlag]
   },
   {
     path: '/profile',
     name: 'user-profile',
-    component: () => import('../views/UserProfile.vue')
+    component: () => import('../views/UserProfile.vue'),
+    beforeEnter: [resetOrderConfirmationFlag]
   },
   {
     path: '/order/success',
@@ -40,7 +51,8 @@ const routes = [
   {
     path: '/sell',
     name: 'item-listings',
-    component: () => import('../views/ItemListings.vue')
+    component: () => import('../views/ItemListings.vue'),
+    beforeEnter: [resetOrderConfirmationFlag]
   },
   {
     path: '/admin',

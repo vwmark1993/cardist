@@ -35,7 +35,7 @@ const actions = {
       let items = itemResponse.data;
 
       items.forEach(async item => {
-        let itemTagResponse = await ItemTagDataService.getItemTags(item.id);
+        let itemTagResponse = await ItemTagDataService.getTagsByItem(item.id);
         let itemTags = itemTagResponse.data;
 
         let tags = []

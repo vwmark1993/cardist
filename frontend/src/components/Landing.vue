@@ -12,8 +12,8 @@
             <option selected value="dateAdded">Date Added</option>
             <option value="priceDesc">Price: Low to High</option>
             <option value="priceAsc">Price: High to Low</option>
-            <option selected value="nameAsc">Name: A-Z</option>
-            <option selected value="nameDesc">Name: Z-A</option>
+            <option value="nameAsc">Name: A-Z</option>
+            <option value="nameDesc">Name: Z-A</option>
           </select>
         </div>
         <div>
