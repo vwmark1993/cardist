@@ -139,7 +139,7 @@ exports.create = (req, res) => {
           message: "Username already exists."
         });
       } else {
-        // Username doesn't exist.
+        // User data is valid.
         let password = req.body.password;
         let hashedPassword = crypto.createHash('md5').update(password).digest('hex');
 

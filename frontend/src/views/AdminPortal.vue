@@ -34,7 +34,7 @@
       </Transition>
     </div>
     <h1 class="text-4xl font-bold text-slate-700 mb-6 text-left m-3">Admin Portal</h1>
-    <div class="grid grid-flow-col">
+    <div class="flex">
       <div class="width-300">
         <div class="mx-3 p-5 bg-slate-300 rounded">
           <div>
@@ -101,7 +101,7 @@
           </div>
         </div>  
       </div>
-      <div class="col-span-12">
+      <div class="w-full min-width-500">
         <div v-if="mode === 'overview' || mode === 'popularItems' || mode === 'topSellers'" class="flex items-center justify-end border-b mx-3 mb-3 pb-2">
           <label for="year" class="text-sm font-medium text-slate-900 dark:text-slate-400">Year:&nbsp;&nbsp;</label>
           <select  @change="queryMetricsForYear" v-model="metricsYear" id="year" class="p-1 bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded focus:border-slate-500">
@@ -233,6 +233,44 @@
             </tbody>
           </table>
         </div>
+        <div v-else-if="mode === 'banner'">
+          <div v-if="banners.length === 0">
+            <span class="block text-slate-400 text-xl mb-4">No Banners</span>
+          </div>
+          <div v-else >
+            <div class="flex justify-center items-center mb-2">
+              <span class="text-xl font-semibold">Banners</span>
+            </div>
+            <table class="border-collapse border border-slate-400 mx-auto">
+              <thead>
+                <tr>
+                  <th class="border border-slate-300"></th>
+                  <th class="border border-slate-300">Name</th>
+                  <th class="border border-slate-300">Image</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="banner in banners" :key="banner.id">
+                  <td class="border border-slate-300">
+                    <input 
+                      @click="selectBanner(banner.id)"
+                      class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-primary checked:border-primary focus:outline-none transition duration-200 cursor-pointer" 
+                      type="radio" 
+                      name="banner" 
+                      id="banner" 
+                      :checked="banner.selected"
+                      :value="banner.id"
+                    >
+                  </td>
+                  <td class="border border-slate-300">{{ banner.name }}</td>
+                  <td class="border border-slate-300">
+                    <img :src="banner.image" class="banner rounded m-auto" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
         <div v-else-if="mode === 'tags'">
           <div v-if="tags.length === 0">
             <span class="block text-slate-400 text-xl mb-4">No Tags</span>
@@ -318,6 +356,7 @@
   import UserDataService from '@/services/UserDataService.js'
   import OrderItemDataService from '@/services/OrderItemDataService.js'
   import ItemDataService from '@/services/ItemDataService.js'
+  import BannerDataService from '@/services/BannerDataService'
   import TagDataService from '@/services/TagDataService'
   import CommentDataService from '@/services/CommentDataService'
 
@@ -343,6 +382,8 @@
         itemDetailsModalId: '',
         tagDetailsModalId: '',
 
+        currentSelectedBannerId: '',
+
         confirmDeleteModalId: '',
         confirmDeleteModalApi: '',
         confirmDeleteModalName: '',
@@ -360,6 +401,7 @@
 
         users: [],
         items: [],
+        banners: [],
         tags: [],
         flaggedComments: []
       }
@@ -368,7 +410,7 @@
       currentYear() {
         const d = new Date();
         return d.getFullYear();
-      }
+      },
     },
     methods: {
       showMessage(message, mode) {
@@ -488,8 +530,8 @@
           let response = await ItemDataService.getPopularItemsByYear(this.metricsYear);
           let data = response.data;
           
-          let xAxisLabels = ['test'];
-          let dataValues = [1];
+          let xAxisLabels = [];
+          let dataValues = [];
 
           data.forEach(item => {
             xAxisLabels.push(item.name);
@@ -518,6 +560,18 @@
           this.items = response.data;
         } catch (e) {
           this.showMessage('Error retrieving list of items.', 'failure');
+        } 
+      },
+      async getBanners() {
+        try {
+          let response = await BannerDataService.getAll();
+          this.banners = response.data;
+
+          if (this.banners.length > 0) {
+            this.currentSelectedBannerId = this.banners.find(banner => banner.selected === true).id
+          }
+        } catch (e) {
+          this.showMessage('Error retrieving banners.', 'failure');
         } 
       },
       async getTags() {
@@ -627,6 +681,28 @@
       },
       confirmDeleteComment(index) {
         this.flaggedComments.splice(index, 1);
+      },
+      async selectBanner(id) {
+        try {
+          // Select the new banner.
+          let data = {
+            selected: true
+          }
+
+          await BannerDataService.update(id, data);
+
+          // Unselect the old banner.
+          data = {
+            selected: false
+          }
+
+          await BannerDataService.update(this.currentSelectedBannerId, data);
+
+          this.currentSelectedBannerId = id;
+          this.showMessage('Banner Selected', 'success');
+        } catch (e) {
+          this.showMessage(e, 'failure');
+        }
       }
     },
     mounted() {
@@ -652,6 +728,9 @@
     // List of Items tab
     this.getItems();
 
+    // Manage Banners tab
+    this.getBanners();
+
     // Manage Tags tab
     this.getTags();
 
@@ -668,6 +747,15 @@
 
   .width-300 {
     width: 300px;
+  }
+
+  .min-width-500 {
+    min-width: 500px;
+  }
+
+  .banner {
+    width: 700px;
+    height: 150px;
   }
 
   th, td {

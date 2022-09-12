@@ -4,9 +4,10 @@
     <div class="fixed bottom-3 w-full">
       <Transition name="slide-fade">
         <AlertMessage v-if="showMessage" :message="showMessage" mode="success" />
+        <AlertMessage v-else-if="bannerError" message="Could not retrieve banner" mode="failure" />
       </Transition>
     </div>
-    <Landing />
+    <Landing @bannerError="() => bannerErrorMessage('Could not retrieve banner', 'failure')" />
   </div>
 </template>
 
@@ -23,6 +24,20 @@
       UserHeader,
       AlertMessage,
       Landing
+    },
+    data() {
+      return {
+        bannerError: false
+      }
+    },
+    methods: {
+      bannerErrorMessage() {
+        this.bannerError = true;
+
+        setTimeout(() => {
+          this.bannerError = false;
+        }, 3000);
+      }
     },
     computed: {
       showMessage() {

@@ -51,6 +51,7 @@ require("./app/routes/orderItem.routes")(app);
 require("./app/routes/tag.routes")(app);
 require("./app/routes/itemTag.routes")(app);
 require("./app/routes/user.routes")(app);
+require("./app/routes/banner.routes")(app);
 
 // const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 

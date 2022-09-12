@@ -1,10 +1,10 @@
 <template>
-  <div class="grid grid-flow-col">
-    <div :class="{ 'col-span-1': hideFilters, 'col-span-2': !hideFilters }">
+  <div class="flex">
+    <div class="width-300">
       <Filters @changeFilterMode="(hideFilters) => changeFilterMode(hideFilters)" />
     </div>
-    <div :class="{ 'col-span-12': hideFilters, 'col-span-10': !hideFilters }">
-      <Banner />
+    <div class="w-full min-width-500">
+      <Banner @bannerError="() => $emit('bannerError')" />
       <div class="p-3 m-3">
         <div class="flex items-center justify-end border-b pb-2">
           <label for="sort" class="text-sm font-medium text-slate-900 dark:text-slate-400">Sort:&nbsp;&nbsp;</label>
@@ -17,7 +17,7 @@
           </select>
         </div>
         <div>
-          <div v-if="items.length > 0" class="flex flex-wrap p-3">
+          <div v-if="items.length > 0" class="flex flex-wrap">
             <Thumbnail v-for="item in items" :key="item.id" :id="item.id" :name="item.name" :price="item.price" :image="item.images[0]" />
           </div>
           <div v-else class="mt-4">
@@ -100,5 +100,15 @@ export default {
 }
 </script>
 <style scoped>
-  
+  .min-width-150 {
+    min-width: 150px;
+  }
+
+  .width-300 {
+    width: 300px;
+  }
+
+  .min-width-500 {
+    min-width: 500px;
+  }
 </style>

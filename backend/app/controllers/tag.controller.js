@@ -5,7 +5,6 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Tag
 exports.create = (req, res) => {
   try {
-    console.log('TAG CONTROLLER : ' + req.body.name)
     if (!req.body.name || req.body.name === '') {
       res.status(201).send({
         message: "Invalid tag name."
@@ -21,7 +20,7 @@ exports.create = (req, res) => {
           message: "Tag name already exists."
         });
       } else {
-        // Tag doesn't exist.
+        // Tag data is valid.
         const tag = {
           name: req.body.name
         };

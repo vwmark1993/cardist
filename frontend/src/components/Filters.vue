@@ -53,7 +53,7 @@ export default {
       return {
           hideFilters: false,
           tags: [],
-          selectedTags: []
+          selectedTags: store.state.search.tagFilters.slice()
       }
   },
   watch: {

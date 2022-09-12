@@ -25,5 +25,6 @@ db.carts = require("./cart.model.js")(sequelize, Sequelize);
 db.cart_items = require("./cart_item.model.js")(sequelize, Sequelize);
 db.orders = require("./order.model.js")(sequelize, Sequelize);
 db.order_items = require("./order_item.model.js")(sequelize, Sequelize);
+db.banners = require("./banner.model.js")(sequelize, Sequelize);
 
 module.exports = db;
