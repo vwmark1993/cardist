@@ -5,57 +5,61 @@ const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 // Create and Save a new Order
 exports.create = (req, res) => {
-  const order = {
-    buyer_id: req.body.buyerId
-  };
-  Order.create(order)
+  try {
+    const order = {
+      buyer_id: req.body.buyerId
+    };
+    Order.create(order)
     .then(data => {
       res.send(data);
     })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Order."
-      });
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while creating the Order."
     });
+  }
 };
 
 // Retrieve all Orders from the database.
 exports.findAll = (req, res) => {
-  // need to replace this for search functionality
-  const name = req.query.name;
-  var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
-  Order.findAll({ where: condition })
+  try {
+    // need to replace this for search functionality
+    const name = req.query.name;
+    let condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
+    Order.findAll({ where: condition })
     .then(data => {
       res.send(data);
     })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving orders."
-      });
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving orders."
     });
+  }
 };
 
 // Retrieve Orders tied to a Buyer from the database.
 exports.findOrdersByBuyer = (req, res) => {
+  try {
     const buyerId = req.params.buyerId;
-    var condition = buyerId ? { buyer_id: `${buyerId}` } : null;
+    let condition = buyerId ? { buyer_id: `${buyerId}` } : null;
     Order.findAll({ where: condition })
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving orders."
-        });
-      });
-  };
+    .then(data => {
+      res.send(data);
+    })
+  } catch (e)  {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving orders."
+    });
+  }
+};
 // Find a single Order with an id
 exports.findOne = (req, res) => {
-  const id = req.params.id;
-  Order.findByPk(id)
+  try {
+    const id = req.params.id;
+    Order.findByPk(id)
     .then(data => {
       if (data) {
         res.send(data);
@@ -65,19 +69,20 @@ exports.findOne = (req, res) => {
         });
       }
     })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error retrieving Item with id=" + id
-      });
+  } catch (e) {
+    res.status(500).send({
+      message: "Error retrieving Item with id=" + id
     });
+  }
 };
 
 // Delete a Order with the specified id
 exports.delete = (req, res) => {
-  const id = req.params.id;
-  Order.destroy({
-    where: { id: id }
-  })
+  try {
+    const id = req.params.id;
+    Order.destroy({
+      where: { id: id }
+    })
     .then(num => {
       if (num == 1) {
         res.send({
@@ -89,11 +94,11 @@ exports.delete = (req, res) => {
         });
       }
     })
-    .catch(err => {
-      res.status(500).send({
-        message: "Could not delete Order with id=" + id
-      });
+  } catch (e) {
+    res.status(500).send({
+      message: "Could not delete Order with id=" + id
     });
+  }
 };
 
 exports.successfulOrder = async (req, res) => {

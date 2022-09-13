@@ -38,23 +38,27 @@ exports.create = (req, res) => {
     });
   }
 };
+
 // Retrieve Tag tied to a User from the database.
 exports.findAll = (req, res) => {
-  Tag.findAll()
+  try {
+    Tag.findAll()
     .then(data => {
       res.send(data);
     })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving Tags."
-      });
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving Tags."
     });
-  };
+  }
+};
+
 // Find a single Tag Item with an id
 exports.findOne = (req, res) => {
-  const id = req.params.id;
-  Tag.findByPk(id)
+  try {
+    const id = req.params.id;
+    Tag.findByPk(id)
     .then(data => {
       if (data) {
         res.send(data);
@@ -64,11 +68,11 @@ exports.findOne = (req, res) => {
         });
       }
     })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error retrieving Tag with id=" + id
-      });
+  } catch (e) {
+    res.status(500).send({
+      message: "Error retrieving Tag with id=" + id
     });
+  }
 };
 // Update a Tag by the id in the request
 exports.update = (req, res) => {

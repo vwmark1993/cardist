@@ -6,24 +6,25 @@ const Op = db.Sequelize.Op;
 
 // Login authentication.
 exports.authenticate = (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+  try {
+    const username = req.body.username;
+    const password = req.body.password;
 
-  if (username == null || username.length == 0) {
-    res.status(201).send({
-      message: "Invalid Username"
-    });
-    return
-  } else if (password == null || password.length == 0) {
-    res.status(202).send({
-      message: "Invalid Password"
-    });
-    return
-  }
+    if (username == null || username.length == 0) {
+      res.status(201).send({
+        message: "Invalid Username"
+      });
+      return
+    } else if (password == null || password.length == 0) {
+      res.status(202).send({
+        message: "Invalid Password"
+      });
+      return
+    }
 
-  // Check the username.
-  let condition = username ? { username: `${username}` } : null;
-  User.findAll({ where: condition })
+    // Check the username.
+    let condition = username ? { username: `${username}` } : null;
+    User.findAll({ where: condition })
     .then(userRes => {
       if (userRes.length == 0) {
         res.status(201).send({
@@ -57,29 +58,30 @@ exports.authenticate = (req, res) => {
         }
       });
     })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Failed to authenticate."
-      });
+  } catch (e) {
+    res.status(500).send({
+      message:
+        e.message || "Failed to authenticate."
     });
+  }
 };
 
 // Change a user's password.
 exports.changePassword = (req, res) => {
-  const id = req.params.id;
-  const currentPassword = req.body.currentPassword;
-  const newPassword = req.body.newPassword;
+  try {
+    const id = req.params.id;
+    const currentPassword = req.body.currentPassword;
+    const newPassword = req.body.newPassword;
 
-  if (newPassword == null || newPassword.length == 0) {
-    res.status(201).send({
-      message: "Invalid Password"
-    });
-    return
-  }
+    if (newPassword == null || newPassword.length == 0) {
+      res.status(201).send({
+        message: "Invalid Password"
+      });
+      return
+    }
 
-  let condition = id ? { id: `${id}` } : null;
-  User.findAll({ where: condition })
+    let condition = id ? { id: `${id}` } : null;
+    User.findAll({ where: condition })
     .then(userRes => {
       if (userRes.length == 0) {
         res.status(201).send({
@@ -102,29 +104,24 @@ exports.changePassword = (req, res) => {
       }, {
         where: { id: id }
       })
-        .then(num => {
-          if (num == 1) {
-            res.send({
-              message: "Password Changed"
-            });
-          } else {
-            res.send({
-              message: `Failed to change password`
-            });
-          }
-        })
-        .catch(err => {
-          res.status(500).send({
-            message: err.message || "Error occurred while attempting to change the password"
-          }); 
-        });
+      .then(num => {
+        if (num == 1) {
+          res.send({
+            message: "Password Changed"
+          });
+        } else {
+          res.send({
+            message: `Failed to change password`
+          });
+        }
+      })
     })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Error occurred while querying the user"
-      });
+  } catch (e) {
+    res.status(500).send({
+      message:
+        e.message || "Error occurred while attempting to change the password."
     });
+  }
 };
 
 // Create and save a new User.
@@ -160,27 +157,29 @@ exports.create = (req, res) => {
       message:
         e.message || "Some error occurred while creating the User."
     });
-  }
-
-  
+  }  
 };
+
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
+  try {
     User.findAll()
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving users."
-        });
-      });
-  };
+    .then(data => {
+      res.send(data);
+    })
+  } catch (e) {
+    res.status(500).send({
+      message:
+        e.message || "Some error occurred while retrieving users."
+    });
+  }
+};
+
 // Find a single User with an id
 exports.findOne = (req, res) => {
-  const userId = req.params.id;
-  User.findByPk(userId)
+  try {
+    const userId = req.params.id;
+    User.findByPk(userId)
     .then(data => {
       if (data) {
         res.send(data);
@@ -190,11 +189,11 @@ exports.findOne = (req, res) => {
         });
       }
     })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error retrieving User with id=" + id
-      });
+  } catch (e) {
+    res.status(500).send({
+      message: "Error retrieving User with id=" + id
     });
+  }
 };
 
 // Retrieve newly created user accounts.
@@ -227,10 +226,11 @@ exports.findNewUsersByYear = async (req, res) => {
 
 // Update a User
 exports.update = (req, res) => {
-  const id = req.params.id;
-  User.update(req.body, {
-    where: { id: id }
-  })
+  try {
+    const id = req.params.id;
+    User.update(req.body, {
+      where: { id: id }
+    })
     .then(num => {
       if (num == 1) {
         res.send({
@@ -242,12 +242,13 @@ exports.update = (req, res) => {
         });
       }
     })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error updating User with id=" + id
-      });
+  } catch (e) {
+    res.status(500).send({
+      message: "Error updating User with id=" + id
     });
+  }
 };
+
 // Delete a User with the specified id in the request
 exports.delete = (req, res) => {
   try {

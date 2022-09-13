@@ -6,7 +6,11 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new Item
 exports.create = (req, res) => {
-  
+  try {
+
+  } catch (e) {
+
+  }
 };
 // Retrieve all Items from the database.
 exports.findAll = (req, res) => {
@@ -28,7 +32,7 @@ exports.findBySearch = (req, res) => {
   try {
     const searchString = req.params.searchString;
 
-    var condition = searchString ? { name: { [Op.iLike]: `%${searchString}%` } } : null;
+    let condition = searchString ? { name: { [Op.iLike]: `%${searchString}%` } } : null;
     Item.findAll({ where: condition })
       .then(data => {
         res.send(data);
@@ -66,7 +70,7 @@ exports.findByItemId = (req, res) => {
 exports.findBySellerId = (req, res) => {
   try {
     const sellerId = req.params.sellerId;
-    var condition = sellerId ? { seller_id: sellerId } : null;
+    let condition = sellerId ? { seller_id: sellerId } : null;
     Item.findAll({ where: condition })
       .then(data => {
         res.send(data);

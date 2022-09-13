@@ -75,25 +75,28 @@ exports.findOne = (req, res) => {
 
 // Find all flagged comments
 exports.findFlaggedComments = (req, res) => {
-  Comment.findAll({ where: { flagged: true } })
+  try {
+    Comment.findAll({ where: { flagged: true } })
     .then(data => {
       res.send(data);
     })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving flagged comments."
-      });
+  } catch (e) {
+    res.status(500).send({
+      message:
+        e.message || "Some error occurred while retrieving flagged comments."
     });
+  }
+  
 };
 
 // Update a Comment by the id in the request
 exports.update = (req, res) => {
-  const id = req.params.id;
+  try {
+    const id = req.params.id;
 
-  Comment.update(req.body, {
-    where: { id: id }
-  })
+    Comment.update(req.body, {
+      where: { id: id }
+    })
     .then(num => {
       if (num == 1) {
         res.send({
@@ -105,18 +108,20 @@ exports.update = (req, res) => {
         });
       }
     })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error updating Comment with id=" + id
-      });
+  } catch (e) {
+    res.status(500).send({
+      message: "Error updating Comment with id=" + id
     });
+  }
+  
 };
 // Delete a Comment with the specified id in the request
 exports.delete = (req, res) => {
-  const id = req.params.id;
-  Comment.destroy({
-    where: { id: id }
-  })
+  try {
+    const id = req.params.id;
+    Comment.destroy({
+      where: { id: id }
+    })
     .then(num => {
       if (num == 1) {
         res.send({
@@ -128,9 +133,10 @@ exports.delete = (req, res) => {
         });
       }
     })
-    .catch(err => {
-      res.status(500).send({
-        message: "Could not delete Comment with id=" + id
-      });
+  } catch (e) {
+    res.status(500).send({
+      message: "Could not delete Comment with id=" + id
     });
+  }
+  
 };

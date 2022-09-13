@@ -39,7 +39,7 @@ exports.create = (req, res) => {
 exports.findOrderItems = (req, res) => {
   try {
     const orderId = req.params.orderId;
-    var condition = orderId ? { order_id: `${orderId}` } : null;
+    let condition = orderId ? { order_id: `${orderId}` } : null;
     OrderItem.findAll({ where: condition })
       .then(data => {
         res.send(data);
@@ -76,7 +76,7 @@ exports.findOne = (req, res) => {
 exports.findOrderItemsBySeller = (req, res) => {
   try {
     const sellerId = req.params.sellerId;
-    var condition = sellerId ? { seller_id: `${sellerId}` } : null;
+    let condition = sellerId ? { seller_id: `${sellerId}` } : null;
     OrderItem.findAll({ where: condition })
       .then(data => {
         res.send(data);
@@ -244,5 +244,4 @@ exports.delete = (req, res) => {
       message: "Could not delete Order Item with id=" + id
     });
   }
-  
 };
