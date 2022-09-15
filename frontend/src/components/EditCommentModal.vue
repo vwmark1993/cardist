@@ -2,7 +2,7 @@
   <vue-final-modal v-model="showModal" classes="flex justify-center items-center" content-class="modal-content" name="EditCommentModal">
     <div class="flex justify-between">
       <span class="font-bold text-2xl truncate">Edit Comment</span>
-      <button class="my-auto" @click="showModal = false">
+      <button class="my-auto" @click="closeModal">
       </button>
     </div>
     <div class="flex flex-col rounded bg-white my-4">

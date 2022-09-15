@@ -45,8 +45,6 @@
 
         let response = await TagDataService.create(data);
 
-        console.log(response)
-
         if (response.status === 200) {
           this.$emit('createdTagMessage', 'Tag Created', 'success');
           this.$emit('newTag', response.data);

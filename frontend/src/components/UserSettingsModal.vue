@@ -2,7 +2,7 @@
   <vue-final-modal v-model="showModal" classes="flex justify-center items-center" content-class="modal-content" name="UserSettingsModal">
     <div class="flex justify-between">
       <span class="font-bold text-2xl truncate">User Settings</span>
-      <button class="my-auto" @click="showModal = false">
+      <button class="my-auto" @click="closeModal">
         <span class="material-symbols-outlined hover:text-tertiary">close</span>
       </button>
     </div>
@@ -45,35 +45,42 @@ import store from '@/store';
     },
     methods: {
       async updateUser() {
-        if (this.updatedEmail !== null && this.updatedEmail.trim() === '') {
-          this.updatedEmail = null;
+        try {
+          if (this.updatedEmail !== null && this.updatedEmail.trim() === '') {
+            this.updatedEmail = null;
+          }
+
+          if (this.updatedPhone !== null && this.updatedPhone.trim() === '') {
+            this.updatedPhone = null;
+          }
+
+          if (this.updatedPicture !== null && this.updatedPicture.trim() === '') {
+            this.updatedPicture = null;
+          }
+
+          let data = {
+            email: this.updatedEmail,
+            phone: this.updatedPhone,
+            picture: this.updatedPicture
+          }
+
+          let response = await UserDataService.update(this.id, data);
+
+          if (response.status === 200) {
+            this.$emit('updatedUser', 'Updated Profile', 'success');
+
+            store.dispatch('user/updateUser', data)
+          } else {
+            this.$emit('updatedUser', response.data.message, 'failure');
+          }
+
+          this.showModal = false;
+        } catch (e) {
+          this.$emit('updatedUser', e, 'failure');
+
+          this.closeModal();
         }
-
-        if (this.updatedPhone !== null && this.updatedPhone.trim() === '') {
-          this.updatedPhone = null;
-        }
-
-        if (this.updatedPicture !== null && this.updatedPicture.trim() === '') {
-          this.updatedPicture = null;
-        }
-
-        let data = {
-          email: this.updatedEmail,
-          phone: this.updatedPhone,
-          picture: this.updatedPicture
-        }
-
-        let response = await UserDataService.update(this.id, data);
-
-        if (response.status === 200) {
-          this.$emit('updatedUser', 'Updated Profile', 'success');
-
-          store.dispatch('user/updateUser', data)
-        } else {
-          this.$emit('updatedUser', response.data.message, 'failure');
-        }
-
-        this.showModal = false;
+        
       },
       closeModal() {
         this.updatedEmail = this.email;

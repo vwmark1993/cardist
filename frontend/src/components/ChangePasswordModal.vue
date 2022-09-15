@@ -2,7 +2,7 @@
   <vue-final-modal v-model="showModal" classes="flex justify-center items-center" content-class="modal-content" name="ChangePasswordModal">
     <div class="flex justify-between">
       <span class="font-bold text-2xl truncate">Change Password</span>
-      <button class="my-auto" @click="showModal = false">
+      <button class="my-auto" @click="closeModal">
         <span class="material-symbols-outlined hover:text-tertiary">close</span>
       </button>
     </div>
@@ -59,42 +59,45 @@
     },
     methods: {
       async updatePassword() {
-        if (this.newPassword !== this.confirmNewPassword) {
-          this.$emit('incorrectPasswords', 'Passwords do not match.');
+        try {
+          if (this.newPassword !== this.confirmNewPassword) {
+            this.$emit('incorrectPasswords', 'Passwords do not match.');
+            this.closeModal();
+            return;
+          }
+
+          if (this.confirmNewPassword === this.currentPassword) {
+            this.$emit('incorrectPasswords', 'Please enter a different value than the current password.');
+            this.closeModal();
+            return;
+          }
+
+          if (!this.confirmNewPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)) {
+            this.$emit('incorrectPasswords', 'Password must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.');
+            this.closeModal();
+            return;
+          }
+
+          let data = {
+            currentPassword: this.currentPassword,
+            newPassword: this.confirmNewPassword
+          }
+
+          let response = await UserDataService.changePassword(this.id, data);
+
+          if (response.status === 200) {
+            this.$emit('updatedPassword', 'Password Updated', 'success');
+          } else {
+            this.$emit('updatedPassword', response.data.message, 'failure');
+          }
+
           this.closeModal();
-          return;
-        }
+        } catch(e) {
+          this.$emit('updatedPassword', e, 'failure');
 
-        if (this.confirmNewPassword === this.currentPassword) {
-          this.$emit('incorrectPasswords', 'Please enter a different value than the current password.');
           this.closeModal();
-          return;
         }
-
-        if (!this.confirmNewPassword.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)) {
-          this.$emit('incorrectPasswords', 'Password must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.');
-          this.closeModal();
-          return;
-        }
-
-        let data = {
-          currentPassword: this.currentPassword,
-          newPassword: this.confirmNewPassword
-        }
-
-        let response = await UserDataService.changePassword(this.id, data);
-
-        let mode = '';
-
-        if (response.status === 200) {
-          mode = 'success';
-        } else {
-          mode = 'failure';
-        }
-
-        this.$emit('updatedPassword', response.data.message, mode);
-
-        this.closeModal();
+        
       },
       closeModal() {
         this.currentPassword = '';

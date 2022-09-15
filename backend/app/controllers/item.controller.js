@@ -7,10 +7,30 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Item
 exports.create = (req, res) => {
   try {
+    if (req.body.sellerId === null || !req.body.sellerId || req.body.name === null || !req.body.name || req.body.price === null || !req.body.price || req.body.price === 0) {
+      res.status(400).send({
+        message: "Invalid Item Fields"
+      });
+    }
 
+    const item = {
+      seller_id: req.body.sellerId,
+      name: req.body.name,
+      price: req.body.price,
+      description: req.body.description,
+      images: req.body.images
+    };
+
+    Item.create(item)
+    .then(data => {
+      res.send(data);
+    })
   } catch (e) {
-
-  }
+    res.status(500).send({
+      message:
+        e.message || "Some error occurred while creating the Item."
+    });
+  }  
 };
 // Retrieve all Items from the database.
 exports.findAll = (req, res) => {

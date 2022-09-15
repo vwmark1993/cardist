@@ -12,7 +12,7 @@
     </div>
     <div>
       <button @click="confirmDelete" class="user-profile-item-remove-button bg-red-600 hover:bg-red-800 text-white text-sm px-4 py-2 mr-1 rounded">Delete</button>
-      <button @click="closeModal" class="user-profile-item-remove-button bg-slate-500 hover:bg-slate-700 text-white text-sm px-4 py-2 mr-1 rounded">Cancel</button>
+      <button @click="showModal = false" class="user-profile-item-remove-button bg-slate-500 hover:bg-slate-700 text-white text-sm px-4 py-2 mr-1 rounded">Cancel</button>
     </div>
   </vue-final-modal>
 </template>
@@ -75,9 +75,6 @@
           this.$emit('Could not delete ' + this.apiService.toLowerCase() + '.', 'failure');
           this.showModal = false;
         }
-      },
-      closeModal() {
-        this.showModal = false;
       }
     }
   } 

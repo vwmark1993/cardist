@@ -63,8 +63,8 @@
           <div v-if="itemListings.length > 0" class="user-profile-scroll-container">
             <div v-for="item in itemListings" :key="item.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
               <div class="flex items-center mr-3">
-                <img v-if="item.images.length > 0" :src="item.images[0]" class="user-profile-item-image border rounded m-auto" />
-                <span v-else class="material-symbols-outlined m-auto">image</span>
+                <img v-if="item.images.length > 0 && item.images[0] !== ''" :src="item.images[0]" class="user-profile-item-image border rounded m-auto" />
+                <img v-else src="../assets/images/image-placeholder.png" class="item-listings-item-image border rounded m-auto" />
               </div>
               <div class="w-full relative">
                 <div class="user-profile-item-header flex justify-between items-center border-b border-slate-400 mb-1">
@@ -97,8 +97,8 @@
           <div v-if="ordersAsBuyer.length > 0" class="user-profile-scroll-container">
             <div v-for="order in ordersAsBuyer" :key="order.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
               <div class="flex items-center mr-3">
-                <img v-if="order.images.length > 0" :src="order.images[0]" class="user-profile-item-image border rounded m-auto" />
-                <span v-else class="material-symbols-outlined m-auto">image</span>
+                <img v-if="order.images.length > 0 && order.images[0] !== ''" :src="order.images[0]" class="user-profile-item-image border rounded m-auto" />
+                <img v-else src="../assets/images/image-placeholder.png" class="item-listings-item-image border rounded m-auto" />
               </div>
               <div class="w-full relative">
                 <div class="user-profile-item-header flex justify-between items-center border-b border-slate-400 mb-1">

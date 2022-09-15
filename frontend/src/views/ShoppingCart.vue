@@ -24,11 +24,11 @@
             />
         </div>
         <div v-else>
-          <span class="font-semi-bold text-lg text-slate-400 italic">Empty Cart</span>
+          <span class="text-slate-400 text-xl italic mb-4">Empty Cart</span>
         </div>
       </div>
       <div class="col-span-3 text-right">
-        <button v-if="cartItems.length > 0" @click="checkout" class="cart-button bg-slate-500 hover:bg-slate-700 text-white font-bold text-lg py-3 px-7 rounded select-none">Checkout</button>
+        <button v-if="cartItems.length > 0" @click="checkout" class="bg-slate-500 hover:bg-slate-700 text-white font-bold text-lg py-3 px-7 rounded select-none">Checkout</button>
         <div v-if="cartItems.length > 0" class="border rounded bg-slate-100 border-slate-500 p-3 mt-3 ml-6 flex">
           <div class="w-full px-4">
             <div v-for="cartItem in cartItems" :key="cartItem.id">
@@ -130,7 +130,5 @@ export default {
 }
 </script>
 <style scoped>
-  .checkout-button {
-    height: 46px;
-  }
+
 </style>

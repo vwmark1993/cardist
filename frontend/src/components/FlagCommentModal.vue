@@ -2,7 +2,7 @@
   <vue-final-modal v-model="showModal" classes="flex justify-center items-center" content-class="modal-content" name="FlagCommentModal">
     <div class="flex justify-between">
       <span class="font-bold text-2xl truncate">Report a Comment</span>
-      <button class="my-auto" @click="showModal = false">
+      <button class="my-auto" @click="closeModal">
         <span class="material-symbols-outlined hover:text-tertiary">close</span>
       </button>
     </div>
