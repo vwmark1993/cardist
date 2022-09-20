@@ -26,9 +26,9 @@ app.use(cors(corsOptions));
 // });
 
 // parse requests of content-type - application/json
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 const db = require("./app/models");
 
@@ -49,6 +49,7 @@ require("./app/routes/item.routes")(app);
 require("./app/routes/order.routes")(app);
 require("./app/routes/orderItem.routes")(app);
 require("./app/routes/tag.routes")(app);
+require("./app/routes/itemImage.routes")(app);
 require("./app/routes/itemTag.routes")(app);
 require("./app/routes/user.routes")(app);
 require("./app/routes/banner.routes")(app);

@@ -48,9 +48,6 @@ exports.findTagsByItem = (req, res) => {
       .then(data => {
         res.send(data);
       })
-      .catch(err => {
-        
-      });
   } catch (e) {
     res.status(500).send({
       message:

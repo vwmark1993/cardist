@@ -282,7 +282,10 @@
           <div v-else >
             <div class="flex justify-center items-center mb-2">
               <span class="text-xl font-semibold">Tags</span>
-              <span @click="createTag" class="material-symbols-outlined ml-2 p-1 rounded cursor-pointer text-slate-600 bg-slate-300 hover:text-slate-800 hover:bg-slate-400">add</span>
+              <button @click="createTag" class="flex items-center rounded bg-slate-300 text-slate-600 hover:text-slate-800 hover:bg-slate-400 ml-2 py-1 px-2">
+                <span class="material-symbols-outlined cursor-pointer">add</span>
+                <span class="tracking-wide font-semibold">Create</span>
+              </button>
             </div>
             <table class="border-collapse border border-slate-400 mx-auto">
               <thead>
@@ -658,6 +661,9 @@
         $vfm.show('ConfirmDeleteModal');
       },
       confirmDeleteItem(index) {
+        // Refresh item search.
+        store.dispatch('search/searchItems', '');
+        
         this.items.splice(index, 1);
       },
       async deleteTag(id, index, name) {

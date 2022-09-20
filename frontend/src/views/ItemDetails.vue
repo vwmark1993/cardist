@@ -31,13 +31,22 @@
       </Transition>
     </div>
     <div class="grid grid-cols-12 grid-flow-col">
-      <div class="md:col-span-4 grid grid-cols-4 m-3">
-        <div class="col-span-1 flex flex-col mx-2">
+      <div v-if="itemDetails.images || itemDetails.imageBlobs" class="md:col-span-4 grid grid-cols-4 m-3">
+        <div v-if="itemDetails.images && itemDetails.images.length > 0 && itemDetails.images[0] !== ''" class="col-span-1 flex flex-col mx-2">
           <img @click="setImageIndex(index)" v-for="(image, index) in itemDetails.images" :key="index" :src="image" class="border rounded mb-2 cursor-pointer opacity-50 hover:opacity-100 transition delay-75 ease-in-out" />
         </div>
-        <div class="col-span-3">
-          <img v-if="itemDetails.images.length > 0" :src="itemDetails.images[selectedIndex]" class="border rounded m-auto" />
-          <span v-else class="material-symbols-outlined m-auto">image</span>
+        <div v-else-if="!itemDetails.images && itemDetails.imageBlobs && itemDetails.imageBlobs.length > 0 && itemDetails.imageBlobs[0] !== ''" class="col-span-1 flex flex-col mx-2">
+          <img @click="setImageIndex(index)" v-for="(image, index) in itemDetails.imageBlobs" :key="index" :src="image" class="border rounded mb-2 cursor-pointer opacity-50 hover:opacity-100 transition delay-75 ease-in-out" />
+        </div>
+        <div 
+          :class="{
+            'col-span-3' : (itemDetails.images && itemDetails.images.length > 0 && itemDetails.images[0] !== '') || (itemDetails.imageBlobs),
+            'col-span-4' : (itemDetails.images && itemDetails.images.length === 0) || (itemDetails.imageBlobs && itemDetails.imageBlobs.length === 0),
+          }"
+        >
+          <img v-if="itemDetails.images && itemDetails.images.length > 0 && itemDetails.images[0] !== ''" :src="itemDetails.images[selectedIndex]" class="border rounded m-auto" />
+          <img v-else-if="!itemDetails.images && itemDetails.imageBlobs && itemDetails.imageBlobs.length > 0 && itemDetails.imageBlobs[0] !== ''" :src="itemDetails.imageBlobs[selectedIndex]" class="item-listings-item-image border rounded m-auto" />
+          <img v-else src="../assets/images/image-placeholder.png" class="border rounded m-auto" />
         </div>
       </div>
       <div class="col-span-8 text-left m-3">
@@ -61,8 +70,13 @@
             </button>
           </div>
         </div>  
-        <h6 class="text-sm font-medium text-slate-500">Description</h6>
-        <p class="text-xl text-slate-800 mb-10">{{ itemDetails.description }}</p>
+        <div v-if="itemDetails.description">
+          <h6 class="text-sm font-medium text-slate-500">Description</h6>
+          <p class="text-xl text-slate-800 mb-10">{{ itemDetails.description }}</p>
+        </div>
+        <div v-else>
+          <h6 class="text-sm font-medium text-slate-500 mb-8">No Description Provided</h6>
+        </div>
         <div class="mb-5">
           <div v-if="comments.length == 0">
             <h6 class="text-sm font-medium text-slate-500">This item has no comments written about it.</h6>
@@ -170,6 +184,7 @@
 import store from '@/store'
 
 import ItemDataService from '@/services/ItemDataService.js'
+import ItemImageDataService from '@/services/ItemImageDataService.js'
 import UserDataService from '@/services/UserDataService.js'
 import CommentDataService from '@/services/CommentDataService.js'
 
@@ -262,6 +277,20 @@ export default {
 
         response = await UserDataService.get(this.itemDetails.seller_id);
         this.itemDetails.seller_username = response.data.username;
+
+        this.itemDetails.imageBlobs = null;
+
+        if (this.itemDetails.images === null) {
+          response = await ItemImageDataService.getItemImages(this.itemDetails.id);
+          let itemImages = response.data;
+          let images = []
+
+          itemImages.forEach(async itemImage => {
+            images.push(itemImage.image)
+          })
+
+          this.itemDetails.imageBlobs = images;
+        }
 
       } catch (e) {
         this.showMessage(e, 'failure');
@@ -370,9 +399,15 @@ export default {
       return this.comments.slice(startIndex, startIndex + this.perPage);
     }
   },
-  mounted() {
-    this.getItem();
-    this.getComments();
+  async mounted() {
+    await this.getItem();
+    await this.getComments();
+
+    // Re-route and refresh item search if the item is deleted.
+    if (this.itemDetails.id === null) {
+      this.$router.push({ name: 'home' });
+      store.dispatch('search/searchItems', '');
+    }
   }
 }
 </script>

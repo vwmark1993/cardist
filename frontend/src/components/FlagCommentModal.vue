@@ -23,15 +23,15 @@
       <div class="border rounded px-2 py-2 mb-4 mx-3">
         <div class="flex flex-wrap">
           <div class="flex justify-center items-center my-2">
-            <input v-model="flaggedReason" class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-primary checked:border-primary focus:outline-none transition duration-200 ml-3 mr-1 cursor-pointer" type="radio" name="reason" id="inappropriateLanguage" value="Inappropriate Language">
+            <input v-model="flaggedReason" class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-slate-600 checked:border-slate-600 focus:outline-none transition duration-200 ml-3 mr-1 cursor-pointer" type="radio" name="reason" id="inappropriateLanguage" value="Inappropriate Language">
             <label class="form-check-label inline-block text-gray-800" for="inappropriateLanguage">Inappropriate Language</label>
           </div>
           <div class="flex justify-center items-center my-2">
-            <input v-model="flaggedReason" class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-primary checked:border-primary focus:outline-none transition duration-200 ml-3 mr-1 cursor-pointer" type="radio" name="reason" id="spam" value="Spam">
+            <input v-model="flaggedReason" class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-slate-600 checked:border-slate-600 focus:outline-none transition duration-200 ml-3 mr-1 cursor-pointer" type="radio" name="reason" id="spam" value="Spam">
             <label class="form-check-label inline-block text-gray-800" for="spam">Spam</label>
           </div>
           <div class="flex justify-center items-center my-2">
-            <input v-model="flaggedReason" class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-primary checked:border-primary focus:outline-none transition duration-200 ml-3 mr-1  cursor-pointer" type="radio" name="reason" id="other" value="Other">
+            <input v-model="flaggedReason" class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-slate-600 checked:border-slate-600 focus:outline-none transition duration-200 ml-3 mr-1  cursor-pointer" type="radio" name="reason" id="other" value="Other">
             <label class="form-check-label inline-block text-gray-800" for="other">Other (please specify): </label>
             <input v-model="flaggedReasonMessage" class="appearance-none border rounded border-gray-300 bg-white focus:outline-none transition duration-200 align-top bg-no-repeat bg-center bg-contain ml-2 mr-4 px-2 py-1" type="text" name="otherText" id="otherText" size=30 maxlength=30>
           </div>

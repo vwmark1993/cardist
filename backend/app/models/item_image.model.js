@@ -1,40 +1,25 @@
 module.exports = (sequelize, Sequelize) => {
-  const Item = sequelize.define("item", {
+  const Item_Image = sequelize.define("item_image", {
     id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
       allowNull: false,
       primaryKey: true
     },
-    seller_id: {
+    item_id: {
       type: Sequelize.UUID,
       allowNull: false,
       references: {
         model: {
-          tableName: 'users',
+          tableName: 'items',
         },
         key: 'id'
       },
       onDelete: 'CASCADE'
     },
-    images: {
-      type: Sequelize.ARRAY(Sequelize.STRING),
-      defaultValue: null
-    },
-    name: {
-      type: Sequelize.STRING,
+    image: {
+      type: Sequelize.TEXT,
       allowNull: false
-    },
-    description: {
-      type: Sequelize.STRING
-    },
-    price: {
-      type: Sequelize.FLOAT,
-      allowNull: false
-    },
-    number_sold: {
-      type: Sequelize.INTEGER,
-      defaultValue: 0
     },
     created_on: {
       type: Sequelize.DATE,
@@ -47,5 +32,5 @@ module.exports = (sequelize, Sequelize) => {
   }, {
     timestamps: false
   });
-  return Item;
+  return Item_Image;
 };

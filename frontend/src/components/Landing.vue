@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <div class="width-300">
+    <div :class="{'width-350' : !hideFilters , 'width-100' : hideFilters}">
       <Filters @changeFilterMode="(hideFilters) => changeFilterMode(hideFilters)" />
     </div>
     <div class="w-full min-width-500">
@@ -18,7 +18,7 @@
         </div>
         <div>
           <div v-if="items.length > 0" class="flex flex-wrap">
-            <Thumbnail v-for="item in items" :key="item.id" :id="item.id" :name="item.name" :price="item.price" :image="item.images[0]" />
+            <Thumbnail v-for="item in items" :key="item.id" :id="item.id" :name="item.name" :price="item.price" :image="item.images && item.images[0] !== '' ? item.images[0] : null" :imageBlob="item.imageBlobs && item.imageBlobs[0] !== '' ? item.imageBlobs[0] : null" />
           </div>
           <div v-else class="mt-4">
             <span class="text-slate-600 text-xl">No Items Found</span>
@@ -104,8 +104,12 @@ export default {
     min-width: 150px;
   }
 
-  .width-300 {
-    width: 300px;
+  .width-350 {
+    width: 350px;
+  }
+
+  .width-100 {
+    width: 100px;
   }
 
   .min-width-500 {

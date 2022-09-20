@@ -1,4 +1,5 @@
 import ItemDataService from '@/services/ItemDataService.js'
+import ItemImageDataService from '@/services/ItemImageDataService.js'
 import ItemTagDataService from '@/services/ItemTagDataService.js'
 import TagDataService from '@/services/TagDataService.js'
 
@@ -21,20 +22,34 @@ const getters = {
 const actions = {
   async searchItems({ commit }, searchString) {
     try {
-      let itemResponse;
+      let response;
       let searchStringTrimmed = searchString.trim();
 
       if (searchStringTrimmed === '' || searchString === null || searchString === undefined)  {
         commit('setSearchString', '');
-        itemResponse = await ItemDataService.searchAll();
+        response = await ItemDataService.searchAll();
       } else {
         commit('setSearchString', searchStringTrimmed);
-        itemResponse = await ItemDataService.searchByName(searchStringTrimmed);
+        response = await ItemDataService.searchByName(searchStringTrimmed);
       }
 
-      let items = itemResponse.data;
+      let items = response.data;
 
       items.forEach(async item => {
+        item.imageBlobs = null;
+
+        if (item.images === null) {
+          response = await ItemImageDataService.getItemImages(item.id);
+          let itemImages = response.data;
+          let images = []
+
+          itemImages.forEach(itemImage => {
+            images.push(itemImage.image)
+          })
+
+          item.imageBlobs = images;
+        }
+
         let itemTagResponse = await ItemTagDataService.getTagsByItem(item.id);
         let itemTags = itemTagResponse.data;
 

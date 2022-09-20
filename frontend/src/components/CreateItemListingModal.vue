@@ -15,32 +15,48 @@
         <label class="block text-gray-700 text-sm font-bold mb-1 text-left" for="password">Description</label>
         <textarea v-model="description" class="border resize-none rounded-md focus:outline-none p-2 w-full"></textarea>
       </div>
-      <div>
-        <div class="flex items-center mb-3">
-          <span class="block text-gray-700 text-sm font-bold mr-1">Image Links</span>
-          <button @click="addImage" class="bg-slate-500 hover:bg-slate-700 text-white mr-1 px-2 rounded flex items-center">
-            <span class="text-sm">Add</span>
-          </button>
-          <button v-if="images.length > 1" @click="removeImage" class="bg-slate-500 hover:bg-slate-700 text-white mr-1 px-2 rounded flex items-center">
-            <span class="text-sm">Remove</span>
-          </button>
-          <button v-else class="bg-slate-300 text-white mr-1 px-2 rounded flex items-center">
-            <span class="text-sm">Remove</span>
-          </button>
-        </div>
-        <div class="image-links-container overflow-auto mb-2">
-          <div v-for="image, index in images" :key="index" class="flex items-center mb-1">
-            <span class="text-slate-600 font-semibold text-sm mr-2">{{ index + 1 }}.</span>
-            <input @input="updateImage(index, $event)" class="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none" id="name" type="text">
-          </div>
-        </div>
-      </div>
-      <div>
+      <div class="mb-2">
         <div class="flex items-center mb-2">
           <span class="block text-gray-700 text-sm font-bold mr-1">Tags</span>
         </div> 
         <div class="flex mb-2">
             <button @click="tag.selected = !tag.selected" v-for="tag, index in tags" :key="index" :class="{  'opacity-75' : !tag.selected }" class="bg-secondary text-white mr-1 px-3 py-1 rounded">{{ tag.name }}</button>
+        </div>
+      </div>
+      <div>
+        <span class="block text-gray-700 text-sm font-bold mr-1 text-left">Images</span>
+        <div class="flex flex-wrap justify-center mx-2 mt-1 mb-4">
+          <div class="flex justify-center items-center">
+            <input v-model="imageMode" @click="imageMode === 'upload' ? images = [''] : null" class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-slate-600 checked:border-slate-600 focus:outline-none transition duration-200 ml-3 mr-1 cursor-pointer" type="radio" name="imageLinks" id="imageLinks" value="links">
+            <label class="font-semibold form-check-label inline-block text-slate-600" for="imageLinks">URL Links</label>
+          </div>
+          <div class="flex justify-center items-center">
+            <input v-model="imageMode" class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-slate-600 checked:border-slate-600 focus:outline-none transition duration-200 ml-3 mr-1 cursor-pointer" type="radio" name="imageUpload" id="imageUpload" value="upload">
+            <label class="font-semibold form-check-label inline-block text-slate-600" for="imageUpload">Upload Files</label>
+          </div>
+        </div>
+        <div v-if="imageMode === 'links'" class="border rounded p-4">
+          <div class="flex items-center mb-3">
+            <span class="block text-gray-700 text-sm font-bold mr-1">Image Links</span>
+            <button @click="addImage" class="bg-slate-500 hover:bg-slate-700 text-white mr-1 px-2 rounded flex items-center">
+              <span class="text-sm">Add</span>
+            </button>
+            <button v-if="imageLinks.length > 1" @click="removeImage" class="bg-slate-500 hover:bg-slate-700 text-white mr-1 px-2 rounded flex items-center">
+              <span class="text-sm">Remove</span>
+            </button>
+            <button v-else class="bg-slate-300 text-white mr-1 px-2 rounded flex items-center">
+              <span class="text-sm">Remove</span>
+            </button>
+          </div>
+          <div class="image-links-container overflow-auto mb-2">
+            <div v-for="image, index in imageLinks" :key="index" class="flex items-center mb-1">
+              <span class="text-slate-600 font-semibold text-sm mr-2">{{ index + 1 }}.</span>
+              <input @input="updateImage(index, $event)" class="w-full border rounded mr-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none" id="name" type="text">
+            </div>
+          </div>
+        </div>
+        <div v-else-if="imageMode === 'upload'" class="border rounded p-4">
+          <SelectAndPreviewFiles @filesChanged="(files) => setImageUploads(files)" :reset="resetUploadFiles" />
         </div>
       </div>
     </div>
@@ -56,19 +72,29 @@
 
   import TagDataService from '@/services/TagDataService.js'
   import ItemDataService from '@/services/ItemDataService.js'
-  import ItemTagDataService from '@/services/ItemTagDataService';
+  import ItemTagDataService from '@/services/ItemTagDataService'
+  import ItemImageDataService from '@/services/ItemImageDataService'
+
+  import SelectAndPreviewFiles from '@/components/SelectAndPreviewFiles'
 
   export default {
     name: 'CreateItemListingModal',
+    components: {
+      SelectAndPreviewFiles
+    },
     data() {
       return {
         showModal: false,
+        imageMode: 'links',
 
         name: '',
         price: '',
         description: '',
-        images: [''],
-        tags: []
+        tags: [],
+
+        imageLinks: [''],
+        imageUploads: [],
+        resetUploadFiles: false
       }
     },
     methods: {
@@ -90,14 +116,41 @@
             sellerId: store.state.user.currentUser.id,
             name: this.name,
             price: this.price,
-            email: this.email,
-            images: this.images
+            email: this.email
+          }
+
+          if (this.imageMode === 'links') {
+            for(let i = 0; i < this.imageLinks.length; i++) {
+              if (this.imageLinks[i] === '') {
+                this.imageLinks.splice(i, 1);
+              }
+            }
+
+            data.images = this.imageLinks
+          } else if (this.imageMode === 'upload') {
+            data.images = null
           }
 
           let response = await ItemDataService.create(data);
-          this.$emit('createdItem', response.data);
+
+          let item = response.data;
 
           let itemId = response.data.id;
+
+          if (this.imageMode === 'upload') {
+            item.imageBlobs = []
+      
+            this.imageUploads.forEach(async image => {
+              data = {
+                itemId: itemId,
+                image: image
+              }
+
+              response = await ItemImageDataService.create(data);
+
+              item.imageBlobs.push(image);
+            })
+          }
 
           let selectedTags = this.tags.filter(tag => tag.selected === true);
 
@@ -111,12 +164,12 @@
           });
 
           this.$emit('showMessage', 'Item Listing Created', 'success');
+          this.$emit('createdItem', item)
           this.closeModal();
         } catch (e) {
           this.$emit('showMessage', e, 'failure');
           this.closeModal();
         }
-        
       },
       async getTags() {
         try {
@@ -131,19 +184,30 @@
         }
       },
       addImage() {
-        this.images.push('');
+        this.imageLinks.push('');
       },
       removeImage() {
-        this.images.pop();
+        this.imageLinks.pop();
       },
       updateImage(index, e) {
-        this.images[index] = e.target.value;
+        this.imageLinks[index] = e.target.value;
       }, 
+      setImageUploads(files) {
+        this.imageUploads = files;
+      },
       closeModal() {
         this.name = '';
         this.price = '';
         this.description = '';
-        this.images = [];
+
+        this.imageMode = 'links';
+        this.imageLinks = [''];
+        this.imageUploads = [];
+        this.resetUploadFiles = true;
+
+        setTimeout(() => {
+          this.resetUploadFiles = false;
+        }, 100);
 
         this.tags.forEach(tag => {
           tag.selected = false;
