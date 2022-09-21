@@ -23,11 +23,6 @@ export default {
     image: String,
     imageBlob: String
   },
-  data() {
-      return {
-
-      }
-  },
   methods: {
     getItem() {
       this.$router.push({ name: 'item-details', params: { itemId: this.id } })

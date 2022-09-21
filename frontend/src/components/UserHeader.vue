@@ -103,10 +103,10 @@ export default {
     store.dispatch('cart/getCart');
   },
   methods: {
-    searchItemsByName() {
-      this.$router.push({ name: 'home' });
+    async searchItemsByName() {
       store.dispatch('search/searchItems', this.searchString);
       store.dispatch('search/setNewSearchAlert');
+      this.$router.push({ name: 'home' });
     },
     logout() {
       store.dispatch('user/authentication', {
