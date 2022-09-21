@@ -31,21 +31,17 @@
       </Transition>
     </div>
     <div class="grid grid-cols-12 grid-flow-col">
-      <div v-if="itemDetails.images || itemDetails.imageBlobs" class="md:col-span-4 grid grid-cols-4 m-3">
-        <div v-if="itemDetails.images && itemDetails.images.length > 0 && itemDetails.images[0] !== ''" class="col-span-1 flex flex-col mx-2">
+      <div class="md:col-span-4 grid grid-cols-4 m-3">
+        <div v-if="itemDetails.images.length > 1 && itemDetails.images[0] !== ''" class="col-span-1 flex flex-col mx-2">
           <img @click="setImageIndex(index)" v-for="(image, index) in itemDetails.images" :key="index" :src="image" class="border rounded mb-2 cursor-pointer opacity-50 hover:opacity-100 transition delay-75 ease-in-out" />
-        </div>
-        <div v-else-if="!itemDetails.images && itemDetails.imageBlobs && itemDetails.imageBlobs.length > 0 && itemDetails.imageBlobs[0] !== ''" class="col-span-1 flex flex-col mx-2">
-          <img @click="setImageIndex(index)" v-for="(image, index) in itemDetails.imageBlobs" :key="index" :src="image" class="border rounded mb-2 cursor-pointer opacity-50 hover:opacity-100 transition delay-75 ease-in-out" />
         </div>
         <div 
           :class="{
-            'col-span-3' : (itemDetails.images && itemDetails.images.length > 0 && itemDetails.images[0] !== '') || (itemDetails.imageBlobs),
-            'col-span-4' : (itemDetails.images && itemDetails.images.length === 0) || (itemDetails.imageBlobs && itemDetails.imageBlobs.length === 0),
+            'col-span-3' : itemDetails.images.length > 1 && itemDetails.images[0] !== '',
+            'col-span-4' : itemDetails.images.length <= 1,
           }"
         >
-          <img v-if="itemDetails.images && itemDetails.images.length > 0 && itemDetails.images[0] !== ''" :src="itemDetails.images[selectedIndex]" class="border rounded m-auto" />
-          <img v-else-if="!itemDetails.images && itemDetails.imageBlobs && itemDetails.imageBlobs.length > 0 && itemDetails.imageBlobs[0] !== ''" :src="itemDetails.imageBlobs[selectedIndex]" class="item-listings-item-image border rounded m-auto" />
+          <img v-if="itemDetails.images.length > 0 && itemDetails.images[0] !== ''" :src="itemDetails.images[selectedIndex]" class="border rounded m-auto" />
           <img v-else src="../assets/images/image-placeholder.png" class="border rounded m-auto" />
         </div>
       </div>
@@ -184,7 +180,6 @@
 import store from '@/store'
 
 import ItemDataService from '@/services/ItemDataService.js'
-import ItemImageDataService from '@/services/ItemImageDataService.js'
 import UserDataService from '@/services/UserDataService.js'
 import CommentDataService from '@/services/CommentDataService.js'
 
@@ -277,21 +272,6 @@ export default {
 
         response = await UserDataService.get(this.itemDetails.seller_id);
         this.itemDetails.seller_username = response.data.username;
-
-        this.itemDetails.imageBlobs = null;
-
-        if (this.itemDetails.images === null) {
-          response = await ItemImageDataService.getItemImages(this.itemDetails.id);
-          let itemImages = response.data;
-          let images = []
-
-          itemImages.forEach(async itemImage => {
-            images.push(itemImage.image)
-          })
-
-          this.itemDetails.imageBlobs = images;
-        }
-
       } catch (e) {
         this.showMessage(e, 'failure');
       }

@@ -1,5 +1,4 @@
 import ItemDataService from '@/services/ItemDataService.js'
-import ItemImageDataService from '@/services/ItemImageDataService.js'
 import ItemTagDataService from '@/services/ItemTagDataService.js'
 import TagDataService from '@/services/TagDataService.js'
 
@@ -36,20 +35,6 @@ const actions = {
       let items = response.data;
 
       items.forEach(async item => {
-        item.imageBlobs = null;
-
-        if (item.images === null) {
-          response = await ItemImageDataService.getItemImages(item.id);
-          let itemImages = response.data;
-          let images = []
-
-          itemImages.forEach(itemImage => {
-            images.push(itemImage.image)
-          })
-
-          item.imageBlobs = images;
-        }
-
         let itemTagResponse = await ItemTagDataService.getTagsByItem(item.id);
         let itemTags = itemTagResponse.data;
 

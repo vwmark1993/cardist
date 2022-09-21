@@ -48,7 +48,7 @@
               <span class="text-sm">Remove</span>
             </button>
           </div>
-          <div class="image-links-container overflow-auto mb-2">
+          <div class="scroll-container overflow-auto mb-2">
             <div v-for="image, index in imageLinks" :key="index" class="flex items-center mb-1">
               <span class="text-slate-600 font-semibold text-sm mr-2">{{ index + 1 }}.</span>
               <input @input="updateImage(index, $event)" class="w-full border rounded mr-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none" id="name" type="text">
@@ -73,7 +73,6 @@
   import TagDataService from '@/services/TagDataService.js'
   import ItemDataService from '@/services/ItemDataService.js'
   import ItemTagDataService from '@/services/ItemTagDataService'
-  import ItemImageDataService from '@/services/ItemImageDataService'
 
   import SelectAndPreviewFiles from '@/components/SelectAndPreviewFiles'
 
@@ -128,29 +127,13 @@
 
             data.images = this.imageLinks
           } else if (this.imageMode === 'upload') {
-            data.images = null
+            data.images = this.imageUploads
           }
 
           let response = await ItemDataService.create(data);
 
           let item = response.data;
-
           let itemId = response.data.id;
-
-          if (this.imageMode === 'upload') {
-            item.imageBlobs = []
-      
-            this.imageUploads.forEach(async image => {
-              data = {
-                itemId: itemId,
-                image: image
-              }
-
-              response = await ItemImageDataService.create(data);
-
-              item.imageBlobs.push(image);
-            })
-          }
 
           let selectedTags = this.tags.filter(tag => tag.selected === true);
 
@@ -223,7 +206,7 @@
   </script>
 
 <style scoped>
-  .image-links-container {
+  .scroll-container {
     max-height: 150px;
   }
 

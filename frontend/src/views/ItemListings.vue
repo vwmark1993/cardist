@@ -37,7 +37,6 @@
         <div v-for="item, index in itemListings" :key="item.id" class="item-listings-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
           <div class="flex items-center mr-3">
             <img v-if="item.images && item.images.length > 0 && item.images[0] !== ''" :src="item.images[0]" class="item-listings-item-image border rounded m-auto" />
-            <img v-else-if="item.images === null && item.imageBlobs && item.imageBlobs.length > 0 && item.imageBlobs[0] !== ''" :src="item.imageBlobs[0]" class="item-listings-item-image border rounded m-auto" />
             <img v-else src="../assets/images/image-placeholder.png" class="item-listings-item-image border rounded m-auto" />
           </div>
           <div class="w-full relative">
@@ -73,7 +72,6 @@
   import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue'
 
   import ItemDataService from '@/services/ItemDataService.js'
-import ItemImageDataService from '@/services/ItemImageDataService';
 
   export default {
     name: 'ItemListings',
@@ -111,22 +109,6 @@ import ItemImageDataService from '@/services/ItemImageDataService';
       async getItemListings() {
         let response = await ItemDataService.getItemsBySeller(store.state.user.currentUser.id);
         this.itemListings = response.data;
-
-        this.itemListings.forEach(async item => {
-          item.imageBlobs = null;
-
-          if (item.images === null) {
-            response = await ItemImageDataService.getItemImages(item.id);
-            let itemImages = response.data;
-            let images = []
-
-            itemImages.forEach(itemImage => {
-              images.push(itemImage.image)
-            })
-
-            item.imageBlobs = images;
-          }
-        })
       },
       async deleteItem(id, name, index) {
         this.deleteId = id;
@@ -142,8 +124,6 @@ import ItemImageDataService from '@/services/ItemImageDataService';
         this.itemListings.splice(index, 1);
       },
       addNewItem(item) {
-        console.log('RECEIVED')
-        console.log(item.imageBlobs)
         this.itemListings.push(item);
       }
     },

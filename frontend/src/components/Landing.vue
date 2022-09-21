@@ -85,14 +85,6 @@ export default {
 
       // Apply tag filters.
       let filteredItems = items.filter(item => tagFilters.every(tag => item.tags.includes(tag)));
-
-      filteredItems.forEach(item => {
-        if (!item.images) {
-          console.log(item.name)
-          console.log(item.imageBlobs)
-          console.log(item.imageBlobs && item.imageBlobs[0] !== '' ? item.imageBlobs[0] : null)
-        }
-      })
       
       return filteredItems;
     }

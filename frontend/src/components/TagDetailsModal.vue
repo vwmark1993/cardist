@@ -18,6 +18,9 @@
       <div class="mb-2">
         <div v-if="items.length > 0">
           <span class="block text-gray-700 text-sm font-bold mb-2">Items With This Tag:</span>
+          <div class="scroll-container overflow-auto">
+
+          </div>
           <table class="border-collapse border border-slate-400 mx-auto">
               <thead>
                 <tr>
@@ -96,6 +99,9 @@
   </script>
 
 <style scoped>
+  .scroll-container {
+    max-height: 250px;
+  }
   .width-300 {
     width: 300px;
   }

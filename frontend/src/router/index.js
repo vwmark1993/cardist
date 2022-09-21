@@ -3,7 +3,7 @@ import store from '@/store'
 
 // Used to make sure API calls for order confirmations aren't called multiple times.
 function resetOrderConfirmationFlag() {
-  if (store.state.user.resetOrderConfirmationFlag) {
+  if (store.state.cart.orderConfirmationFlag) {
     store.dispatch('cart/setOrderConfirmationFlag', false);
   }
 }
