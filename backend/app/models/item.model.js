@@ -18,8 +18,8 @@ module.exports = (sequelize, Sequelize) => {
       onDelete: 'CASCADE'
     },
     images: {
-      type: Sequelize.ARRAY(Sequelize.STRING),
-      defaultValue: null
+      type: Sequelize.ARRAY(Sequelize.TEXT),
+      defaultValue: []
     },
     name: {
       type: Sequelize.STRING,

@@ -49,7 +49,6 @@ require("./app/routes/item.routes")(app);
 require("./app/routes/order.routes")(app);
 require("./app/routes/orderItem.routes")(app);
 require("./app/routes/tag.routes")(app);
-require("./app/routes/itemImage.routes")(app);
 require("./app/routes/itemTag.routes")(app);
 require("./app/routes/user.routes")(app);
 require("./app/routes/banner.routes")(app);
