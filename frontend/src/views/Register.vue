@@ -7,8 +7,9 @@
     </div>
     <div class="flex flex-col justify-center items-center">
       <div class="m-auto rounded bg-tertiary">
-        <div class="pt-2 pb-2 flex justify-end">
-          <span @click="goToHomepage" class="material-symbols-outlined text-primary mr-2 p-1 rounded cursor-pointer hover:bg-secondary">exit_to_app</span>
+        <div class="mr-2 ml-6 mt-3 mb-3 pt-2 pb-2 flex justify-between">
+          <span class="block text-xl text-left font-semibold text-primary">Register</span>
+          <span @click="goToHomepage" class="material-symbols-outlined text-primary p-1 rounded cursor-pointer hover:bg-secondary relative bottom-3">exit_to_app</span>
         </div>
         <div class="px-14">
           <span class="block text-sm text-left font-semibold text-primary mb-1">New Username *</span>

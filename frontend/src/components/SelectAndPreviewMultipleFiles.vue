@@ -9,7 +9,7 @@
     <div v-else class="mb-4">
       <span class="text-slate-400 tracking-wider">No Images Selected</span>
     </div>
-    <UploadMediaFiles @selected="(files) => selectFiles(files)" v-slot="{ openFileDialog }" :reset="resetUploadFiles" :removeFileIndex="removeFileIndex">
+    <UploadMediaFiles @selected="(files) => selectFiles(files)" v-slot="{ openFileDialog }" :reset="resetUploadFiles" :removeFileIndex="removeFileIndex" :multiple=true>
       <span v-if="selectedFiles.length === 1" class="text-slate-400 tracking-wider">{{ selectedFiles.length }} Image Selected</span>
       <span v-if="selectedFiles.length > 1" class="text-slate-400 tracking-wider">{{ selectedFiles.length }} Images Selected</span>
       <button @click="openFileDialog" class="flex items-center rounded bg-slate-500 hover:bg-slate-600 text-white mt-2 px-3 py-1 m-auto">
@@ -24,7 +24,7 @@
 import UploadMediaFiles from '@/components/UploadMediaFiles.vue'
 
 export default {
-  name: 'SelectAndPreviewFiles',
+  name: 'SelectAndPreviewMultipleFiles',
   components: {
     UploadMediaFiles,
   },

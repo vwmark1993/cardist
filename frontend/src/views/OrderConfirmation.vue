@@ -1,21 +1,26 @@
 <template>
-  <div class="flex flex-col items-center h-screen bg-slate-100">
+  <div class="flex flex-col items-center h-screen bg-primary">
     <div class="fixed bottom-3 w-full">
       <Transition name="slide-fade">
         <AlertMessage v-if="alertMessage" :message="alertMessage" :mode="alertMessageMode" />
       </Transition>
     </div>
-    <div class="m-auto px-20 pt-12 pb-10 bg-slate-400 rounded">
-      <span class="material-symbols-outlined mt-2 mb-8">check_circle</span>
-      <span class="block font-bold text-2xl mb-2">Order Confirmation</span>
+    <div class="m-auto px-20 pt-12 pb-10 rounded bg-secondary text-primary">
+      <span class="material-symbols-outlined scale mt-2 mb-8">check_circle</span>
+      <span class="block font-bold text-2xl mb-3">Order Confirmation</span>
       <span class="block mb-2">Name: <span class="font-bold">{{ customerName }}</span></span>
       <span class="block mb-2">Total: <span class="font-bold">$ {{ orderTotal }} {{ currency.toUpperCase() }}</span></span>
       <div class="mb-2">
         <span class="block font-bold">Items Ordered:</span>
-        <span v-for="item in orderItems" :key="item.id" class="block">{{ item.name }} x {{ item.quantity }}</span>
+        <div class="scroll-container overflow-auto">
+          <span v-for="item in orderItems" :key="item.id" class="block">{{ item.name }} x {{ item.quantity }}</span>
+        </div>
       </div>
-      <div class="flex justify-center mt-5">
-        <button @click="goToHomepage" class="bg-slate-500 hover:bg-slate-700 text-white text-lg font-semibold py-1 px-3 rounded">Return to Website</button>
+      <div class="flex justify-center mt-6">
+        <button @click="goToHomepage" class="bg-secondary text-primary hover:bg-tertiary text-lg font-semibold py-1 px-3 rounded flex items-center">
+          <span class="material-symbols-outlined mr-1">exit_to_app</span>
+          <span>Return to Website</span>
+        </button>
       </div>
     </div>
   </div>
@@ -132,8 +137,6 @@ export default {
           this.orderItems.forEach(async cartItem => {
             await CartItemDataService.delete(cartItem.id);
           })
-
-          store.dispatch('cart/emptyCart');
         }
         
         store.dispatch('cart/setOrderConfirmationFlag', true);
@@ -154,7 +157,10 @@ export default {
 }
 </script>
 <style scoped>
-  .material-symbols-outlined {
+   .scroll-container {
+      max-height: 250px;
+    }
+  .scale {
     transform: scale(3);
   }
 </style>

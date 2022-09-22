@@ -30,6 +30,9 @@
         <input v-model="confirmNewPassword" v-if="showConfirmNewPassword" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="confirmNewPassword" type="text" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
         <input v-model="confirmNewPassword" v-else class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="confirmNewPassword" type="password" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
       </div>
+      <div>
+        <span class="text-xs text-slate-500 font-semibold">* Password must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.</span>
+      </div>
     </div>
     <div>
       <button @click="updatePassword" class="user-profile-item-remove-button bg-green-600 hover:bg-green-800 text-white text-sm px-4 py-2 mr-1 rounded">Change Password</button>

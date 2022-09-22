@@ -19,9 +19,7 @@
         <div v-if="items.length > 0">
           <span class="block text-gray-700 text-sm font-bold mb-2">Items With This Tag:</span>
           <div class="scroll-container overflow-auto">
-
-          </div>
-          <table class="border-collapse border border-slate-400 mx-auto">
+            <table class="border-collapse border border-slate-400 mx-auto">
               <thead>
                 <tr>
                   <th class="border border-slate-300">Name</th>
@@ -37,6 +35,7 @@
                 </tr>
               </tbody>
             </table>
+          </div>
         </div>
         <div v-else>
           <span class="block text-slate-400 text-xl my-4 text-center">No Items Use This Tag</span>

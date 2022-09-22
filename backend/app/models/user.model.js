@@ -24,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: null
     },
     picture: {
-      type: Sequelize.STRING
+      type: Sequelize.TEXT
     },
     settings: {
       type: Sequelize.JSON,

@@ -44,13 +44,19 @@
             <span class="text-xs">Username:</span>
             <span class="block font-semibold">{{ user.username }}</span>
           </div>
-          <div>
+          <div v-if="user.email && user.email !== ''">
             <span class="text-xs">Email:</span>
             <span class="block font-semibold">{{ user.email }}</span>
           </div>
-          <div>
+          <div v-else>
+            <span class="text-xs">No Email</span>
+          </div>
+          <div v-if="user.phone && user.phone !== ''">
             <span class="text-xs">Phone:</span>
             <span class="block font-semibold">{{ user.phone }}</span>
+          </div>
+          <div v-else>
+            <span class="text-xs">No Phone Number</span>
           </div>
         </div>
       </div>

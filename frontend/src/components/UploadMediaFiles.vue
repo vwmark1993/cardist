@@ -6,7 +6,7 @@
       name="file"
       type="file"
       accept="image/png, image/jpeg"
-      multiple
+      :multiple="multiple"
       @click="resetCache"
       @change="addMedia"
       ref="input"

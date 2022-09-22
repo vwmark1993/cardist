@@ -56,7 +56,7 @@
           </div>
         </div>
         <div v-else-if="imageMode === 'upload'" class="border rounded p-4">
-          <SelectAndPreviewFiles @filesChanged="(files) => setImageUploads(files)" :reset="resetUploadFiles" />
+          <SelectAndPreviewMultipleFiles @filesChanged="(files) => setImageUploads(files)" :reset="resetUploadFiles" />
         </div>
       </div>
     </div>
@@ -74,12 +74,12 @@
   import ItemDataService from '@/services/ItemDataService.js'
   import ItemTagDataService from '@/services/ItemTagDataService'
 
-  import SelectAndPreviewFiles from '@/components/SelectAndPreviewFiles'
+  import SelectAndPreviewMultipleFiles from '@/components/SelectAndPreviewMultipleFiles'
 
   export default {
     name: 'CreateItemListingModal',
     components: {
-      SelectAndPreviewFiles
+      SelectAndPreviewMultipleFiles
     },
     data() {
       return {
