@@ -35,7 +35,7 @@
     </div>
     <h1 class="text-4xl font-bold text-slate-700 mb-6 text-left m-3">Admin Portal</h1>
     <div class="flex">
-      <div class="width-300">
+      <div class="min-width-300">
         <div class="mx-3 p-5 bg-slate-300 rounded">
           <div>
             <h6 class="text-left my-3 ml-3 font-semibold">Metrics</h6>
@@ -59,6 +59,13 @@
               @click="mode = 'topSellers'"
               >
               Top Sellers
+            </button>
+            <button 
+              class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate transition duration-150"
+              :class="{ 'bg-tertiary' : mode === 'topBuyers', 'text-primary' : mode === 'topBuyers', 'bg-primary' : mode !== 'topBuyers', 'text-secondary' : mode !== 'topBuyers' }"
+              @click="mode = 'topBuyers'"
+              >
+              Top Buyers
             </button>
           </div>
           <div>
@@ -102,7 +109,7 @@
         </div>  
       </div>
       <div class="w-full min-width-500">
-        <div v-if="mode === 'overview' || mode === 'popularItems' || mode === 'topSellers'" class="flex items-center justify-end border-b mx-3 mb-3 pb-2">
+        <div v-if="mode === 'overview' || mode === 'popularItems' || mode === 'topSellers' || mode === 'topBuyers'" class="flex items-center justify-end border-b mx-3 mb-3 pb-2">
           <label for="year" class="text-sm font-medium text-slate-900 dark:text-slate-400">Year:&nbsp;&nbsp;</label>
           <select  @change="queryMetricsForYear" v-model="metricsYear" id="year" class="p-1 bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded focus:border-slate-500">
             <option selected :value="currentYear">{{ currentYear }}</option>
@@ -174,8 +181,15 @@
           v-else-if="mode === 'topSellers' && topSellersDataset"
           title="Top Sellers"
           :xAxisLabels="topSellersDataset.xAxisLabels"
-          yAxisLabel="Unit Sales"
+          yAxisLabel="Total Sales"
           :dataValues="topSellersDataset.dataValues"
+        />
+        <MetricsChart
+          v-else-if="mode === 'topBuyers' && topBuyersDataset"
+          title="Top Buyers"
+          :xAxisLabels="topBuyersDataset.xAxisLabels"
+          yAxisLabel="Total Purchases"
+          :dataValues="topBuyersDataset.dataValues"
         />
         <div v-else-if="mode === 'users'">
           <span v-if="users.length === 0" class="text-slate-400 text-xl mb-2">No Users</span>
@@ -399,8 +413,9 @@
         unitsSoldByYear: 0,
 
         monthlySalesDataset: null,
-        topSellersDataset: null,
         popularItemsDataset: null,
+        topSellersDataset: null,
+        topBuyersDataset: null,
 
         users: [],
         items: [],
@@ -435,6 +450,8 @@
           this.getPopularItemsByYear();
         } else if (this.mode === 'topSellers') {
           this.getTopSellersByYear();
+        } else if (this.mode === 'topBuyers') {
+          this.getTopBuyersByYear();
         }
       },
       async getNewUsersByYear() {
@@ -506,28 +523,6 @@
           this.showMessage('Error retrieving monthly sales revenue by year.', 'failure');
         } 
       },
-      async getTopSellersByYear() {
-        try {
-          let response = await OrderItemDataService.getTopSellersByYear(this.metricsYear);
-          let data = response.data;
-
-          let xAxisLabels = [];
-          let dataValues = [];
-
-          data.forEach(item => {
-            xAxisLabels.push(item.username);
-            dataValues.push(item.number_of_sales);
-          });
-
-          this.topSellersDataset = {
-            xAxisLabels: xAxisLabels,
-            dataValues: dataValues
-          };
-        } catch (e) {
-          console.log(e)
-          this.showMessage('Error retrieving top sellers.', 'failure');
-        }
-      },
       async getPopularItemsByYear() {
         try {
           let response = await ItemDataService.getPopularItemsByYear(this.metricsYear);
@@ -548,6 +543,49 @@
         } catch (e) {
           this.showMessage('Error retrieving popular items.', 'failure');
         } 
+      },
+      async getTopSellersByYear() {
+        try {
+          let response = await OrderItemDataService.getTopSellersByYear(this.metricsYear);
+          let data = response.data;
+
+          let xAxisLabels = [];
+          let dataValues = [];
+
+          data.forEach(item => {
+            xAxisLabels.push(item.username);
+            dataValues.push(item.number_of_sales);
+          });
+
+          this.topSellersDataset = {
+            xAxisLabels: xAxisLabels,
+            dataValues: dataValues
+          };
+        } catch (e) {
+          this.showMessage('Error retrieving top sellers.', 'failure');
+        }
+      },
+      async getTopBuyersByYear() {
+        try {
+          let response = await OrderItemDataService.getTopBuyersByYear(this.metricsYear);
+          let data = response.data;
+
+
+          let xAxisLabels = [];
+          let dataValues = [];
+
+          data.forEach(item => {
+            xAxisLabels.push(item.username);
+            dataValues.push(item.number_of_purchases);
+          });
+
+          this.topBuyersDataset = {
+            xAxisLabels: xAxisLabels,
+            dataValues: dataValues
+          };
+        } catch (e) {
+          this.showMessage('Error retrieving top sellers.', 'failure');
+        }
       },
       async getUsers() {
         try {
@@ -728,6 +766,9 @@
     // Top Sellers tab
     this.getTopSellersByYear();
 
+    // Top Buyers tab
+    this.getTopBuyersByYear();
+
     //List of Users tab
     this.getUsers();
 
@@ -751,8 +792,8 @@
     min-width: 150px;
   }
 
-  .width-300 {
-    width: 300px;
+  .min-width-300 {
+    min-width: 300px;
   }
 
   .min-width-500 {

@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <div :class="{'width-350' : !hideFilters , 'width-100' : hideFilters}">
+    <div :class="{'min-width-300' : !hideFilters , 'width-100' : hideFilters}">
       <Filters @changeFilterMode="(hideFilters) => changeFilterMode(hideFilters)" />
     </div>
     <div class="w-full min-width-500">
@@ -106,8 +106,8 @@ export default {
     min-width: 150px;
   }
 
-  .width-350 {
-    width: 350px;
+  .min-width-300 {
+    min-width: 300px;
   }
 
   .width-100 {

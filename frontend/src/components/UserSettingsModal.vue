@@ -100,7 +100,7 @@
             this.$emit('updatedUser', response.data.message, 'failure');
           }
 
-          this.showModal = false;
+          this.closeModal();
         } catch (e) {
           this.$emit('updatedUser', e, 'failure');
 
@@ -115,6 +115,7 @@
         this.updatedEmail = this.email;
         this.updatedPhone = this.phone;
         this.updatedPicture = this.picture;
+        this.pictureMode = 'link';
         this.resetPicture = true;
         this.showModal = false;
       }

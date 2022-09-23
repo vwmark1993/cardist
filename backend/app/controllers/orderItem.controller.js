@@ -113,7 +113,7 @@ exports.findMonthlySalesRevenueByYear = async (req, res) => {
           WHEN EXTRACT(MONTH FROM created_on) = 11 THEN 'November' 
           WHEN EXTRACT(MONTH FROM created_on) = 12 THEN 'December' 
         END AS month
-        , SUM(price) AS sales
+        , SUM(quantity * price) AS sales
         FROM order_items
         WHERE EXTRACT(YEAR FROM created_on) = ?
         GROUP BY month_number, month
@@ -143,7 +143,7 @@ exports.findTotalSalesRevenueByYear = async (req, res) => {
     const data = await sequelize.query(
       `
         SELECT
-        SUM(price) AS sales
+        SUM(quantity * price) AS sales
         FROM order_items
         WHERE EXTRACT(YEAR FROM created_on) = ?
       `, 
@@ -198,7 +198,7 @@ exports.findTopSellersByYear = async (req, res) => {
     // Execute a custom prepared statement query.
     const data = await sequelize.query(
       `
-        SELECT username, SUM(quantity) AS number_of_sales
+        SELECT username, SUM(quantity * price) AS number_of_sales
         FROM order_items t1
         INNER JOIN users t2 ON t2.id = t1.seller_id
         WHERE EXTRACT(YEAR FROM t1.created_on) = ?
@@ -217,6 +217,38 @@ exports.findTopSellersByYear = async (req, res) => {
     res.status(500).send({
       message:
         e.message || "Some error occurred while retrieving top sellers."
+    });
+  }
+};
+
+// Retrieve top buyers based on quantity sold.
+exports.findTopBuyersByYear = async (req, res) => {
+  try {
+    const year = req.params.year;
+  
+    // Execute a custom prepared statement query.
+    const data = await sequelize.query(
+      `
+        SELECT username, SUM(quantity * price) AS number_of_purchases
+        FROM orders t1
+        INNER JOIN users t2 ON t2.id = t1.buyer_id
+        INNER JOIN order_items t3 ON t3.order_id = t1.id
+        WHERE EXTRACT(YEAR FROM t1.created_on) = ?
+        GROUP BY username
+        ORDER BY number_of_purchases DESC
+        LIMIT 10
+      `, 
+      {
+        replacements: [year],
+        type: sequelize.QueryTypes.SELECT
+      }
+    )
+
+    res.send(data);
+  } catch (e) {
+    res.status(500).send({
+      message:
+        e.message || "Some error occurred while retrieving top buyers."
     });
   }
 };

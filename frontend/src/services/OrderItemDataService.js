@@ -21,6 +21,9 @@ class OrderItemDataService {
   getTopSellersByYear(year) {
     return http.get(`/orderItem/find/topSellersByYear/${year}`);
   }
+  getTopBuyersByYear(year) {
+    return http.get(`/orderItem/find/topBuyersByYear/${year}`);
+  }
   delete(id) {
     return http.delete(`/orderItem/delete/${id}`);
   }

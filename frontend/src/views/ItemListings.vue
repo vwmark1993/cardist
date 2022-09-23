@@ -12,6 +12,10 @@
       @showMessage="(message, mode) => showMessage(message, mode)"
       @createdItem="(item) => addNewItem(item)"
     />
+    <ItemListingsDetailsModal 
+      :id="itemListingsDetailsModalId"
+      @itemDetailsError="(message) => showMessage(message, 'failure')"
+    />
     <UserHeader />
     <div class="fixed bottom-3 w-full">
       <Transition name="slide-fade">
@@ -43,7 +47,7 @@
             <div class="item-listings-item-header flex justify-between items-center border-b border-slate-400 mb-1">
               <h6 class="text-lg truncate">{{ item.name }}</h6>
               <div>
-                <button class="bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 mr-1 rounded">Details</button>
+                <button @click="showItemDetails(item.id)" class="bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 mr-1 rounded">Details</button>
                 <button @click="deleteItem(item.id, item.name, index)" class="bg-slate-500 hover:bg-red-700 text-white text-sm px-3 py-1 rounded">Remove</button>
               </div>
             </div>
@@ -69,6 +73,7 @@
 
   import { $vfm } from 'vue-final-modal'
   import CreateItemListingModal from '@/components/CreateItemListingModal.vue'
+  import ItemListingsDetailsModal from '@/components/ItemListingsDetailsModal.vue'
   import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue'
 
   import ItemDataService from '@/services/ItemDataService.js'
@@ -79,6 +84,7 @@
       UserHeader,
       AlertMessage,
       CreateItemListingModal,
+      ItemListingsDetailsModal,
       ConfirmDeleteModal
     },
     data() {
@@ -88,6 +94,8 @@
         deleteId: '',
         deleteName: '',
         deleteIndex: 0,
+
+        itemListingsDetailsModalId: '',
 
         alertMessage: null,
         alertMessageMode: null
@@ -102,6 +110,11 @@
           this.alertMessage = null;
           this.alertMessageMode = null;
         }, 3000)
+      },
+      showItemDetails(id) {
+        this.itemListingsDetailsModalId = id;
+
+        $vfm.show('ItemListingsDetailsModal');
       },
       createItemListing() {
         $vfm.show('CreateItemListingModal');

@@ -34,8 +34,8 @@
         </div>
         <div>
           <div class="text-right mb-1">
-            <button @click="editProfile" class="bg-slate-500 hover:bg-slate-700 text-white text-sm font-semibold py-1 px-2 rounded">Edit Profile</button>
-            <button @click="changePassword" class="bg-slate-500 hover:bg-slate-700 text-white text-sm font-semibold ml-1 py-1 px-2 rounded">Change Password</button>
+            <button @click="editProfile" class="bg-slate-500 hover:bg-slate-700 text-white text-sm font-semibold mb-1 py-1 px-2 rounded">Edit Profile</button>
+            <button @click="changePassword" class="bg-slate-500 hover:bg-slate-700 text-white text-sm font-semibold mb-1 ml-1 py-1 px-2 rounded">Change Password</button>
           </div>
           <span v-if="!$store.state.user.currentUser.admin" class="block text-sm text-left">Items Sold: {{ itemsSold }}</span>
         </div>
