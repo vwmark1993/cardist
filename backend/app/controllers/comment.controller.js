@@ -52,26 +52,6 @@ exports.findByUserId = (req, res) => {
     });
   }
 };
-// Find a single Comment with an id
-exports.findOne = (req, res) => {
-  try {
-    const commentId = req.params.commentId;
-    Comment.findByPk(commentId)
-    .then(data => {
-      if (data) {
-        res.send(data);
-      } else {
-        res.status(404).send({
-          message: `Cannot find Item with id=${id}.`
-        });
-      }
-    })
-  } catch (e) {
-    res.status(500).send({
-      message: "Error retrieving Item with id=" + id
-    });
-  }s
-};
 
 // Find all flagged comments
 exports.findFlaggedComments = (req, res) => {
@@ -86,7 +66,6 @@ exports.findFlaggedComments = (req, res) => {
         e.message || "Some error occurred while retrieving flagged comments."
     });
   }
-  
 };
 
 // Update a Comment by the id in the request

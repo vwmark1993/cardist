@@ -50,6 +50,12 @@ const routes = [
     component: () => import('../views/OrderConfirmation.vue')
   },
   {
+    path: '/orders',
+    name: 'order-history',
+    component: () => import('../views/OrderHistory.vue'),
+    beforeEnter: [resetOrderConfirmationFlag]
+  },
+  {
     path: '/sell',
     name: 'item-listings',
     component: () => import('../views/ItemListings.vue'),

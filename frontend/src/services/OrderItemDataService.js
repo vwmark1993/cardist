@@ -3,6 +3,9 @@ class OrderItemDataService {
   create(data) {
     return http.post("/orderItem/create", data);
   }
+  get(id) {
+    return http.get(`/orderItem/find/orderItemId/${id}`);
+  }
   getOrderItems(orderId) {
     return http.get(`/orderItem/find/orderId/${orderId}`);
   }

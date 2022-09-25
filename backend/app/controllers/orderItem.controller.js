@@ -33,8 +33,29 @@ exports.create = (req, res) => {
         e.message || "Some error occurred while creating the Order Item."
     });
   }
-  
 };
+
+// Find a single Order Item with an id
+exports.findOne = (req, res) => {
+  try {
+    const id = req.params.id;
+    OrderItem.findByPk(id)
+    .then(data => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          message: `Cannot find Order Item with id=${id}.`
+        });
+      }
+    })
+  } catch (e) {
+    res.status(500).send({
+      message: "Error retrieving Order Item with id=" + id
+    });
+  }
+};
+
 // Retrieve Order Items tied to a User from the database.
 exports.findOrderItems = (req, res) => {
   try {

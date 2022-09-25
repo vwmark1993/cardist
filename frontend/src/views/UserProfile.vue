@@ -12,6 +12,14 @@
       @updatedPassword="(message, mode) => showMessage(message, mode)"
       @incorrectPasswords="(message) => showMessage(message, 'failure')"
     />
+    <ItemListingsDetailsModal 
+      :id="itemListingsDetailsModalId"
+      @itemDetailsError="(message) => showMessage(message, 'failure')"
+    />
+    <OrderItemDetailsModal 
+      :id="orderItemDetailsModalId"
+      @orderItemDetailsError="(message) => showMessage(message, 'failure')"
+    />
     <EditCommentModal 
       :id="selectedComment.id"
       :date="selectedComment.updatedOn" 
@@ -19,6 +27,15 @@
       :message="selectedComment.message"
       @updatedCommentAlertMessage="(message, mode) => showMessage(message, mode)"
       @updatedCommentNewValue="(newValue) => updateComment(newValue)"
+    />
+    <ConfirmDeleteModal 
+      :id="confirmDeleteModalId"
+      :apiService="confirmDeleteModalApi"
+      :name="confirmDeleteModalName"
+      :index="confirmDeleteModalIndex"
+      @confirmDeleteMessage="(message, mode) => showMessage(message, mode)"
+      @confirmDeleteItem="(index) => confirmDeleteItem(index)"
+      @confirmDeleteComment="(index) => confirmDeleteComment(index)"
     />
     <UserHeader />
     <div class="fixed bottom-3 w-full">
@@ -67,7 +84,7 @@
             <span class="block text-left text-xl font-bold ml-3">Current Item Listings</span>
           </div>
           <div v-if="itemListings.length > 0" class="user-profile-scroll-container">
-            <div v-for="item in itemListings" :key="item.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
+            <div v-for="item, index in itemListings" :key="item.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
               <div class="flex items-center mr-3">
                 <img v-if="item.images && item.images.length > 0 && item.images[0] !== ''" :src="item.images[0]" class="user-profile-item-image border rounded m-auto" />
                 <img v-else-if="!item.images && item.imageBlobs && item.imageBlobs.length > 0 && item.imageBlobs[0] !== ''" :src="item.imageBlobs[0]" class="user-profile-item-image border rounded m-auto" />
@@ -77,8 +94,8 @@
                 <div class="user-profile-item-header flex justify-between items-center border-b border-slate-400 mb-1">
                   <h6 class="text-lg truncate">{{ item.name }}</h6>
                   <div>
-                    <button class="bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 mr-1 rounded">Details</button>
-                    <button class="bg-slate-500 hover:bg-red-700 text-white text-sm px-3 py-1 rounded">Remove</button>
+                    <button @click="showItemDetails(item.id)" class="bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 mr-1 rounded">Details</button>
+                    <button @click="deleteItem(item.id, item.name, index)" class="bg-slate-500 hover:bg-red-700 text-white text-sm px-3 py-1 rounded">Remove</button>
                   </div>
                 </div>
                 <span class="block text-left text-xs mb-1">Posted on: {{ new Date(item.created_on).toLocaleDateString("en-US") }}</span>
@@ -111,7 +128,7 @@
                 <div class="user-profile-item-header flex justify-between items-center border-b border-slate-400 mb-1">
                   <h6 class="text-lg truncate">{{ order.itemName }}</h6>
                   <div>
-                    <button class="bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 mr-1 rounded">Details</button>
+                    <button @click="showOrderItemDetails(order.id)" class="bg-slate-500 hover:bg-slate-700 text-white text-sm px-3 py-1 mr-1 rounded">Details</button>
                   </div>
                 </div>
                 <span class="block text-left text-xs mb-1">Ordered on: {{ new Date(order.createdOn).toLocaleDateString("en-US") }}</span>
@@ -141,7 +158,7 @@
                   <h6 class="text-lg truncate">{{ comment.itemName }}</h6>
                   <div>
                     <button @click="editComment(index)" class="bg-slate-500 text-white text-sm mr-1 px-3 py-1 rounded">Edit</button>
-                    <button @click="removeComment(comment.id, index)" class="bg-slate-500 hover:bg-red-700 text-white text-sm px-3 py-1 rounded">Remove</button>
+                    <button @click="deleteComment(comment.id, index)" class="bg-slate-500 hover:bg-red-700 text-white text-sm px-3 py-1 rounded">Remove</button>
                   </div>
                 </div>
                 <span class="block text-left text-xs mb-1">Posted on: {{ new Date(comment.createdOn).toLocaleDateString("en-US") }}</span>
@@ -172,7 +189,10 @@ import AlertMessage from '@/components/AlertMessage.vue'
 import { $vfm } from 'vue-final-modal'
 import UserSettingsModal from '@/components/UserSettingsModal.vue'
 import ChangePasswordModal from '@/components/ChangePasswordModal.vue'
+import ItemListingsDetailsModal from '@/components/ItemListingsDetailsModal.vue'
+import OrderItemDetailsModal from '@/components/OrderItemDetailsModal.vue'
 import EditCommentModal from '@/components/EditCommentModal.vue'
+import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue'
 
 export default {
   name: 'UserProfile',
@@ -181,17 +201,29 @@ export default {
     AlertMessage,
     UserSettingsModal,
     ChangePasswordModal,
-    EditCommentModal
+    EditCommentModal,
+    ItemListingsDetailsModal,
+    OrderItemDetailsModal,
+    ConfirmDeleteModal
   },
   data() {
       return {
+          alertMessage: null,
+          alertMessageMode: null,
+
           itemListings: [],
           ordersAsBuyer: [],
           ordersAsSeller: [],
           comments: [],
-          alertMessage: null,
-          alertMessageMode: null,
-          selectedCommentIndex: 0
+
+          itemListingsDetailsModalId: '',
+          orderItemDetailsModalId: '',
+          selectedCommentIndex: 0,
+
+          confirmDeleteModalId: '',
+          confirmDeleteModalApi: '',
+          confirmDeleteModalName: '',
+          confirmDeleteModalIndex: 0
       }
   },
   methods: {
@@ -222,6 +254,25 @@ export default {
       let response = await ItemDataService.getItemsBySeller(this.user.id);
       this.itemListings = response.data;
     },
+    showItemDetails(id) {
+      this.itemListingsDetailsModalId = id;
+
+      $vfm.show('ItemListingsDetailsModal');
+    },
+    async deleteItem(id, name, index) {
+      this.confirmDeleteModalApi = "Item";
+      this.confirmDeleteModalId = id;
+      this.confirmDeleteModalIndex = index;
+      this.confirmDeleteModalName = name;
+
+      $vfm.show('ConfirmDeleteModal');
+    },
+    confirmDeleteItem(index) {
+      // Refresh item search.
+      store.dispatch('search/searchItems', '');
+
+      this.itemListings.splice(index, 1);
+    },
     async getOrders() {
       let orderResponse = await OrderDataService.getOrdersByBuyer(this.user.id);
       let orders = orderResponse.data;
@@ -249,6 +300,11 @@ export default {
         })
       })
     }, 
+    showOrderItemDetails(id) {
+      this.orderItemDetailsModalId = id;
+
+      $vfm.show('OrderItemDetailsModal');
+    },
     async getComments() {
       let response = await CommentDataService.getCommentsByUser(this.user.id);
 
@@ -270,15 +326,16 @@ export default {
         })
       })
     },
-    async removeComment(id, index) {
-      try {
-        await CommentDataService.delete(id);
-        this.comments.splice(index, 1);
+    async deleteComment(id, index) {
+      this.confirmDeleteModalId = id;
+      this.confirmDeleteModalApi = 'Comment';
+      this.confirmDeleteModalName = '';
+      this.confirmDeleteModalIndex = index;
 
-        this.showMessage('Comment Removed', 'success');
-      } catch(e) {
-        this.showMessage(e, 'failure');
-      }
+      $vfm.show('ConfirmDeleteModal');
+    },
+    confirmDeleteComment(index) {
+      this.comments.splice(index, 1);
     },
     updateComment(value) {
       this.comments[this.selectedCommentIndex].message = value;

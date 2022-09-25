@@ -3,6 +3,8 @@ module.exports = app => {
     var router = require("express").Router();
     // Create a new Order Item with a User ID
     router.post("/create", orderItems.create);
+    // Retrieve a single Order Item with id
+    router.get("/find/orderItemId/:id", orderItems.findOne);
     // Retrieve Order Items by Order ID
     router.get("/find/orderId/:orderId", orderItems.findOrderItems);
     // Retrieve Order Items by Seller ID

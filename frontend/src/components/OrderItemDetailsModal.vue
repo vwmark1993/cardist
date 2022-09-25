@@ -1,7 +1,7 @@
 <template>
-  <vue-final-modal v-model="showModal" @opened="getItem" classes="flex justify-center items-center" content-class="modal-content" name="ItemListingsDetailsModal">
+  <vue-final-modal v-model="showModal" @opened="getItem" classes="flex justify-center items-center" content-class="modal-content" name="OrderItemDetailsModal">
     <div class="flex justify-between">
-      <span class="font-bold text-2xl truncate">Item Listing Details</span>
+      <span class="font-bold text-2xl truncate">Order Item Details</span>
       <button class="my-auto" @click="showModal = false">
         <span class="material-symbols-outlined hover:text-tertiary">close</span>
       </button>
@@ -27,20 +27,20 @@
           <span class="block border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2">{{ price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</span>
         </div>
         <div>
-          <span class="block text-gray-700 text-sm font-bold mb-1">Created On</span>
-          <span class="block border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2">{{ new Date(createdOn).toLocaleDateString("en-US") }}</span>
+          <span class="block text-gray-700 text-sm font-bold mb-1">Quantity</span>
+          <span class="block border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2">{{ quantity }}</span>
+        </div>
+        <div>
+          <span class="block text-gray-700 text-sm font-bold mb-1">Ordered On</span>
+          <span class="block border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2">{{ new Date(orderedOn).toLocaleDateString("en-US") }}</span>
         </div>
         <div v-if="description && description !== ''">
           <span class="block text-gray-700 text-sm font-bold mb-1">Description</span>
           <span class="block border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2">{{ description }}</span>
         </div>
         <div>
-          <span class="block text-gray-700 text-sm font-bold mb-1">Numbers Sold</span>
-          <span class="block border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2">{{ numbersSold }}</span>
-        </div>
-        <div>
-          <span class="block text-gray-700 text-sm font-bold mb-1">Total Sales</span>
-          <span class="block border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2">{{ (price * numbersSold).toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</span>
+          <span class="block text-gray-700 text-sm font-bold mb-1">Seller Name</span>
+          <span class="block border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2">{{ sellerName }}</span>
         </div>
       </div>
     </div>
@@ -51,10 +51,12 @@
 </template>
 
 <script>
+  import UserDataService from '@/services/UserDataService.js'
+  import OrderItemDataService from '@/services/OrderItemDataService.js'
   import ItemDataService from '@/services/ItemDataService.js'
 
   export default {
-    name: 'ItemListingsDetailsModal',
+    name: 'OrderItemDetailsModal',
     props: {
       id: String
     },
@@ -66,8 +68,9 @@
         name: '',
         description: '',
         price: '',
-        numbersSold: 0,
-        createdOn: '',
+        quantity: 0,
+        orderedOn: '',
+        sellerName: '',
         images: [],
 
         selectedIndex: 0
@@ -83,19 +86,26 @@
 
           this.loading = true;
 
-          let response = await ItemDataService.get(this.id);
+          let response = await OrderItemDataService.get(this.id);
+          let orderItem = response.data;
+
+          this.orderedOn = orderItem.created_on;
+          this.quantity = orderItem.quantity;
+
+          response = await ItemDataService.get(orderItem.item_id);
           let item = response.data;
 
           this.name = item.name;
           this.description = item.description;
           this.price = item.price;
-          this.numbersSold = item.number_sold;
-          this.createdOn = item.created_on;
           this.images = item.images;
+
+          response = await UserDataService.get(item.seller_id);
+          this.sellerName = response.data.username;
 
           this.loading = false;
         } catch (e) {
-          this.$emit('itemDetailsError', e);
+          this.$emit('orderItemDetailsError', e);
           this.showModal = false;
         }
       }

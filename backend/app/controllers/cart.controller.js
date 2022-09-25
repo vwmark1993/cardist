@@ -38,15 +38,6 @@ exports.findUserCart = (req, res) => {
   }
 };
 
-// Update a Cart by the id in the request
-exports.update = (req, res) => {
-  
-};
-// Delete a Cart with the specified id in the request
-exports.delete = (req, res) => {
-  
-};
-
 // Stripe checkout
 exports.createCheckoutSession = async (req, res) => {
   try {

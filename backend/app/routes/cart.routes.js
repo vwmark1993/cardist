@@ -5,10 +5,6 @@ module.exports = app => {
     router.post("/create", carts.create);
     // Retrieve Cart by User ID
     router.get("/find/userId/:userId", carts.findUserCart);
-    // Update a Cart with id
-    router.put("/update/:id", carts.update);
-    // Delete a Cart with id
-    router.delete("/delete/:id", carts.delete);
     // Stripe routing
     router.post("/create-checkout-session", carts.createCheckoutSession);
     app.use('/api/cart', router);
