@@ -51,8 +51,8 @@
         </div>
         <div>
           <div class="text-right mb-1">
-            <button @click="editProfile" class="bg-slate-500 hover:bg-slate-700 text-white text-sm font-semibold mb-1 py-1 px-2 rounded">Edit Profile</button>
-            <button @click="changePassword" class="bg-slate-500 hover:bg-slate-700 text-white text-sm font-semibold mb-1 ml-1 py-1 px-2 rounded">Change Password</button>
+            <button @click="editProfile" class="bg-slate-500 hover:bg-slate-700 text-white text-sm font-semibold mb-1 py-1 px-2 rounded transition duration-150">Edit Profile</button>
+            <button @click="changePassword" class="bg-slate-500 hover:bg-slate-700 text-white text-sm font-semibold mb-1 ml-1 py-1 px-2 rounded transition duration-150">Change Password</button>
           </div>
           <span v-if="!$store.state.user.currentUser.admin" class="block text-sm text-left">Items Sold: {{ itemsSold }}</span>
         </div>
@@ -80,8 +80,14 @@
       <div class="col-span-9">
         <!-- Item Listings -->
         <div class="user-profile-group-container border rounded border-slate-400 bg-white m-3 p-3">
-          <div>
-            <span class="block text-left text-xl font-bold ml-3">Current Item Listings</span>
+          <div class="flex">
+            <div v-if="!$store.state.user.currentUser.admin" @click="goToItemListings" class="flex items-center cursor-pointer opacity-75 hover:opacity-100 transition duration-150">
+              <span class="block text-left text-xl font-bold ml-3 mr-1 mb-1">Item Listings</span>
+              <span class="material-symbols-outlined scale-95 transition duration-150">exit_to_app</span>
+            </div>
+            <div v-else>
+              <span class="block text-left text-xl font-bold ml-3 mr-1 mb-1">Item Listings</span>
+            </div>
           </div>
           <div v-if="itemListings.length > 0" class="user-profile-scroll-container">
             <div v-for="item, index in itemListings" :key="item.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
@@ -115,8 +121,14 @@
 
         <!-- Order History -->
         <div class="user-profile-group-container border rounded border-slate-400 bg-white m-3 p-3">
-          <div>
-            <span class="block text-left text-xl font-bold ml-3">Order History</span>
+          <div class="flex">
+            <div v-if="!$store.state.user.currentUser.admin" @click="goToOrderHistory" class="flex items-center cursor-pointer opacity-75 hover:opacity-100 transition duration-150">
+              <span class="block text-left text-xl font-bold ml-3 mr-1 mb-1">Order History</span>
+              <span class="material-symbols-outlined scale-95 transition duration-150">exit_to_app</span>
+            </div>
+            <div v-else>
+              <span class="block text-left text-xl font-bold ml-3 mr-1 mb-1">Order History</span>
+            </div>
           </div>
           <div v-if="ordersAsBuyer.length > 0" class="user-profile-scroll-container">
             <div v-for="order in ordersAsBuyer" :key="order.id" class="user-profile-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
@@ -236,6 +248,12 @@ export default {
         this.alertMessageMode = null;
       }, 3000)
     }, 
+    goToItemListings() {
+      this.$router.push({ name: 'item-listings' }) 
+    },
+    goToOrderHistory() {
+      this.$router.push({ name: 'order-history' }) 
+    },
     editProfile() {
       $vfm.show("UserSettingsModal");
     },

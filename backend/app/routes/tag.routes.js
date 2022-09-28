@@ -7,6 +7,8 @@ module.exports = app => {
     router.get("/find", tags.findAll);
     // Retrieve a single Tag with id
     router.get("/find/tagId/:id", tags.findOne);
+    // Retrieve the most popular tags with the highest sales
+    router.get("/find/popularTagsByYear/:year", tags.findPopularTagsByYear);
     // Delete a Tag with id
     router.delete("/delete/:id", tags.delete);
     app.use('/api/tag', router);

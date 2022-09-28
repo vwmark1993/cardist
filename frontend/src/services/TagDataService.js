@@ -6,6 +6,9 @@ class TagDataService {
   get(id) {
     return http.get(`/tag/find/tagId/${id}`);
   }
+  getPopularTagsByYear(year) {
+    return http.get(`/tag/find/popularTagsByYear/${year}`);
+  }
   create(data) {
     return http.post("/tag/create", data);
   }

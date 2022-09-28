@@ -10,7 +10,8 @@ const state = () => (
   cartItems: [],
   orderConfirmationFlag: false,
   cartMessage: null,
-  cartMessageStatus: null
+  cartMessageStatus: null,
+  cartItemDeleted: false
 })
 
 // getters
@@ -114,34 +115,47 @@ const actions = {
     }
   },
   async deleteCartItem({ commit }, { index, id }) {
-    await CartItemDataService.delete(id);
+    try {
+      await CartItemDataService.delete(id);
 
-    commit('removeCartItemByIndex', index)
+      commit('removeCartItemByIndex', index);
+      commit('setCartItemDeleted');
+
+      setTimeout(() => {
+        commit('unsetCartItemDeleted');
+      }, 100);
+    } catch (e) {
+      console.log(e)
+    }
   },
   async updateCartItem({ commit }, { index, quantity }) {
-    let cartItem = store.state.cart.cartItems[index];
+    try {
+      let cartItem = store.state.cart.cartItems[index];
 
-    let data = {
-      quantity: quantity
+      let data = {
+        quantity: quantity
+      }
+
+      await CartItemDataService.update(cartItem.id, data);
+
+      let updatedCartItem = {
+        id: cartItem.id,
+        itemId: cartItem.itemId,
+        name: cartItem.name,
+        thumbnail: cartItem.thumbnail,
+        quantity: quantity,
+        price: cartItem.quantity != 0 ? cartItem.price / cartItem.quantity * quantity : cartItem.basePrice,
+        basePrice: cartItem.basePrice,
+        sellerId: cartItem.sellerId
+      }
+
+      commit('updateCartItemByIndex', {
+        index: index, 
+        cartItem: updatedCartItem
+      })
+    } catch (e) {
+      console.log(e)
     }
-
-    await CartItemDataService.update(cartItem.id, data);
-
-    let updatedCartItem = {
-      id: cartItem.id,
-      itemId: cartItem.itemId,
-      name: cartItem.name,
-      thumbnail: cartItem.thumbnail,
-      quantity: quantity,
-      price: cartItem.quantity != 0 ? cartItem.price / cartItem.quantity * quantity : cartItem.basePrice,
-      basePrice: cartItem.basePrice,
-      sellerId: cartItem.sellerId
-    }
-
-    commit('updateCartItemByIndex', {
-      index: index, 
-      cartItem: updatedCartItem
-    })
   },
   emptyCart({ commit }) {
     commit('emptyCart');
@@ -164,6 +178,12 @@ const mutations = {
   },
   removeCartItemByIndex(state, index) {
     state.cartItems.splice(index, 1);
+  },
+  setCartItemDeleted(state) {
+    state.cartItemDeleted = true;
+  },
+  unsetCartItemDeleted(state) {
+    state.cartItemDeleted = false;
   },
   updateCartItemByIndex(state, { index, cartItem }) {
     state.cartItems[index] = cartItem;

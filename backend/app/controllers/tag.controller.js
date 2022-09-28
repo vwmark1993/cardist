@@ -1,3 +1,5 @@
+const { sequelize } = require("../models");
+
 const db = require("../models");
 const Tag = db.tags;
 const Op = db.Sequelize.Op;
@@ -74,6 +76,40 @@ exports.findOne = (req, res) => {
     });
   }
 };
+
+// Retrieve most popular tags based on sales.
+exports.findPopularTagsByYear = async (req, res) => {
+  try {
+    const year = req.params.year;
+  
+    // Execute a custom prepared statement query.
+    const data = await sequelize.query(
+      `
+        SELECT t3.name, SUM(number_sold * price) AS sales
+        FROM items t1
+        INNER JOIN item_tags t2 ON t2.item_id = t1.id
+        INNER JOIN tags t3 ON t3.id = t2.tag_id
+        WHERE EXTRACT(YEAR FROM t1.created_on) = ?
+        GROUP BY t3.name
+        ORDER BY sales DESC
+        LIMIT 10
+      `, 
+      {
+        replacements: [year],
+        type: sequelize.QueryTypes.SELECT
+      }
+    )
+    
+    res.send(data);
+  } catch (e) {
+    console.log(e)
+    res.status(500).send({
+      message:
+      e.message || "Some error occurred while retrieving popular tags."
+    });
+  }
+};
+
 // Update a Tag by the id in the request
 exports.update = (req, res) => {
   

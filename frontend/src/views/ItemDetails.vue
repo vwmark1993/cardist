@@ -33,7 +33,7 @@
     <div class="grid grid-cols-12 grid-flow-col">
       <div class="md:col-span-4 grid grid-cols-4 m-3">
         <div v-if="itemDetails.images.length > 1 && itemDetails.images[0] !== ''" class="col-span-1 flex flex-col mx-2">
-          <img @click="setImageIndex(index)" v-for="(image, index) in itemDetails.images" :key="index" :src="image" class="border rounded mb-2 cursor-pointer opacity-50 hover:opacity-100 transition delay-75 ease-in-out" />
+          <img @click="setImageIndex(index)" v-for="image, index in itemDetails.images" :key="index" :src="image" class="border rounded mb-2 cursor-pointer opacity-50 hover:opacity-100 transition delay-75 ease-in-out" />
         </div>
         <div 
           :class="{
@@ -89,7 +89,7 @@
               @userError="(error) => showMessage(error, 'failure')"
               @commentFlagged="(username) => flagComment(index, username)"
               @editComment="() => editComment(index)"
-              @deleteComment="(id) => deleteComment(id)"
+              @deleteComment="(id) => deleteComment(index, id)"
             />
             <div class="pagination-container">
               <ul class="pagination">
@@ -219,7 +219,7 @@ export default {
           selectedIndex: 0,
           newCommentMessage: '',
           currentPage: 1,
-          perPage: 3,
+          perPage: 5,
           maxVisibleButtons: 3,
 
           deleteId: '',
@@ -295,13 +295,20 @@ export default {
     updateComment(value) {
       this.paginatedComments[this.selectedCommentPaginatedIndex].message = value;
     },
-    async deleteComment(id) {
+    deleteComment(paginatedIndex, id) {
+      this.selectedCommentPaginatedIndex = paginatedIndex;
       this.deleteId = id;
 
       $vfm.show('ConfirmDeleteModal');
     },
     confirmDeleteComment() {
-      this.comments.splice(this.selectedCommentPaginatedIndex, 1);
+      let realIndex = this.currentPage * this.perPage - this.perPage + this.selectedCommentPaginatedIndex;
+
+      this.comments.splice(realIndex, 1);
+
+      if (this.paginatedComments.length === 0 && this.currentPage !== 1) {
+        this.currentPage--;
+      }
     },
     setImageIndex(index) {
       this.selectedIndex = index;
@@ -397,37 +404,37 @@ export default {
   }
 
   .pagination-container {
-  font-family: Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 10px;
-}
+    font-family: Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 10px;
+  }
 
-.pagination {
-  list-style-type: none;
-}
+  .pagination {
+    list-style-type: none;
+  }
 
-.pagination-item {
-  display: inline-block;
-  margin: 5px;
-  border-radius: 5px;
-}
+  .pagination-item {
+    display: inline-block;
+    margin: 5px;
+    border-radius: 5px;
+  }
 
-.pagination-item button {
-  padding: 2px 10px;
-}
+  .pagination-item button {
+    padding: 2px 10px;
+  }
 
-.active {
-  background-color: #FF947C;
-  color: #ffffff;
-  border-radius: 5px;
-  font-weight: bold;
-}
+  .active {
+    background-color: #FF947C;
+    color: #ffffff;
+    border-radius: 5px;
+    font-weight: bold;
+  }
 
-.disabled {
-  background-color: #ffffff;
-  color: #94a3b8;
-}
+  .disabled {
+    background-color: #ffffff;
+    color: #94a3b8;
+  }
 </style>

@@ -219,12 +219,12 @@ exports.findTopSellersByYear = async (req, res) => {
     // Execute a custom prepared statement query.
     const data = await sequelize.query(
       `
-        SELECT username, SUM(quantity * price) AS number_of_sales
+        SELECT username, SUM(quantity * price) AS sales
         FROM order_items t1
         INNER JOIN users t2 ON t2.id = t1.seller_id
         WHERE EXTRACT(YEAR FROM t1.created_on) = ?
         GROUP BY username
-        ORDER BY number_of_sales DESC
+        ORDER BY sales DESC
         LIMIT 10
       `, 
       {
@@ -250,13 +250,13 @@ exports.findTopBuyersByYear = async (req, res) => {
     // Execute a custom prepared statement query.
     const data = await sequelize.query(
       `
-        SELECT username, SUM(quantity * price) AS number_of_purchases
+        SELECT username, SUM(quantity * price) AS purchases
         FROM orders t1
         INNER JOIN users t2 ON t2.id = t1.buyer_id
         INNER JOIN order_items t3 ON t3.order_id = t1.id
         WHERE EXTRACT(YEAR FROM t1.created_on) = ?
         GROUP BY username
-        ORDER BY number_of_purchases DESC
+        ORDER BY purchases DESC
         LIMIT 10
       `, 
       {

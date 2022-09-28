@@ -38,7 +38,7 @@
         </button>
       </div>
       <div v-else>
-        <div v-for="item, index in itemListings" :key="item.id" class="item-listings-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
+        <div v-for="item, index in paginatedItems" :key="item.id" class="item-listings-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
           <div class="flex items-center mr-3">
             <img v-if="item.images && item.images.length > 0 && item.images[0] !== ''" :src="item.images[0]" class="item-listings-item-image border rounded m-auto" />
             <img v-else src="../assets/images/image-placeholder.png" class="item-listings-item-image border rounded m-auto" />
@@ -59,6 +59,74 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="pagination-container mb-5">
+          <ul class="pagination">
+            <li 
+              class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white transition duration-150"
+            >
+              <button 
+                type="button" 
+                @click="onClickFirstPage"
+                :disabled="isInFirstPage"
+                :class="{ disabled: isInFirstPage }"
+                aria-label="Go to first page"
+              >
+                First
+              </button>
+            </li>
+
+            <li
+              class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white transition duration-150"
+            >
+              <button 
+                type="button" 
+                @click="onClickPreviousPage"
+                :disabled="isInFirstPage"
+                :class="{ disabled: isInFirstPage }"
+                aria-label="Go to previous page"
+              >
+                Previous
+              </button>
+            </li>
+
+            <li v-for="page in pages" :key="page.name" class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white transition duration-150">
+              <button 
+                type="button" 
+                @click="onClickPage(page.name)"
+                :disabled="page.isDisabled"
+                :class="{ active: isPageActive(page.name) }"
+                :aria-label="`Go to page number ${page.name}`"
+                
+              >
+                {{ page.name }}
+              </button>
+            </li>
+
+            <li class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white transition duration-150">
+              <button 
+                type="button" 
+                @click="onClickNextPage"
+                :disabled="isInLastPage"
+                :class="{ disabled: isInLastPage }"
+                aria-label="Go to next page"
+              >
+                Next
+              </button>
+            </li>
+
+            <li class="pagination-item text-secondary bg-slate-200 hover:bg-primary hover:text-white transition duration-150">
+              <button 
+                type="button" 
+                @click="onClickLastPage"
+                :disabled="isInLastPage"
+                :class="{ disabled: isInLastPage }"
+                aria-label="Go to last page"
+              >
+                Last
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -90,6 +158,9 @@
     data() {
       return {
         itemListings: [],
+        currentPage: 1,
+        perPage: 5,
+        maxVisibleButtons: 3,
 
         deleteId: '',
         deleteName: '',
@@ -99,6 +170,57 @@
 
         alertMessage: null,
         alertMessageMode: null
+      }
+    },
+    computed: {
+      startPage() {
+        if (this.currentPage === 1) {
+          return 1;
+        }
+
+        if (this.currentPage === this.totalPages) { 
+          return this.totalPages - this.maxVisibleButtons + 1 > 0 ? this.totalPages - this.maxVisibleButtons + 1 : 1;
+        }
+
+        return this.currentPage - 1;
+
+      },
+      endPage() {
+        
+        return Math.min(this.startPage + this.maxVisibleButtons - 1, this.totalPages);
+        
+      },
+      pages() {
+        const range = [];
+
+        for (let i = this.startPage; i <= this.endPage; i += 1 ) {
+          range.push({
+            name: i,
+            isDisabled: i === this.currentPage 
+          });
+        }
+
+        return range;
+      },
+      totalPages() {
+        return this.itemListings.length > 0 ? Math.ceil(this.itemListings.length / this.perPage) : 1
+      },
+      isInFirstPage() {
+        return this.currentPage === 1;
+      },
+      isInLastPage() {
+        return this.currentPage === this.totalPages;
+      },
+      paginatedItems() {
+        let startIndex = 1;
+
+        if (this.currentPage == 1) {
+          startIndex = 0;
+        } else {
+          startIndex = this.currentPage * this.perPage - this.perPage;
+        }
+
+        return this.itemListings.slice(startIndex, startIndex + this.perPage);
       }
     },
     methods: {
@@ -124,23 +246,59 @@
         this.itemListings = response.data;
       },
       async deleteItem(id, name, index) {
+
         this.deleteId = id;
         this.deleteIndex = index;
         this.deleteName = name;
 
         $vfm.show('ConfirmDeleteModal');
       },
-      confirmDeleteItem(index) {
+      confirmDeleteItem(paginatedIndex) {
         // Refresh item search.
         store.dispatch('search/searchItems', '');
 
-        this.itemListings.splice(index, 1);
+        let realIndex = this.currentPage * this.perPage - this.perPage + paginatedIndex;
+
+        this.itemListings.splice(realIndex, 1);
+
+        if (this.paginatedItems.length === 0 && this.currentPage !== 1) {
+          this.currentPage--;
+        }
       },
       addNewItem(item) {
         this.itemListings.push(item);
+      },
+      onPageChange(page) {
+        this.currentPage = page;
+      },
+      onClickFirstPage() {
+        this.onPageChange(1);
+      },
+      onClickPreviousPage() {
+        this.onPageChange(this.currentPage - 1);
+      },
+      onClickPage(page) {
+        this.onPageChange(page);
+      },
+      onClickNextPage() {
+        this.onPageChange(this.currentPage + 1);
+      },
+      onClickLastPage() {
+        this.onPageChange(this.totalPages);
+      },
+      isPageActive(page) {
+        return this.currentPage === page;
       }
     },
     mounted() {
+      if (!store.state.user.authenticated) {
+        this.$router.push({ name: 'login' });
+      }
+
+      if (store.state.user.currentUser.admin) {
+        this.$router.push({ name: 'home' });
+      }
+
       this.getItemListings();
     }
   }
@@ -156,5 +314,34 @@
   .item-listings-item-image {
     max-width: 144px;
     max-height: 150px;
+  }
+  .pagination-container {
+    font-family: Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 16px;
+  }
+  .pagination {
+    list-style-type: none;
+  }
+  .pagination-item {
+    display: inline-block;
+    margin: 5px;
+    border-radius: 5px;
+  }
+  .pagination-item button {
+    padding: 2px 10px;
+  }
+  .active {
+    background-color: #FF947C;
+    color: #ffffff;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  .disabled {
+    background-color: #ffffff;
+    color: #94a3b8;
   }
 </style>

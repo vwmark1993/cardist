@@ -51,7 +51,7 @@
           <div class="scroll-container overflow-auto mb-2">
             <div v-for="image, index in imageLinks" :key="index" class="flex items-center mb-1">
               <span class="text-slate-600 font-semibold text-sm mr-2">{{ index + 1 }}.</span>
-              <input @input="updateImage(index, $event)" class="w-full border rounded mr-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none" id="name" type="text">
+              <input @input="updateImage(index, $event)" class="w-full border rounded mr-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none" id="name" type="text" :value="image">
             </div>
           </div>
         </div>
@@ -123,6 +123,14 @@
               if (this.imageLinks[i] === '') {
                 this.imageLinks.splice(i, 1);
               }
+
+              try {
+                new URL(this.imageLinks[i]);
+              } catch (_) {
+                this.$emit('showMessage', 'Invalid Image URL', 'failure');
+                this.closeModal();
+                return;
+              }
             }
 
             data.images = this.imageLinks
@@ -131,6 +139,8 @@
           }
 
           let response = await ItemDataService.create(data);
+
+          console.log(response.data)
 
           let item = response.data;
           let itemId = response.data.id;

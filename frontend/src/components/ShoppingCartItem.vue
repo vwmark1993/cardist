@@ -15,7 +15,7 @@
           <button @click="decrement" data-action="decrement" class="shopping-cart-item-control-button bg-slate-300 text-slate-600 hover:text-slate-700 hover:bg-slate-400 rounded-l cursor-pointer outline-none">
             <span class="m-auto text-xl font-thin">−</span>
           </button>
-          <input type="number" class="shopping-cart-item-input-field outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none" name="custom-input-number" v-model="quantity" />
+          <input @change="inputValue" type="number" class="shopping-cart-item-input-field outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none" name="custom-input-number" v-model="quantity" />
           <button @click="increment"  data-action="increment" class="shopping-cart-item-control-button bg-slate-300 text-gray-600 hover:text-slate-700 hover:bg-slate-400 rounded-r cursor-pointer">
             <span class="m-auto text-xl font-thin">+</span>
           </button>
@@ -60,7 +60,7 @@ export default {
         index: this.index,
         id: this.id
       })
-      this.$emit('cartItemUpdated', 'Removed: ' + this.name)
+      this.$emit('cartItemMessage', 'Removed: ' + this.name)
     },
     increment() {
       this.quantity++
@@ -70,7 +70,7 @@ export default {
           index: this.index, 
           quantity: this.quantity
         })
-        this.$emit('cartItemUpdated', 'Increased quantity: ' + this.name)
+        this.$emit('cartItemMessage', 'Increased quantity: ' + this.name)
       }
     },
     decrement() {
@@ -81,7 +81,26 @@ export default {
           index: this.index, 
           quantity: this.quantity
         })
-        this.$emit('cartItemUpdated', 'Decreased quantity: ' + this.name)
+        this.$emit('cartItemMessage', 'Decreased quantity: ' + this.name)
+      }
+    },
+    inputValue() {
+      if (this.quantity > this.quantityProp) {
+        if (this.quantity >= 0) {
+          store.dispatch('cart/updateCartItem', {
+            index: this.index, 
+            quantity: this.quantity
+          })
+          this.$emit('cartItemMessage', 'Increased quantity: ' + this.name)
+        }
+      } else if (this.quantity < this.quantityProp) {
+        if (this.quantity >= 0) {
+          store.dispatch('cart/updateCartItem', {
+            index: this.index, 
+            quantity: this.quantity
+          })
+          this.$emit('cartItemMessage', 'Decreased quantity: ' + this.name)
+        }
       }
     }
   },

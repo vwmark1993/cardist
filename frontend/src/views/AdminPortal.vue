@@ -55,6 +55,13 @@
             </button>
             <button 
               class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate transition duration-150"
+              :class="{ 'bg-tertiary' : mode === 'popularTags', 'text-primary' : mode === 'popularTags', 'bg-primary' : mode !== 'popularTags', 'text-secondary' : mode !== 'popularTags' }"
+              @click="mode = 'popularTags'"
+              >
+              Most Popular Tags
+            </button>
+            <button 
+              class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate transition duration-150"
               :class="{ 'bg-tertiary' : mode === 'topSellers', 'text-primary' : mode === 'topSellers', 'bg-primary' : mode !== 'topSellers', 'text-secondary' : mode !== 'topSellers' }"
               @click="mode = 'topSellers'"
               >
@@ -109,7 +116,7 @@
         </div>  
       </div>
       <div class="w-full min-width-500">
-        <div v-if="mode === 'overview' || mode === 'popularItems' || mode === 'topSellers' || mode === 'topBuyers'" class="flex items-center justify-end border-b mx-3 mb-3 pb-2">
+        <div v-if="mode === 'overview' || mode === 'popularItems' || mode === 'popularTags' || mode === 'topSellers' || mode === 'topBuyers'" class="flex items-center justify-end border-b mx-3 mb-3 pb-2">
           <label for="year" class="text-sm font-medium text-slate-900 dark:text-slate-400">Year:&nbsp;&nbsp;</label>
           <select  @change="queryMetricsForYear" v-model="metricsYear" id="year" class="p-1 bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded focus:border-slate-500">
             <option selected :value="currentYear">{{ currentYear }}</option>
@@ -176,6 +183,13 @@
           :xAxisLabels="popularItemsDataset.xAxisLabels"
           yAxisLabel="Number Sold"
           :dataValues="popularItemsDataset.dataValues"
+        />
+        <MetricsChart
+          v-else-if="mode === 'popularTags' && popularTagsDataset"
+          title="Most Popular Tags"
+          :xAxisLabels="popularTagsDataset.xAxisLabels"
+          yAxisLabel="Sales"
+          :dataValues="popularTagsDataset.dataValues"
         />
         <MetricsChart
           v-else-if="mode === 'topSellers' && topSellersDataset"
@@ -414,6 +428,7 @@
 
         monthlySalesDataset: null,
         popularItemsDataset: null,
+        popularTagsDataset: null,
         topSellersDataset: null,
         topBuyersDataset: null,
 
@@ -448,6 +463,8 @@
           this.getMonthlySalesRevenueByYear();
         } else if (this.mode === 'popularItems') {
           this.getPopularItemsByYear();
+        } else if (this.mode === 'popularTags') {
+          this.getPopularTagsByYear();
         } else if (this.mode === 'topSellers') {
           this.getTopSellersByYear();
         } else if (this.mode === 'topBuyers') {
@@ -544,6 +561,27 @@
           this.showMessage('Error retrieving popular items.', 'failure');
         } 
       },
+      async getPopularTagsByYear() {
+        try {
+          let response = await TagDataService.getPopularTagsByYear(this.metricsYear);
+          let data = response.data;
+          
+          let xAxisLabels = [];
+          let dataValues = [];
+
+          data.forEach(tag => {
+            xAxisLabels.push(tag.name);
+            dataValues.push(tag.sales);
+          });
+
+          this.popularTagsDataset = {
+            xAxisLabels: xAxisLabels,
+            dataValues: dataValues
+          };
+        } catch (e) {
+          this.showMessage('Error retrieving popular tags.', 'failure');
+        } 
+      },
       async getTopSellersByYear() {
         try {
           let response = await OrderItemDataService.getTopSellersByYear(this.metricsYear);
@@ -554,7 +592,7 @@
 
           data.forEach(item => {
             xAxisLabels.push(item.username);
-            dataValues.push(item.number_of_sales);
+            dataValues.push(item.sales);
           });
 
           this.topSellersDataset = {
@@ -576,7 +614,7 @@
 
           data.forEach(item => {
             xAxisLabels.push(item.username);
-            dataValues.push(item.number_of_purchases);
+            dataValues.push(item.purchases);
           });
 
           this.topBuyersDataset = {
@@ -762,6 +800,9 @@
 
     // Most Popular Items tab
     this.getPopularItemsByYear();
+
+    // Most Popular Tags tab
+    this.getPopularTagsByYear();
 
     // Top Sellers tab
     this.getTopSellersByYear();

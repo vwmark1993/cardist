@@ -27,7 +27,7 @@
           <span class="block border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2">{{ price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</span>
         </div>
         <div>
-          <span class="block text-gray-700 text-sm font-bold mb-1">Quantity</span>
+          <span class="block text-gray-700 text-sm font-bold mb-1">Quantity Purchased</span>
           <span class="block border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2">{{ quantity }}</span>
         </div>
         <div>
