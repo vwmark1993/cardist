@@ -51,7 +51,7 @@ exports.findTagsByItem = (req, res) => {
   } catch (e) {
     res.status(500).send({
       message:
-        err.message || "Some error occurred while retrieving item tags."
+        e.message || "Some error occurred while retrieving item tags."
     });
   }
 };
@@ -68,7 +68,7 @@ exports.findItemsByTag = (req, res) => {
   } catch (e) {
     res.status(500).send({
       message:
-        err.message || "Some error occurred while retrieving item tags."
+        e.message || "Some error occurred while retrieving item tags."
     });
   }
 }

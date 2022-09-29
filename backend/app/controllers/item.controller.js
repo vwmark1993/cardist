@@ -91,7 +91,7 @@ exports.findBySellerId = (req, res) => {
   try {
     const sellerId = req.params.sellerId;
     let condition = sellerId ? { seller_id: sellerId } : null;
-    Item.findAll({ where: condition })
+    Item.findAll({ where: condition, order: [['created_on','DESC']] })
       .then(data => {
         res.send(data);
       })

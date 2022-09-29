@@ -33,7 +33,7 @@ exports.findUserCart = (req, res) => {
   } catch (e) {
     res.status(500).send({
       message:
-        err.message || "Some error occurred while retrieving user cart."
+        e.message || "Some error occurred while retrieving user cart."
     });
   }
 };

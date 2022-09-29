@@ -16,7 +16,7 @@ exports.create = (req, res) => {
   } catch (e) {
     res.status(500).send({
       message:
-        err.message || "Some error occurred while creating the Order."
+        e.message || "Some error occurred while creating the Order."
     });
   }
 };
@@ -34,7 +34,7 @@ exports.findAll = (req, res) => {
   } catch (e) {
     res.status(500).send({
       message:
-        err.message || "Some error occurred while retrieving orders."
+        e.message || "Some error occurred while retrieving orders."
     });
   }
 };
@@ -44,14 +44,14 @@ exports.findOrdersByBuyer = (req, res) => {
   try {
     const buyerId = req.params.buyerId;
     let condition = buyerId ? { buyer_id: `${buyerId}` } : null;
-    Order.findAll({ where: condition })
+    Order.findAll({ where: condition , order: [['created_on','DESC']] })
     .then(data => {
       res.send(data);
     })
   } catch (e)  {
     res.status(500).send({
       message:
-        err.message || "Some error occurred while retrieving orders."
+        e.message || "Some error occurred while retrieving orders."
     });
   }
 };

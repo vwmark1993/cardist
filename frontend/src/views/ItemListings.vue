@@ -23,8 +23,8 @@
       </Transition>
     </div>
     <div>
-      <div class="flex items-center mb-6">
-        <h1 class="text-4xl font-bold text-slate-700 text-left m-3">Item Listings</h1>
+      <div class="flex items-center mb-2 mt-3">
+        <h1 class="text-4xl font-bold text-slate-700 text-left mr-3">Item Listings</h1>
         <button @click="createItemListing" class="flex items-center bg-slate-500 hover:bg-slate-700 text-white font-semibold text-lg px-2 rounded select-none">
           <span class="material-symbols-outlined text-2xl mr-1">add</span>
           <span>Create</span>
@@ -38,6 +38,13 @@
         </button>
       </div>
       <div v-else>
+        <div class="flex items-center justify-end border-b pb-2 mx-3">
+          <label for="sort" class="text-sm font-medium text-slate-900 dark:text-slate-400">Sort:&nbsp;&nbsp;</label>
+          <select v-model="sortMode" id="sort" class="p-1 bg-slate-100 border border-slate-300 text-slate-800 text-sm rounded focus:border-slate-500">
+            <option selected value="latest">Latest Date</option>
+            <option value="earliest">Earliest Date</option>
+          </select>
+        </div>
         <div v-for="item, index in paginatedItems" :key="item.id" class="item-listings-item-container border rounded border-slate-300 bg-slate-100 p-3 m-3 flex">
           <div class="flex items-center mr-3">
             <img v-if="item.images && item.images.length > 0 && item.images[0] !== ''" :src="item.images[0]" class="item-listings-item-image border rounded m-auto" />
@@ -162,6 +169,8 @@
         perPage: 5,
         maxVisibleButtons: 3,
 
+        sortMode: 'latest',
+
         deleteId: '',
         deleteName: '',
         deleteIndex: 0,
@@ -220,7 +229,16 @@
           startIndex = this.currentPage * this.perPage - this.perPage;
         }
 
-        return this.itemListings.slice(startIndex, startIndex + this.perPage);
+        let sortedItems = this.itemListings;
+
+        // Apply sort order.
+        if (this.sortMode === 'latest') {
+          sortedItems.sort((a,b) => (a.createdOn < b.createdOn) ? 1 : ((b.createdOn < a.createdOn) ? -1 : 0));
+        } else if (this.sortMode === 'earliest') {
+          sortedItems.sort((a,b) => (a.createdOn > b.createdOn) ? 1 : ((b.createdOn > a.createdOn) ? -1 : 0));
+        }
+
+        return sortedItems.slice(startIndex, startIndex + this.perPage);
       }
     },
     methods: {

@@ -51,7 +51,7 @@ exports.findAll = (req, res) => {
   } catch (e) {
     res.status(500).send({
       message:
-        err.message || "Some error occurred while retrieving Tags."
+        e.message || "Some error occurred while retrieving Tags."
     });
   }
 };
