@@ -63,6 +63,35 @@ export default {
       if (!store.state.user.authenticated) {
         this.$router.push({ name: 'login' });
       } else {
+        if (store.state.user.authenticated) {
+          let userResponse = await UserDataService.get(store.state.user.currentUser.id);
+
+          if (userResponse.data.length === 0) {
+            store.dispatch('user/authentication', {
+              authenticated: false,
+              user: {
+                id: null,
+                username: null,
+                email: null,
+                phone: null,
+                picture: null,
+                settings: null,
+                totalEarnings: null,
+                totalSpending: null,
+                admin: null
+              }
+            });
+
+            store.dispatch('search/searchItems', '')
+            store.dispatch('search/resetFilters');
+            store.dispatch('cart/emptyCart');
+
+            this.$router.push({ name: 'home' });
+
+            return;
+          }
+        }
+
         if (!this.$route.query.session_id || this.$route.query.session_id === undefined) {
           this.$router.push({ name: 'home' });
         }

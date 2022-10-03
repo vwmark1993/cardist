@@ -21,6 +21,7 @@
             :quantityProp="cartItem.quantity" 
             :price="cartItem.price"
             @cartItemMessage="(message) => showMessage(message, 'success')"
+            @cartItemError="(error) => showMessage(error, 'failure')"
             />
         </div>
         <div v-else>
@@ -227,6 +228,33 @@ export default {
     },
     async checkout() {
       try {
+        let cartResponse = await CartDataService.getUserCart(store.state.user.currentUser.id);
+      
+        if (cartResponse.data.length === 0) {
+          store.dispatch('user/authentication', {
+            authenticated: false,
+            user: {
+              id: null,
+              username: null,
+              email: null,
+              phone: null,
+              picture: null,
+              settings: null,
+              totalEarnings: null,
+              totalSpending: null,
+              admin: null
+            }
+          });
+    
+          store.dispatch('search/searchItems', '')
+          store.dispatch('search/resetFilters');
+          store.dispatch('cart/emptyCart');
+
+          this.$router.push({ name: 'home' });
+
+          return;
+        }
+
         if (this.subtotal === 0) {
           this.showMessage('Subtotal is zero.', 'failure');
           

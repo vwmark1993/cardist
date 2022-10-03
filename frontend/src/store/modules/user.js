@@ -1,5 +1,5 @@
 const state = () => (
-  localStorage.getItem('vuex') ? JSON.parse(localStorage.getItem('vuex')).user
+  sessionStorage.getItem('vuex') ? JSON.parse(sessionStorage.getItem('vuex')).user
   : {
   authenticated: false,
   currentUser: {
@@ -22,11 +22,6 @@ const actions = {
   authentication({ commit }, { authenticated, user } ) {
     commit('setAuthenticated', authenticated);
     commit('setUser', user);
-
-    if (!authenticated) {
-      localStorage.clear();
-      console.log('cleared local storage')
-    }
   },
   updateUser({ commit }, { email, phone, picture }) {
     commit('updateUser', { email, phone, picture });

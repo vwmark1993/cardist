@@ -4,7 +4,7 @@ import ItemDataService from '@/services/ItemDataService.js'
 import store from '..'
 
 const state = () => (
-  localStorage.getItem('vuex') ? JSON.parse(localStorage.getItem('vuex')).cart
+  sessionStorage.getItem('vuex') ? JSON.parse(sessionStorage.getItem('vuex')).cart
   : {
   cartId: null,
   cartItems: [],
@@ -16,9 +16,8 @@ const state = () => (
 
 const actions = {
   async getCart({ commit }) {
-    if (!store.state.user.authenticated || !store.state.user.currentUser.id || store.state.cart.cartItems.length !== 0) {
+    if ((!store.state.user.authenticated || !store.state.user.currentUser.id) && store.state.cart.cartItems.length !== 0) {
       commit('emptyCart');
-      return
     } else {
       try {
         let cartResponse = await CartDataService.getUserCart(store.state.user.currentUser.id);
@@ -57,6 +56,39 @@ const actions = {
   },
   async addCartItem({ commit }, itemId) {
     try {
+      let cartResponse = await CartDataService.getUserCart(store.state.user.currentUser.id);
+      
+      if (cartResponse.data.length === 0) {
+        commit('setCartMessage', 'User Does Not Exist');
+        commit('setCartMessageStatus', 'failure');
+
+        store.dispatch('user/authentication', {
+          authenticated: false,
+          user: {
+            id: null,
+            username: null,
+            email: null,
+            phone: null,
+            picture: null,
+            settings: null,
+            totalEarnings: null,
+            totalSpending: null,
+            admin: null
+          }
+        });
+  
+        store.dispatch('search/searchItems', '')
+        store.dispatch('search/resetFilters');
+        store.dispatch('cart/emptyCart');
+
+        setTimeout(() => {
+          commit('removeCartMessage');
+          commit('removeCartMessageStatus');
+        }, 3000)
+
+        return;
+      }
+
       let data = {
         itemId: itemId,
         cartId: store.state.cart.cartId
@@ -90,7 +122,6 @@ const actions = {
           commit('removeCartMessageStatus');
         }, 3000)
       } else if (cartItemResponse.status == 201) {
-        console.log(cartItemResponse)
         commit('setCartMessage', 'Cart already contains: ' + itemDetails.name);
         commit('setCartMessageStatus', 'failure');
 

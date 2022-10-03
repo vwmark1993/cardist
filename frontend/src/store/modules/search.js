@@ -3,7 +3,7 @@ import ItemTagDataService from '@/services/ItemTagDataService.js'
 import TagDataService from '@/services/TagDataService.js'
 
 const state = () => (
-  localStorage.getItem('vuex') ? JSON.parse(localStorage.getItem('vuex')).search
+  sessionStorage.getItem('vuex') ? JSON.parse(sessionStorage.getItem('vuex')).search
   : {
   generalFilters: [],
   tagFilters: [],

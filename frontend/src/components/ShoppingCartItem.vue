@@ -28,6 +28,8 @@
 <script>
 import store from '@/store';
 
+import CartDataService from '@/services/CartDataService.js'
+
 export default {
   name: 'ShoppingCartItem',
   props: {
@@ -55,12 +57,38 @@ export default {
     goToItemDetails() {
       this.$router.push({ name: 'item-details', params: { itemId: this.itemId } })
     },
-    removeItem() {
+    async removeItem() {
+      let cartResponse = await CartDataService.getUserCart(store.state.user.currentUser.id);
+
+      if (cartResponse.data.length === 0) {
+        store.dispatch('user/authentication', {
+          authenticated: false,
+          user: {
+            id: null,
+            username: null,
+            email: null,
+            phone: null,
+            picture: null,
+            settings: null,
+            totalEarnings: null,
+            totalSpending: null,
+            admin: null
+          }
+        });
+
+        store.dispatch('search/searchItems', '')
+        store.dispatch('search/resetFilters');
+        store.dispatch('cart/emptyCart');
+
+        this.$router.push({ name: 'home' });
+
+        return;
+      }
+
       store.dispatch('cart/deleteCartItem', {
         index: this.index,
         id: this.id
       })
-      this.$emit('cartItemMessage', 'Removed: ' + this.name)
     },
     increment() {
       this.quantity++

@@ -178,15 +178,14 @@ exports.findAll = (req, res) => {
 // Find a single User with an id
 exports.findOne = (req, res) => {
   try {
-    const userId = req.params.id;
-    User.findByPk(userId)
+    const id = req.params.id;
+
+    User.findByPk(id)
     .then(data => {
       if (data) {
         res.send(data);
       } else {
-        res.status(404).send({
-          message: `Cannot find User with id=${id}.`
-        });
+        res.send([]);
       }
     })
   } catch (e) {
@@ -216,7 +215,6 @@ exports.findNewUsersByYear = async (req, res) => {
 
     res.send(data[0]);
   } catch (e) {
-    console.log(e)
     res.status(500).send({
       message:
         e.message || "Some error occurred while retrieving newly registered users."

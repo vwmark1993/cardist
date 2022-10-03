@@ -25,7 +25,7 @@
     <div>
       <div class="flex items-center mb-2 mt-3">
         <h1 class="text-4xl font-bold text-slate-700 text-left mr-3">Item Listings</h1>
-        <button @click="createItemListing" class="flex items-center bg-slate-500 hover:bg-slate-700 text-white font-semibold text-lg px-2 rounded select-none">
+        <button v-if="itemListings.length > 0" @click="createItemListing" class="flex items-center bg-slate-500 hover:bg-slate-700 text-white font-semibold text-lg px-2 rounded select-none">
           <span class="material-symbols-outlined text-2xl mr-1">add</span>
           <span>Create</span>
         </button>
@@ -151,6 +151,7 @@
   import ItemListingsDetailsModal from '@/components/ItemListingsDetailsModal.vue'
   import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue'
 
+  import UserDataService from '@/services/UserDataService.js'
   import ItemDataService from '@/services/ItemDataService.js'
 
   export default {
@@ -256,7 +257,34 @@
 
         $vfm.show('ItemListingsDetailsModal');
       },
-      createItemListing() {
+      async createItemListing() {
+        let userResponse = await UserDataService.get(store.state.user.currentUser.id);
+      
+        if (userResponse.data.length === 0) {
+          store.dispatch('user/authentication', {
+            authenticated: false,
+            user: {
+              id: null,
+              username: null,
+              email: null,
+              phone: null,
+              picture: null,
+              settings: null,
+              totalEarnings: null,
+              totalSpending: null,
+              admin: null
+            }
+          });
+    
+          store.dispatch('search/searchItems', '')
+          store.dispatch('search/resetFilters');
+          store.dispatch('cart/emptyCart');
+
+          this.$router.push({ name: 'home' });
+
+          return;
+        }
+
         $vfm.show('CreateItemListingModal');
       },
       async getItemListings() {

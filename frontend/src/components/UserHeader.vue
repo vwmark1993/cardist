@@ -81,12 +81,10 @@
 
 <script>
 import store from '@/store'
+import UserDataService from '@/services/UserDataService.js'
 
 export default {
   name: 'UserHeader',
-  props: {
-    
-  },
   data() {
     return {
       isOpen: false,
@@ -99,8 +97,41 @@ export default {
   beforeUnmount() {
     document.removeEventListener('keydown', this.handleEscape);
   },
-  mounted() {
-    store.dispatch('cart/getCart');
+  async mounted() {
+    if (store.state.user.authenticated) {
+      if (store.state.cart.cartItems.length === 0) {
+        store.dispatch('cart/getCart');
+      }
+
+      let userResponse = await UserDataService.get(store.state.user.currentUser.id);
+
+      if (userResponse.data.length === 0) {
+        store.dispatch('user/authentication', {
+          authenticated: false,
+          user: {
+            id: null,
+            username: null,
+            email: null,
+            phone: null,
+            picture: null,
+            settings: null,
+            totalEarnings: null,
+            totalSpending: null,
+            admin: null
+          }
+        });
+
+        store.dispatch('search/searchItems', '')
+        store.dispatch('search/resetFilters');
+        store.dispatch('cart/emptyCart');
+
+        if (this.$route.path !== 'home') {
+          this.$router.push({ name: 'home' });
+        }
+
+        return;
+      }
+    }
   },
   methods: {
     async searchItemsByName() {
@@ -122,7 +153,7 @@ export default {
           totalSpending: null,
           admin: null
         }
-      })
+      });
 
       store.dispatch('search/searchItems', '')
       store.dispatch('search/resetFilters');

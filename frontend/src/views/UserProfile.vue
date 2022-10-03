@@ -190,6 +190,7 @@
 <script>
 import store from '@/store'
 
+import UserDataService from '@/services/UserDataService.js'
 import ItemDataService from '@/services/ItemDataService.js'
 import OrderDataService from '@/services/OrderDataService.js'
 import OrderItemDataService from '@/services/OrderItemDataService.js'
@@ -249,15 +250,69 @@ export default {
       }, 3000)
     }, 
     goToItemListings() {
-      this.$router.push({ name: 'item-listings' }) 
+      this.$router.push({ name: 'item-listings' });
     },
     goToOrderHistory() {
-      this.$router.push({ name: 'order-history' }) 
+      this.$router.push({ name: 'order-history' });
     },
-    editProfile() {
+    async editProfile() {
+      let userResponse = await UserDataService.get(store.state.user.currentUser.id);
+      
+      if (userResponse.data.length === 0) {
+        store.dispatch('user/authentication', {
+          authenticated: false,
+          user: {
+            id: null,
+            username: null,
+            email: null,
+            phone: null,
+            picture: null,
+            settings: null,
+            totalEarnings: null,
+            totalSpending: null,
+            admin: null
+          }
+        });
+  
+        store.dispatch('search/searchItems', '')
+        store.dispatch('search/resetFilters');
+        store.dispatch('cart/emptyCart');
+
+        this.$router.push({ name: 'home' });
+
+        return;
+      }
+
       $vfm.show("UserSettingsModal");
     },
-    changePassword() {
+    async changePassword() {
+      let userResponse = await UserDataService.get(store.state.user.currentUser.id);
+      
+      if (userResponse.data.length === 0) {
+        store.dispatch('user/authentication', {
+          authenticated: false,
+          user: {
+            id: null,
+            username: null,
+            email: null,
+            phone: null,
+            picture: null,
+            settings: null,
+            totalEarnings: null,
+            totalSpending: null,
+            admin: null
+          }
+        });
+  
+        store.dispatch('search/searchItems', '')
+        store.dispatch('search/resetFilters');
+        store.dispatch('cart/emptyCart');
+
+        this.$router.push({ name: 'home' });
+
+        return;
+      }
+
       $vfm.show("ChangePasswordModal");
     },
     editComment(index) {

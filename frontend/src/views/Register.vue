@@ -83,11 +83,11 @@ export default {
           // Password must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.
           if (this.password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)) {
 
-            if (this.email.trim() == '') {
+            if (this.email === '' || this.email.trim() === '') {
               this.email = null;
             }
 
-            if (this.phone.trim() == '') {
+            if (this.phone === '' || this.phone.trim() === '') {
               this.phone = null;
             }
 

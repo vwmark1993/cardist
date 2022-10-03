@@ -2,7 +2,6 @@ import { createStore, createLogger } from 'vuex'
 import user from './modules/user'
 import cart from './modules/cart'
 import search from './modules/search'
-
 import createPersistedState from "vuex-persistedstate";
 
 const debug = process.env.NODE_ENV !== 'production'
@@ -19,12 +18,12 @@ export default createStore({
     createLogger(),
     createPersistedState({
       paths: ['user', 'cart', 'search'],
-      storage: window.localStorage
+      storage: window.sessionStorage
     })
   ] : [
     createPersistedState({
       paths: ['user', 'cart', 'search'],
-      storage: window.localStorage
+      storage: window.sessionStorage
     })
   ]
 })

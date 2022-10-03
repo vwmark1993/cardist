@@ -285,7 +285,7 @@ export default {
       }
     },
     async addItemToCart() {
-      store.dispatch('cart/addCartItem', this.itemId)
+      store.dispatch('cart/addCartItem', this.itemId);
     },
     editComment(paginatedIndex) {
       this.selectedCommentPaginatedIndex = paginatedIndex;

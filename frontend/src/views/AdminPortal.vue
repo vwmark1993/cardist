@@ -229,7 +229,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="user, index in filteredUsers" :key="user.id">
+                <tr v-for="user in filteredUsers" :key="user.id">
                   <td class="border border-slate-300">{{ user.username }}</td>
                   <td class="border border-slate-300">{{ user.admin }}</td>
                   <td class="border border-slate-300">{{ user.created_on ? new Date(user.created_on).toLocaleDateString("en-US") : null }}</td>
@@ -237,7 +237,7 @@
                     <button @click="showUserDetails(user.id)" class="bg-slate-500 hover:bg-slate-700 text-white text-sm py-1 px-2 rounded select-none">Details</button>
                   </td>
                   <td class="border border-slate-300">
-                    <button v-if="$store.state.user.currentUser.id !== user.id" @click="deleteUser(user.id, index, user.username)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
+                    <button v-if="$store.state.user.currentUser.id !== user.id" @click="deleteUser(user.id, user.username)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
                     <div v-else class="px-6"></div>
                   </td>
                 </tr>
@@ -269,7 +269,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item, index in filteredItems" :key="item.id">
+                <tr v-for="item in filteredItems" :key="item.id">
                   <td class="border border-slate-300">{{ item.name }}</td>
                   <td class="border border-slate-300">{{ item.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</td>
                   <td class="border border-slate-300">{{ item.created_on ? new Date(item.created_on).toLocaleDateString("en-US") : null }}</td>
@@ -277,7 +277,7 @@
                     <button @click="showItemDetails(item.id)" class="bg-slate-500 hover:bg-slate-700 text-white text-sm py-1 px-2 rounded select-none">Details</button>
                   </td>
                   <td class="border border-slate-300">
-                    <button @click="deleteItem(item.id, index, item.name)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
+                    <button @click="deleteItem(item.id, item.name)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
                   </td>
                 </tr>
               </tbody>
@@ -471,14 +471,14 @@
       },
       filteredUsers() {
         if (this.searchString.trim() !== '') {
-          return this.users.filter(user => user.username.indexOf(this.searchString.trim()) >= 0);
+          return this.users.filter(user => user.username.toLowerCase().indexOf(this.searchString.toLowerCase().trim()) >= 0);
         } else {
           return this.users;
         }
       },
       filteredItems() {
         if (this.searchString.trim() !== '') {
-          return this.items.filter(item => item.name.indexOf(this.searchString.trim()) >= 0);
+          return this.items.filter(item => item.name.toLowerCase().indexOf(this.searchString.toLowerCase().trim()) >= 0);
         } else {
           return this.items;
         }
@@ -756,7 +756,11 @@
 
         $vfm.show('TagDetailsModal');
       },
-      async deleteUser(id, index, name) {
+      async deleteUser(id, name) {
+        let index = this.users.findIndex(user => user.id === id);
+
+        console.log(index)
+
         this.confirmDeleteModalId = id;
         this.confirmDeleteModalApi = 'User';
         this.confirmDeleteModalName = name;
@@ -767,7 +771,9 @@
       confirmDeleteUser(index) {
         this.users.splice(index, 1);
       },
-      async deleteItem(id, index, name) {
+      async deleteItem(id, name) {
+        let index = this.items.findIndex(item => item.id === id);
+
         this.confirmDeleteModalId = id;
         this.confirmDeleteModalApi = 'Item';
         this.confirmDeleteModalName = name;
