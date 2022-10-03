@@ -12,12 +12,6 @@ const state = () => (
   newSearchAlert: false
 })
 
-// getters
-const getters = {
-
-}
-
-// actions
 const actions = {
   async searchItems({ commit }, searchString) {
     try {
@@ -85,7 +79,6 @@ const actions = {
   }
 }
 
-// mutations
 const mutations = {
   setSearchString(state, searchString) {
     state.searchString = searchString
@@ -136,7 +129,6 @@ const mutations = {
 export default {
   namespaced: true,
   state,
-  getters,
   actions,
   mutations
 }

@@ -18,16 +18,15 @@ const state = () => (
   logoutMessage: null
 })
 
-// getters
-const getters = {
-
-}
-
-// actions
 const actions = {
   authentication({ commit }, { authenticated, user } ) {
     commit('setAuthenticated', authenticated);
     commit('setUser', user);
+
+    if (!authenticated) {
+      localStorage.clear();
+      console.log('cleared local storage')
+    }
   },
   updateUser({ commit }, { email, phone, picture }) {
     commit('updateUser', { email, phone, picture });
@@ -56,7 +55,6 @@ const actions = {
   }
 }
 
-// mutations
 const mutations = {
   setAuthenticated(state, authenticated) {
     state.authenticated = authenticated;
@@ -92,7 +90,6 @@ const mutations = {
 export default {
   namespaced: true,
   state,
-  getters,
   actions,
   mutations
 }

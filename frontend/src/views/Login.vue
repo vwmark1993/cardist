@@ -13,9 +13,9 @@
         </div>
         <div class="px-14">
           <span class="block text-sm text-left font-semibold text-primary mb-1">Username</span>
-          <input v-model="username" type="text" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" name="username" />
+          <input v-model="username" type="text" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" maxlength="20" name="username" />
           <span class="block text-sm text-left font-semibold text-primary mb-1">Password</span>
-          <input v-model="password" type="password" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" name="password" />
+          <input v-model="password" type="password" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" maxlength="20" name="password" />
         </div>
         <div class="flex justify-between mt-1 pb-10 px-14">
           <button @click="login" class="bg-tertiary text-primary hover:bg-secondary font-semibold py-1 px-3 rounded">Login</button>

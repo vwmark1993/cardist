@@ -80,14 +80,14 @@
             <button 
               class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate transition duration-150"
               :class="{ 'bg-tertiary' : mode === 'users', 'text-primary' : mode === 'users', 'bg-primary' : mode !== 'users', 'text-secondary' : mode !== 'users' }"
-              @click="mode = 'users'"
+              @click="mode = 'users', searchString = ''"
               >
               List of Users
             </button>
             <button 
               class="block w-3/4 hover:bg-tertiary hover:text-primary font-bold py-2 px-4 my-2 mx-auto rounded truncate transition duration-150"
               :class="{ 'bg-tertiary' : mode === 'items', 'text-primary' : mode === 'items', 'bg-primary' : mode !== 'items', 'text-secondary' : mode !== 'items' }"
-              @click="mode = 'items'"
+              @click="mode = 'items', searchString = ''"
               >
               List of Items
             </button>
@@ -207,59 +207,82 @@
         />
         <div v-else-if="mode === 'users'">
           <span v-if="users.length === 0" class="text-slate-400 text-xl mb-2">No Users</span>
-          <table v-else class="border-collapse border border-slate-400 mx-auto">
-            <caption class="text-xl font-semibold mb-2">Users</caption>
-            <thead>
-              <tr>
-                <th class="border border-slate-300">Username</th>
-                <th class="border border-slate-300">Admin</th>
-                <th class="border border-slate-300">Created Date</th>
-                <th class="border border-slate-300"></th>
-                <th class="border border-slate-300"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="user, index in users" :key="user.id">
-                <td class="border border-slate-300">{{ user.username }}</td>
-                <td class="border border-slate-300">{{ user.admin }}</td>
-                <td class="border border-slate-300">{{ user.created_on ? new Date(user.created_on).toLocaleDateString("en-US") : null }}</td>
-                <td class="border border-slate-300">
-                  <button @click="showUserDetails(user.id)" class="bg-slate-500 hover:bg-slate-700 text-white text-sm py-1 px-2 rounded select-none">Details</button>
-                </td>
-                <td class="border border-slate-300">
-                  <button v-if="$store.state.user.currentUser.id !== user.id" @click="deleteUser(user.id, index, user.username)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-else>
+            <div class="width-300 relative mx-auto mb-3">
+              <input v-model="searchString" type="search" name="search" class="w-full min-w-300px py-3 text-sm text-slate-900 bg-slate-200 rounded-md pl-3 focus:outline-none focus:bg-slate-150 transition duration-150" placeholder="Search Username" maxlength=20  autocomplete="off">
+              <span class="absolute inset-y-0 right-0 flex items-stretch">
+                <button class="p-1 mr-2 focus:outline-none focus:shadow-outline text-slate-500 cursor-default transition duration-150">
+                  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </button>
+              </span>
+            </div>
+            <span v-if="filteredUsers.length === 0" class="text-slate-400 text-xl mb-2">No Matches</span>
+            <table v-else class="border-collapse border border-slate-400 mx-auto">
+              <caption class="text-xl font-semibold mb-2">Users</caption>
+              <thead>
+                <tr>
+                  <th class="border border-slate-300">Username</th>
+                  <th class="border border-slate-300">Admin</th>
+                  <th class="border border-slate-300">Created Date</th>
+                  <th class="border border-slate-300"></th>
+                  <th class="border border-slate-300"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="user, index in filteredUsers" :key="user.id">
+                  <td class="border border-slate-300">{{ user.username }}</td>
+                  <td class="border border-slate-300">{{ user.admin }}</td>
+                  <td class="border border-slate-300">{{ user.created_on ? new Date(user.created_on).toLocaleDateString("en-US") : null }}</td>
+                  <td class="border border-slate-300">
+                    <button @click="showUserDetails(user.id)" class="bg-slate-500 hover:bg-slate-700 text-white text-sm py-1 px-2 rounded select-none">Details</button>
+                  </td>
+                  <td class="border border-slate-300">
+                    <button v-if="$store.state.user.currentUser.id !== user.id" @click="deleteUser(user.id, index, user.username)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
+                    <div v-else class="px-6"></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div v-else-if="mode === 'items'">
           <span v-if="items.length === 0" class="text-slate-400 text-xl mb-2">No Items</span>
-          <table v-else class="border-collapse border border-slate-400 mx-auto">
-            <caption class="text-xl font-semibold mb-2">Items</caption>
-            <thead>
-              <tr>
-                <th class="border border-slate-300">Name</th>
-                <th class="border border-slate-300">Price</th>
-                <th class="border border-slate-300">Created Date</th>
-                <th class="border border-slate-300"></th>
-                <th class="border border-slate-300"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item, index in items" :key="item.id">
-                <td class="border border-slate-300">{{ item.name }}</td>
-                <td class="border border-slate-300">{{ item.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</td>
-                <td class="border border-slate-300">{{ item.created_on ? new Date(item.created_on).toLocaleDateString("en-US") : null }}</td>
-                <td class="border border-slate-300">
-                  <button @click="showItemDetails(item.id)" class="bg-slate-500 hover:bg-slate-700 text-white text-sm py-1 px-2 rounded select-none">Details</button>
-                </td>
-                <td class="border border-slate-300">
-                  <button @click="deleteItem(item.id, index, item.name)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-else>
+            <div class="width-300 relative mx-auto mb-3">
+              <input v-model="searchString" type="search" name="search" class="w-full min-w-300px py-3 text-sm text-slate-900 bg-slate-200 rounded-md pl-3 focus:outline-none focus:bg-slate-150 transition duration-150" placeholder="Search Item" maxlength=20  autocomplete="off">
+              <span class="absolute inset-y-0 right-0 flex items-stretch">
+                <button class="p-1 mr-2 focus:outline-none focus:shadow-outline text-slate-500 cursor-default transition duration-150">
+                  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </button>
+              </span>
+            </div>
+            <span v-if="filteredItems.length === 0" class="text-slate-400 text-xl mb-2">No Matches</span>
+            <table v-else class="border-collapse border border-slate-400 mx-auto">
+              <caption class="text-xl font-semibold mb-2">Items</caption>
+              <thead>
+                <tr>
+                  <th class="border border-slate-300">Name</th>
+                  <th class="border border-slate-300">Price</th>
+                  <th class="border border-slate-300">Created Date</th>
+                  <th class="border border-slate-300"></th>
+                  <th class="border border-slate-300"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item, index in filteredItems" :key="item.id">
+                  <td class="border border-slate-300">{{ item.name }}</td>
+                  <td class="border border-slate-300">{{ item.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }}</td>
+                  <td class="border border-slate-300">{{ item.created_on ? new Date(item.created_on).toLocaleDateString("en-US") : null }}</td>
+                  <td class="border border-slate-300">
+                    <button @click="showItemDetails(item.id)" class="bg-slate-500 hover:bg-slate-700 text-white text-sm py-1 px-2 rounded select-none">Details</button>
+                  </td>
+                  <td class="border border-slate-300">
+                    <button @click="deleteItem(item.id, index, item.name)" class="bg-slate-500 hover:bg-red-700 text-white text-sm py-1 px-2 rounded select-none">Delete</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>  
         </div>
         <div v-else-if="mode === 'banner'">
           <div v-if="banners.length === 0">
@@ -432,6 +455,8 @@
         topSellersDataset: null,
         topBuyersDataset: null,
 
+        searchString: '',
+
         users: [],
         items: [],
         banners: [],
@@ -444,6 +469,20 @@
         const d = new Date();
         return d.getFullYear();
       },
+      filteredUsers() {
+        if (this.searchString.trim() !== '') {
+          return this.users.filter(user => user.username.indexOf(this.searchString.trim()) >= 0);
+        } else {
+          return this.users;
+        }
+      },
+      filteredItems() {
+        if (this.searchString.trim() !== '') {
+          return this.items.filter(item => item.name.indexOf(this.searchString.trim()) >= 0);
+        } else {
+          return this.items;
+        }
+      }
     },
     methods: {
       showMessage(message, mode) {
@@ -841,6 +880,10 @@
     min-width: 500px;
   }
 
+  .width-300 {
+    width: 300px;
+  }
+
   .banner {
     width: 700px;
     height: 150px;
@@ -849,4 +892,19 @@
   th, td {
     padding: 7px 12px;
   }
+
+  /* clears the 'X' from Internet Explorer */
+  input[type=search]::-ms-clear {  display: none; width : 0; height: 0; }
+  input[type=search]::-ms-reveal {  display: none; width : 0; height: 0; }
+
+  /* clears the 'X' from Chrome */
+  input[type="search"]::-webkit-search-decoration,
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-results-button,
+  input[type="search"]::-webkit-search-results-decoration { display: none; }
+
+  input[type="search"] {
+    font-size:18px;
+  }
+
 </style>

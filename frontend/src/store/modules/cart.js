@@ -14,15 +14,10 @@ const state = () => (
   cartItemDeleted: false
 })
 
-// getters
-const getters = {
-
-}
-
-// actions
 const actions = {
   async getCart({ commit }) {
-    if (!store.state.user.authenticated || !store.state.user.currentUser.id || store.state.cart.cartItems.length != 0) {
+    if (!store.state.user.authenticated || !store.state.user.currentUser.id || store.state.cart.cartItems.length !== 0) {
+      commit('emptyCart');
       return
     } else {
       try {
@@ -165,7 +160,6 @@ const actions = {
   }
 }
 
-// mutations
 const mutations = {
   setCart(state, cartId) {
     state.cartId = cartId
@@ -208,7 +202,6 @@ const mutations = {
 export default {
   namespaced: true,
   state,
-  getters,
   actions,
   mutations
 }

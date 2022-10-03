@@ -13,7 +13,7 @@
         </div>
         <div class="px-14">
           <span class="block text-sm text-left font-semibold text-primary mb-1">New Username *</span>
-          <input v-model="username" type="text" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" name="username" required />
+          <input v-model="username" type="text" class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3" maxlength="20" name="username" required />
           <span class="block text-sm text-left font-semibold text-primary mb-1">New Password *</span>
           <input 
             v-model="password"
@@ -22,6 +22,7 @@
             name="password" 
             pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" 
             title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters."
+            maxlength="20"
             required
             class="outline-none focus:outline-none text-center bg-slate-300 font-semibold text-md hover:text-slate-900 focus:text-slate-900 md:text-basecursor-default text-gray-700 outline-none border rounded mb-3"
             />

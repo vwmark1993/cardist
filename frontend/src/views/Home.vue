@@ -25,6 +25,15 @@
       AlertMessage,
       Landing
     },
+    watch: {
+      '$store.state.user.authenticated': function() {
+        console.log('watcher')
+        if (!store.state.user.authenticated) {
+          console.log('force update')
+          this.$forceUpdate();
+        }
+      }
+    },
     data() {
       return {
         bannerError: false

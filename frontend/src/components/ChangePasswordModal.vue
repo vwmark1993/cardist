@@ -13,22 +13,22 @@
           <input v-model="showCurrentPassword" type="checkbox" class="block text-gray-700 text-sm font-bold ml-2">
           <span class="text-xs text-gray-500 ml-1">Show</span>
         </div>
-        <input v-model="currentPassword" v-if="showCurrentPassword" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="currentPassword" type="text">
-        <input v-model="currentPassword" v-else class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="currentPassword" type="password">
+        <input v-model="currentPassword" v-if="showCurrentPassword" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="currentPassword" maxlength="20" type="text">
+        <input v-model="currentPassword" v-else class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="currentPassword" maxlength="20" type="password">
         <div class="flex items-center mb-1">
           <label class="block text-gray-700 text-sm font-bold text-left" for="newPassword">New Password</label>
           <input v-model="showNewPassword" type="checkbox" class="block text-gray-700 text-sm font-bold ml-2">
           <span class="text-xs text-gray-500 ml-1">Show</span>
         </div>
-        <input v-model="newPassword" v-if="showNewPassword" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="newPassword" type="text" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
-        <input v-model="newPassword" v-else class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="newPassword" type="password" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
+        <input v-model="newPassword" v-if="showNewPassword" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="newPassword" maxlength="20" type="text" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
+        <input v-model="newPassword" v-else class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="newPassword" maxlength="20" type="password" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
         <div class="flex items-center mb-1">
           <label class="block text-gray-700 text-sm font-bold text-left" for="confirmNewPassword">Confirm New Password</label>
           <input v-model="showConfirmNewPassword" type="checkbox" class="block text-gray-700 text-sm font-bold ml-2">
           <span class="text-xs text-gray-500 ml-1">Show</span>
         </div>
-        <input v-model="confirmNewPassword" v-if="showConfirmNewPassword" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="confirmNewPassword" type="text" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
-        <input v-model="confirmNewPassword" v-else class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="confirmNewPassword" type="password" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
+        <input v-model="confirmNewPassword" v-if="showConfirmNewPassword" class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="confirmNewPassword" maxlength="20" type="text" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
+        <input v-model="confirmNewPassword" v-else class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none mb-2" id="confirmNewPassword" maxlength="20" type="password" title="Must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.">
       </div>
       <div>
         <span class="text-xs text-slate-500 font-semibold">* Password must contain at least one uppercase letter, one lowercase letter, one number, and at least 8 or more characters.</span>
