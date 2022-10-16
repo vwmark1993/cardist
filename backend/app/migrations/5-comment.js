@@ -3,14 +3,14 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('items', {
+    await queryInterface.createTable('comments', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
         allowNull: false,
         primaryKey: true
       },
-      seller_id: {
+      user_id: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
@@ -21,24 +21,32 @@ module.exports = {
         },
         onDelete: 'CASCADE'
       },
-      images: {
-        type: Sequelize.ARRAY(Sequelize.TEXT),
-        defaultValue: []
+      item_id: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: 'items',
+          },
+          key: 'id'
+        },
+        onDelete: 'CASCADE'
       },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      description: {
+      message: {
         type: Sequelize.STRING
       },
-      price: {
-        type: Sequelize.FLOAT,
+      flagged: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
         allowNull: false
       },
-      number_sold: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0
+      flagged_reason: {
+        type: Sequelize.STRING,
+        defaultValue: null
+      },
+      flagged_reason_message: {
+        type: Sequelize.STRING,
+        defaultValue: null
       },
       created_on: {
         type: Sequelize.DATE,
@@ -52,6 +60,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('items');
+    await queryInterface.dropTable('comments');
   }
 };

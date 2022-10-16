@@ -59,6 +59,11 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
+    await queryInterface.removeConstraint('orders', 'orders_buyer_id_fkey', {});
+    await queryInterface.removeConstraint('comments', 'comments_user_id_fkey', {});
+    await queryInterface.removeConstraint('items', 'items_seller_id_fkey', {});
+    await queryInterface.removeConstraint('carts', 'carts_user_id_fkey', {});
+    
     await queryInterface.dropTable('users');
   }
 };
