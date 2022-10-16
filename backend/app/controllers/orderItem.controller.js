@@ -138,7 +138,7 @@ exports.findMonthlySalesRevenueByYear = async (req, res) => {
         FROM order_items
         WHERE EXTRACT(YEAR FROM created_on) = ?
         GROUP BY month_number, month
-        ORDER BY month_number DESC
+        ORDER BY month_number
       `, 
       {
         replacements: [year],

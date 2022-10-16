@@ -122,6 +122,8 @@ export default {
 
             } else if (response.status == 201) {
               this.message = response.data.message;
+              this.email = '';
+              this.phone = '';
 
               setTimeout(() => {
                 this.message = '';

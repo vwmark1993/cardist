@@ -60,7 +60,7 @@ export default {
         let last30Days = new Date();
         last30Days.setDate(last30Days.getDate() - 30);
 
-        items = items.filter(item => item.created_on >= last30Days)
+        items = items.filter(item => new Date(item.created_on) >= last30Days)
       }
       if (generalFilters.includes('popular')) {
         items = items.filter(item => item.number_sold >= 20)

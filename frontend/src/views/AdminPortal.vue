@@ -305,7 +305,7 @@
                   <td class="border border-slate-300">
                     <input 
                       @click="selectBanner(banner.id)"
-                      class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-primary checked:border-primary focus:outline-none transition duration-200 cursor-pointer" 
+                      class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-slate-600 checked:border-slate-600 focus:outline-none transition duration-200 cursor-pointer" 
                       type="radio" 
                       name="banner" 
                       id="banner" 
