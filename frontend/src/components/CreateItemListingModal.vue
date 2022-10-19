@@ -140,8 +140,6 @@
 
           let response = await ItemDataService.create(data);
 
-          console.log(response.data)
-
           let item = response.data;
           let itemId = response.data.id;
 

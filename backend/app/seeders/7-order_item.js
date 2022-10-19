@@ -47,7 +47,7 @@ module.exports = {
       {
         id: 'eab7f0da-7355-4f81-9ea7-8db00efb1e9d',
         order_id: '60515a93-a7b6-4f30-a56f-a0e386c2e1f9',
-        seller_id: '78444cea-19f1-4fef-b94a-3837e67677e4',
+        seller_id: 'c5180103-834c-465f-bd2c-528fe5e6193e',
         item_id: 'd8d4e79f-eea0-434a-a793-e528c3a10c9e',
         quantity: 3,
         price: 23.95,

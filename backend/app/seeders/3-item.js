@@ -5,7 +5,7 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     return queryInterface.bulkInsert('items', [{
       id: '846f4e5a-56bc-4649-b89e-17e07e81e70e',
-      seller_id: '78444cea-19f1-4fef-b94a-3837e67677e4',
+      seller_id: 'c5180103-834c-465f-bd2c-528fe5e6193e',
       images: ['https://i.ytimg.com/vi/fcP8rqxvx0E/maxresdefault.jpg', 'https://themagicwarehouse.com/ta5676.jpg', 'https://cdn.shopify.com/s/files/1/0013/7332/products/4fa13796a574d3.44348183_1.jpeg'],
       name: 'Theory11 Sentinels Playing Cards',
       description: 'Limited edition playing cards from Theory11.',
@@ -16,7 +16,7 @@ module.exports = {
     },
     {
       id: 'd8d4e79f-eea0-434a-a793-e528c3a10c9e',
-      seller_id: '78444cea-19f1-4fef-b94a-3837e67677e4',
+      seller_id: 'c5180103-834c-465f-bd2c-528fe5e6193e',
       images: ['https://i.ebayimg.com/images/g/sdsAAOSwLr9g8TO9/s-l500.jpg'],
       name: 'Virtuoso SS15',
       description: 'Limited edition playing cards from Virtusoso.',
@@ -27,7 +27,7 @@ module.exports = {
     },
     {
       id: 'be1a7f14-702b-4439-9296-a349a7351980',
-      seller_id: '78444cea-19f1-4fef-b94a-3837e67677e4',
+      seller_id: 'c5180103-834c-465f-bd2c-528fe5e6193e',
       images: ['https://cdn.shopify.com/s/files/1/0956/5418/products/monarchs2_1024x1024.jpg?v=1583386901', 'https://cdn.shopify.com/s/files/1/0956/5418/products/55085-full_1024x1024.png?v=1583386901'],
       name: 'Monarchs Playing Cards',
       description: 'Monarchs Playing Cards by Theory11.',
@@ -38,7 +38,7 @@ module.exports = {
     },
     {
       id: 'a1ff0c49-7ff7-44f2-804b-ba7c47ef1012',
-      seller_id: '78444cea-19f1-4fef-b94a-3837e67677e4',
+      seller_id: 'c5180103-834c-465f-bd2c-528fe5e6193e',
       images: ['https://cdn.shopify.com/s/files/1/0956/5418/products/61386-full_9d93d324-786f-4e7f-82e9-a3e2a99f9a27_1024x1024.png', 'https://cdn.shopify.com/s/files/1/0956/5418/products/61386-alt1_1024x1024.png', 'https://cdn.shopify.com/s/files/1/0956/5418/products/61386-alt2_1024x1024.png'],
       name: 'Virtuoso SS17',
       description: 'Limited edition playing cards from Virtusoso.',
@@ -49,7 +49,7 @@ module.exports = {
     },
     {
       id: 'a7dd71f0-3d06-4982-bccd-5a95e85ab03f',
-      seller_id: '78444cea-19f1-4fef-b94a-3837e67677e4',
+      seller_id: 'c5180103-834c-465f-bd2c-528fe5e6193e',
       images: ['https://cdn.shopify.com/s/files/1/0956/5418/products/67858-alt1_1024x1024.png', 'https://cdn.shopify.com/s/files/1/0956/5418/products/67858-full_1024x1024.png', 'https://cdn.shopify.com/s/files/1/0956/5418/products/67858-alt2_1024x1024.png', 'https://cdn.shopify.com/s/files/1/0956/5418/products/67858-alt3_1024x1024.png'],
       name: 'Virtuoso P1',
       description: 'Limited edition playing cards from Virtusoso.',

@@ -28,24 +28,23 @@ const actions = {
 
       let items = response.data;
 
-      items.forEach(async item => {
+      for await (const item of items) {
         let itemTagResponse = await ItemTagDataService.getTagsByItem(item.id);
         let itemTags = itemTagResponse.data;
 
         let tags = []
 
         if (itemTags.length > 0) {
-          itemTags.forEach(async itemTag => {
+          for await (const itemTag of itemTags) {
             let tagResponse = await TagDataService.get(itemTag.tag_id);
             let tag = tagResponse.data.name;
 
             tags.push(tag);
-          })
+          }
         }
         
         item.tags = tags
-      })
-
+      }
       commit('setQueriedItems', items);
     } catch (e) {
       console.log(e)
