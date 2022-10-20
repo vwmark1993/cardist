@@ -13,7 +13,6 @@ export default createStore({
     search
   },
   strict: debug,
-  // plugins: debug ? [createLogger()] : []
   plugins: debug ? [
     createLogger(),
     createPersistedState({
