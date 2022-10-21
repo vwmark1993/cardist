@@ -69,8 +69,8 @@ exports.createCheckoutSession = async (req, res) => {
           quantity: orderItem.quantity
         }
       }),
-      success_url: `${process.env.CLIENT_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url:  `${process.env.CLIENT_URL}/cart`
+      success_url: process.env.NODE_ENV === 'production' ? `${process.env.CLIENT_URL_PRODUCTION}/order/success?session_id={CHECKOUT_SESSION_ID}` : `${process.env.CLIENT_URL_DEVELOPMENT}/order/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url:  process.env.NODE_ENV === 'production' ? `${process.env.CLIENT_URL_PRODUCTION}/cart` : `${process.env.CLIENT_URL_DEVELOPMENT}/cart`
     })
     
     res.send({ url: session.url })
