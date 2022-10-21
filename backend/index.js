@@ -6,7 +6,7 @@ const app = express();
 // app.use(...);
 
 var corsOptions = {
-  origin: ["http://localhost:8000", "http://localhost:8081", "https://checkout.stripe.com"],
+  origin: ["http://localhost:8000", "http://localhost:8081", "https://cardist-backend.azurewebsites.net/", "https://cardist.azurewebsites.net/", "https://checkout.stripe.com"],
   //preflightContinue: true,
   //allowedHeaders: ['Content-Type, Authorization']
 };
