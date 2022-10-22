@@ -46,7 +46,7 @@
     <div class="grid grid-cols-12 grid-flow-col items-start">
       <div class="col-span-3 m-3 p-3 border border-slate-400 rounded">
         <div class="mb-2">
-          <img v-if="user.picture !== null || user.picture !== ''" :src="user.picture" class="rounded m-auto" />
+          <img v-if="user.picture !== null && user.picture !== ''" :src="user.picture" class="rounded m-auto" />
           <img v-else src="../assets/images/profile-picture-placeholder.png" class="rounded m-auto" />
         </div>
         <div>
