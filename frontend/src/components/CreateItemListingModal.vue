@@ -105,7 +105,7 @@
             return;
           }
 
-          if (this.price === null || this.price === '' || isNaN(this.price)) {
+          if (this.price === null || this.price === '' || isNaN(this.price || this.price <= 0)) {
             this.$emit('showMessage', 'Invalid Price', 'failure');
             this.closeModal();
             return;
