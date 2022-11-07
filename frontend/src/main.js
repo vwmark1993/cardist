@@ -7,7 +7,7 @@
 
 /**
  * This is the entry point for front-end app.
- * The front-end app uses Vue 3, Vue Router and Vuex.
+ * The front-end app uses Vue 3, Vue Router, Vuex, Axios, and Tailwind.css.
  * Built using Vue 3 CLI template structure.
  * 
  * Structure:

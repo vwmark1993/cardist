@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="min-width-950">
     <ConfirmDeleteModal 
       :id="deleteId"
       apiService="Comment"
@@ -30,8 +30,8 @@
         <AlertMessage v-else-if="$store.state.cart.cartMessage" :message="$store.state.cart.cartMessage" :mode="$store.state.cart.cartMessageStatus" />
       </Transition>
     </div>
-    <div class="grid grid-cols-12 grid-flow-col">
-      <div class="md:col-span-4 grid grid-cols-4 m-3">
+    <div class="grid grid-cols-12">
+      <div class="col-span-4 grid grid-cols-4 m-3">
         <div v-if="itemDetails.images.length > 1 && itemDetails.images[0] !== ''" class="col-span-1 flex flex-col mx-2">
           <img @click="setImageIndex(index)" v-for="image, index in itemDetails.images" :key="index" :src="image" class="border rounded mb-2 cursor-pointer opacity-50 hover:opacity-100 transition delay-75 ease-in-out" />
         </div>
@@ -399,6 +399,9 @@ export default {
 }
 </script>
 <style scoped>
+  .min-width-950 {
+    min-width: 950px;
+  }
   .cart-button {
     height: 46px;
   }

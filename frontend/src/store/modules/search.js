@@ -46,6 +46,7 @@ const actions = {
         item.tags = tags
       }
       commit('setQueriedItems', items);
+      commit('removeAllFilters');
     } catch (e) {
       console.log(e)
     }

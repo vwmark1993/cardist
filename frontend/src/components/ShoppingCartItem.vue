@@ -89,6 +89,7 @@ export default {
         index: this.index,
         id: this.id
       })
+      this.$emit('cartItemMessage', 'Removed item: ' + this.name)
     },
     increment() {
       this.quantity++
