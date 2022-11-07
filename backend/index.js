@@ -1,9 +1,32 @@
+/**
+ * Statement of Authorship:
+ * 
+ * I, Vincent Mark, student number 000803494, certify that this material is my original work.
+ * No other person's work has been used without due acknowledgement and I have not made my work available to anyone else.
+ */
+
+/**
+ * This is the entry point for back-end app.
+ * Uses Node and Express and maintain server connections.
+ * Uses Sequelize to handle API requests to PostgreSQL.
+ * Stripe API is also used to handle Stripe service calls for credit card transactions.
+ * 
+ * Structure:
+ * Routes - routes API requests received by the backend-server to the appropriate controller functions.
+ * Controllers - handles database calls to PostgreSQL.
+ * Models - each model represents a table structure in PostgreSQL.
+ * Config - stores environment variables for database connections.
+ * Migrations - Sequelize scripts used to create database tables.
+ * Seeders - Sequelize scripts used to populate database table records.
+ */
+
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
 
+// Needed to connect to stripe API.
 var corsOptions = {
   origin: ["http://localhost:8000", "http://localhost:8081", "https://cardist-backend.azurewebsites.net", "https://cardist.azurewebsites.net", "https://checkout.stripe.com"],
   //preflightContinue: true,
@@ -29,6 +52,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to the Cardist backend application." });
 });
 
+// Backend API routes
 require("./app/routes/cart.routes")(app);
 require("./app/routes/cartItem.routes")(app);
 require("./app/routes/comment.routes")(app);
