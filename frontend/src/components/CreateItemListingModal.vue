@@ -115,7 +115,7 @@
             sellerId: store.state.user.currentUser.id,
             name: this.name,
             price: this.price,
-            email: this.email
+            description: this.description
           }
 
           if (this.imageMode === 'links') {
