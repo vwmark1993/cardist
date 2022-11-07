@@ -12,7 +12,7 @@
     </div>
     <div>
       <div class="flex items-center mb-2">
-        <h1 class="text-4xl font-bold text-slate-700 text-left mt-3">Order History</h1>
+        <h1 class="text-4xl font-bold text-slate-700 text-left mt-3 mx-3">Order History</h1>
       </div>
       <div v-if="orderItems.length === 0">
         <span class="block text-slate-400 text-xl italic mb-4">No Items Ordered</span>

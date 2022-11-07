@@ -24,7 +24,7 @@
     </div>
     <div>
       <div class="flex items-center mb-2 mt-3">
-        <h1 class="text-4xl font-bold text-slate-700 text-left mr-3">Item Listings</h1>
+        <h1 class="text-4xl font-bold text-slate-700 text-left mx-3">Item Listings</h1>
         <button v-if="itemListings.length > 0" @click="createItemListing" class="flex items-center bg-slate-500 hover:bg-slate-700 text-white font-semibold text-lg px-2 rounded select-none">
           <span class="material-symbols-outlined text-2xl mr-1">add</span>
           <span>Create</span>
