@@ -28,9 +28,4 @@ The web application has three components: front-end UI, back-end API, and databa
 * Migrations - Sequelize scripts used to create database tables.
 * Seeders - Sequelize scripts used to populate database table records.
 
-#### Demonstration
-Front-end and back-end applications are hosted on separate websites powered by Microsoft Azure.
-##### Front-end Application: https://cardist.azurewebsites.net/
-##### Back-end Application: https://cardist-backend.azurewebsites.net/
-
 ##### Video Demonstration Link: https://youtu.be/EB895EIz5UA
