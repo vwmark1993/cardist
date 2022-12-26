@@ -28,4 +28,4 @@ The web application has three components: front-end UI, back-end API, and databa
 * Migrations - Sequelize scripts used to create database tables.
 * Seeders - Sequelize scripts used to populate database table records.
 
-##### Video Demonstration Link: https://youtu.be/EB895EIz5UA
+#### Video Demonstration Link: https://youtu.be/EB895EIz5UA
