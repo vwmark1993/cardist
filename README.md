@@ -1,5 +1,5 @@
 ### Cardist
-Cardist is an e-commerce web application which allows users to buy and sell playing cards and playing card-related products. The functionality is very similar to eBay, albeit with a more narrowly focused market niche. 
+Cardist is an e-commerce web application which allows users to buy and sell playing cards and playing card-related products. The functionality is very similar to eBay and Amazon, albeit with a more narrowly focused market niche. 
 
 The web application has three components: front-end UI, back-end API, and database. The front-end UI is the application website users directly interact with. The back-end API handles database controller requests and should not be seen by the users. The PostgreSQL database is hosted on Bit.io (https://bit.io/). Additionally, Stripe services are used to handle credit card payments. 
 
