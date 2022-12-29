@@ -7,7 +7,7 @@ The web application has three components: front-end UI, back-end API, and databa
 * The front-end app uses Vue 3, Vue Router, Vuex, Axios, and Tailwind.css.
 * Built using Vue 3 CLI template structure.
 
-##### Structure
+##### File Structure
 * Views - main webpages.
 * Components - smaller webpage components used/re-used by views (e.g. navigation bar, modals, error message notifications, etc.).
 * Store - stores data to be used across multiple views/components.
@@ -20,7 +20,7 @@ The web application has three components: front-end UI, back-end API, and databa
 * Uses Sequelize to handle API requests to PostgreSQL.
 * Stripe API is also used to handle Stripe service calls for credit card transactions.
 
-##### Structure
+##### File Structure
 * Routes - routes API requests received by the backend-server to the appropriate controller functions.
 * Controllers - handles database calls to PostgreSQL.
 * Models - each model represents a table structure in PostgreSQL.
